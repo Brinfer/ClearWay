@@ -1,0 +1,166 @@
+#!/usr/bin/env python
+
+"""
+@file prepare-commit-msg
+
+@details Check if a commit message match with the some parameters.
+The message should respect the given pattern:
+    [commitType]: text of the commit [#issueNumber]
+The program with check if [commitType] and [#issueNumber] are present.
+If one element of EXCEPTION is present at the beginning of the commit message, them it is accepted.
+
+@copyright: ClearWay
+@licence: MIT License
+@author: Pierre-Louis GAUTIER
+"""
+
+
+import re
+import sys
+
+""" The different possible types to indicate in the messages of the commits.
+
+[FEAT]      Implementation of a class/function
+[BUG]       Code push but contains bugs => create a task to fix the bug. Indicate the bug in the
+            commit message
+[DOC]       Add or correct documentation
+[FIX]       Bug fixed, program compiles and tests pass, without regression
+[CONC]      Commitments related to the design
+[REFACTO]   Make the code clean (good indentation, patches to match naming conventions), or modify
+            the implementation of a feature
+[TEST]      Missing test addition
+[UNKN]      Other (except merges, which are automatically generated).
+"""
+TYPE_PATTERN = ("[FEAT]", "[BUG]", "[DOC]", "[FIX]", "[CONC]", "[REFACTO]", "[TEST]", "[UNKN]")
+
+""" The regex used to determine if the task number is present at the end of the commit message. """
+ISSUE_PATTERN = r"\[#(?:[1-9]|[1-9][0-9]{1,3})\]\Z"
+
+""" The message displayed in case the commit message is not valid. """
+ERROR_MESSAGE = """
+============================================================================
+The commit does not respect the patterns.
+
+----------------------------------------------------------------------------
+The Pattern is:
+
+\t\t[commitType]: text of the commit [#issueNumber]
+----------------------------------------------------------------------------
+
+============================================================================
+"""
+
+""" The list of elements for automatic commit messages like a merge or rebase.
+
+The elements must be at the beginning of the commit message.
+
+Merge   A merge is performed
+Rebase  A rebase is performed.
+"""
+EXCEPTION = ("Merge", "Rebase")
+
+
+def getCommitMsg() -> str:
+    """Get the message of the commit to test.
+
+    Returns
+    -------
+    str
+        The message of the commit.
+    """
+    contents = ""
+    # gets the last commit message
+    msgfile = sys.argv[1]
+    # opens the commit message file
+    with open(msgfile) as f:
+        contents = f.read()
+    return contents.strip()
+
+
+def checkCommitType(message: str) -> bool:
+    """Checks if the commit type is written at the beginning of the commit message.
+
+    Parameters
+    ----------
+    message : str
+        The string to test.
+
+    Returns
+    -------
+    bool
+        True if one element of TYPE_PATTERN is present at the beginning of the commit message,
+        False otherwise.
+    """
+    isValid = False
+
+    extracted = message.split(" ")[0]
+
+    for commitType in TYPE_PATTERN:
+        if commitType == extracted:
+            isValid = True
+            break
+
+    return isValid
+
+
+def checkIssueId(message: str) -> bool:
+    """Checks if the commit message respects the regex of ISSUE_PATTERN.
+
+    Parameters
+    ----------
+    message : str
+        The string to test
+
+    Returns
+    -------
+    bool
+        True if the the commit message respect the regex, False otherwise.
+    """
+    return re.findall(ISSUE_PATTERN, message)[0] != None
+
+
+def isException(message: str) -> bool:
+    """Checks if the commit message is an automatic message.
+
+    Check if the string start by one element of EXCEPTION.
+
+    Parameters
+    ----------
+    message : str
+        The string to test.
+
+    Returns
+    -------
+    bool
+        True if one element of EXCEPTION is at the beginning the commit message, False otherwise.
+    """
+
+    isException = False
+
+    extracted = message.split(" ")[0]
+
+    for exception in EXCEPTION:
+        if exception == extracted:
+            isException = True
+            break
+
+    return isException
+
+def commit_validation():
+    """Validate or not if the commit message.
+
+    Calls the isException, checkCommitType and checkIssueId functions.
+    """
+
+    message = getCommitMsg()
+
+    if (isException(message)) or \
+       (checkCommitType(message) and checkIssueId(message)):
+        exit(0)
+    else:
+        print(ERROR_MESSAGE)
+        exit(1)
+
+
+if __name__ == "__main__":
+    commit_validation()
