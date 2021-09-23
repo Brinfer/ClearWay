@@ -14,7 +14,6 @@ If one element of EXCEPTION is present at the beginning of the commit message, t
 @author: Pierre-Louis GAUTIER
 """
 
-
 import re
 import sys
 
@@ -46,6 +45,10 @@ The Pattern is:
 
 \t\t[commitType]: text of the commit [#issueNumber]
 ----------------------------------------------------------------------------
+Your commit message is:
+\t\t{0}
+\t\t{1}
+----------------------------------------------------------------------------
 
 ============================================================================
 """
@@ -58,6 +61,12 @@ Merge   A merge is performed
 Rebase  A rebase is performed.
 """
 EXCEPTION = ("Merge", "Rebase")
+
+""" Details on the type of formatting error found
+
+The variable will be filled in the functions checking the different criteria
+"""
+errorDetail = ""
 
 
 def getCommitMsg() -> str:
@@ -80,6 +89,9 @@ def getCommitMsg() -> str:
 def checkCommitType(message: str) -> bool:
     """Checks if the commit type is written at the beginning of the commit message.
 
+    The global variable `errorDetail` will be modified with the value :
+        `==> The commit type is wrong.`
+
     Parameters
     ----------
     message : str
@@ -91,20 +103,30 @@ def checkCommitType(message: str) -> bool:
         True if one element of TYPE_PATTERN is present at the beginning of the commit message,
         False otherwise.
     """
+    global errorDetail
+
     isValid = False
 
-    extracted = message.split(" ")[0]
+    listExtracted = message.split(" ")
 
-    for commitType in TYPE_PATTERN:
-        if commitType == extracted:
-            isValid = True
-            break
+    if len(listExtracted) > 0:
+        typeExtracted = listExtracted[0]
+        for commitType in TYPE_PATTERN:
+            if commitType == typeExtracted:
+                isValid = True
+                break
+
+    if isValid is False:
+        errorDetail = "==> The commit type is wrong."
 
     return isValid
 
 
 def checkIssueId(message: str) -> bool:
     """Checks if the commit message respects the regex of ISSUE_PATTERN.
+
+    The global variable `errorDetail` will be modified with the value :
+        `==> The issue ID is wrong.`
 
     Parameters
     ----------
@@ -116,7 +138,19 @@ def checkIssueId(message: str) -> bool:
     bool
         True if the the commit message respect the regex, False otherwise.
     """
-    return re.findall(ISSUE_PATTERN, message)[0] != None
+    global errorDetail
+
+    isValid = False
+
+    listFoundPattern = re.findall(ISSUE_PATTERN, message)
+
+    if len(listFoundPattern) > 0:
+        isValid = listFoundPattern[0] is not None
+
+    if isValid is False:
+        errorDetail = "==> The issue ID is wrong."
+
+    return isValid
 
 
 def isException(message: str) -> bool:
@@ -137,14 +171,17 @@ def isException(message: str) -> bool:
 
     isException = False
 
-    extracted = message.split(" ")[0]
+    extractedList = message.split(" ")
 
-    for exception in EXCEPTION:
-        if exception == extracted:
-            isException = True
-            break
+    if len(extractedList) > 0:
+        extracted = extractedList[0]
+        for exception in EXCEPTION:
+            if exception == extracted:
+                isException = True
+                break
 
     return isException
+
 
 def commit_validation():
     """Validate or not if the commit message.
@@ -158,7 +195,7 @@ def commit_validation():
        (checkCommitType(message) and checkIssueId(message)):
         exit(0)
     else:
-        print(ERROR_MESSAGE)
+        print(ERROR_MESSAGE.format(message, errorDetail))
         exit(1)
 
 
