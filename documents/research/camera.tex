@@ -1,0 +1,73 @@
+%auteur : Damien Frissant
+
+\section{Analyse pour la caméra}
+\label{sec:camera}
+
+\subsection{Objectifs}
+\label{sec:camera_Objectifs}
+
+Notre système ClearWay sera équipé d'une caméra permettant de détecter les cyclistes. 
+Il est important de trouver le meilleur positionnement et la meilleure configuration de cette dernière par rapport à son environnement afin d'optimiser la détection des cyclistes. 
+
+\subsection{Méthodologie de recherche}
+\label{sec:camera_Methodo}
+
+La méthodologie de recherche sera orientée afin de trouver des résultats pertinent concernant:
+\begin{itemize}
+    \item Nos besoins par rapport aux cyclistes
+    \item La longueur focale appropriée à notre besoin
+    \item La distance, angle et hauteur de la caméra par rapport à son environnement
+    \item Le champs de vision de la caméra
+\end{itemize}
+Ces investigations seront menées grâce à internet en utilisant les filtres les pertinent pour chaque recherche, afin d'avoir des 
+résultats cohérent et pallier les recherches personnalisées liés aux algorithmes de Google.
+Pour ce qui est des spécifications de la caméra, nous étudierons ce qui se fait dans le monde de télésurveillance municipale en étudiant les spécifications des leaders du marché mondial
+
+\subsection{Résultats}
+\label{sec:camera_resultats}
+
+\subsubsection{Nos besoins par rapport aux cyclistes}
+\label{sec:camera_cycliste}
+
+Pour dimensionner au mieux les paramètres de la caméra, il faut déjà savoir quelle peut être la vitesse maximale d’un cycliste. 
+Nous considérons que notre système sera installé majoritairement en ville. 
+En prenant en compte un cycliste circulant entre 10km/h (2,8m/s) et 50km/h (14m/s) nous réunissons la majorité des usagers. 
+En prenant le cas le plus extrême, 50km/h, il nous faudrait soit :
+\begin{itemize}
+    \item Une distance de détection inférieur à 10 mètres, nécessitant plus de 2 images par seconde.
+    \item Une distance de détection comprise entre 10 et 16 mètres et une acquisition de 2 images par seconde afin d’être sûr de voir l’usager.
+    \item Une distance de détection comprise entre 20 et 30 mètres et une acquisition d’image de 1 fps qui permet de ménager les ressources de calcul de l’algorithme.
+    \item Une distance de détection à plus de 30 mètres
+\end{itemize}
+D'un point de vue matériel, il parait plus évident de soulager les calculs en ayant moins de traitement à faire. 
+Ainsi, il faudrait orienter la caméra afin d'avoir un minimum d'une image par seconde.
+
+\subsubsection{Longueur focale appropriée à notre besoin}
+\label{sec:camera_focale}
+
+\textit{"La longueur focale nous indique le champ angulaire (la partie de la scène qui sera capturée) 
+et le grossissement (la taille des éléments individuels). 
+Plus la longueur focale est étendue, plus le champ angulaire est étroit et plus le grossissement est élevé. 
+Plus la longueur focale est courte, plus l’angle de vue est large et plus le grossissement est réduit."} \cite{focale}
+
+Comme indiqué ci-dessus, nous recherchons une solution permettant d'avoir une distance de détection importante.
+Pour ce faire, il faut avoir une distance focale faible, inférieur à 15mm.
+En parcourant le site des leaders mondiaux de caméras de surveillance extérieur 
+(\href{https://media.pelco.com/wp-content/uploads/2020/11/10145554/SC-2042-Quick-Reference-Guide-update-QRG-April-2020.pdf}{Pelco}, 
+\href{https://www.axis.com/fr-fr/products/axis-q16-series}{Axis} et
+\href{https://business.panasonic.fr/solutions-de-securite/cam%C3%A9ra-bullet-ext%C3%A9rieure-4k-plateforme-ouverte-intelligence-artificielle/wv-x1571ln}{Panasonic})
+nous arrivons au constat qu'une focale est comprise entre 2.8mm et 8.3mm.
+C'est une plage de valeur correcte par rapport à nos exigeances.
+
+\subsubsection{La distance, angle et hauteur de la caméra}
+\label{sec:camera_distance}
+
+
+\subsection{Conclusion}
+\label{Conclusion}
+Les paramètres permettant de régler physiquement une caméra de détection sont primordiaux afin que le système soit optimisé.
+La deuxième solution nous permet d’optimiser le coût du projet car il y aura moins de ressources logiciel nécessaires.
+
+En nous renseignant sur les différentes caméras fixes installées en France, il s’avère que :
+
+CCL par rapport à la focale Il est important de choisir une longueur focale proche de celles présentes sur les infrastructures déjà existantes. En effet, ça permettrait d'avoir un système plus évolutif.
