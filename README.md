@@ -8,7 +8,7 @@
 - [3. About the Project](#3-about-the-project)
 - [4. Installation](#4-installation)
   - [4.1. Python](#41-python)
-  - [4.2. Latex](#42-latex)
+  - [4.2. LaTeX](#42-latex)
 
 ## 1. Main Characters of the Project
 
@@ -48,9 +48,9 @@ This instruction makes sure that everyone is using the same git hook.
 
 In order to use the git hooks implementer correctly, a version of __Python 3.6__ minimum is required.
 
-### 4.2. Latex
+### 4.2. LaTeX
 
-The drafting of documents is done in _Latex_, some packages are necessary.
+The drafting of documents is done in _LaTeX_, some packages are necessary.
 
 In order to use cross-references, use BibTeX for your bibliography or if you want to have a glossary, the program [latexmk](https://mg.readthedocs.io/latexmk.html) is used.
 Below the list of _Latex_ packages used in the documents :
@@ -60,7 +60,7 @@ Below the list of _Latex_ packages used in the documents :
           rules for a wide range of languages.
 - [babel](https://www.ctan.org/pkg/babel) This package manages culturally-determined typographical (and other) rules
           or a wide range of languages.
-- [biblatex](https://www.ctan.org/pkg/biblatex) BibLaTeX is a complete reimplementation of the bibliographic facilities provided by LaTeX.
+- [biblatex](https://www.ctan.org/pkg/biblatex) _BibLaTeX_ is a complete reimplementation of the bibliographic facilities provided by _LaTeX_.
 - [enumitem](https://www.ctan.org/pkg/enumitem) This package provides user control over the layout of the three basic
           list environments: enumerate, itemize and description.
 - [fancyhdr](https://www.ctan.org/pkg/fancyhdr) The package provides extensive facilities, both for constructing headers
@@ -72,10 +72,10 @@ Below the list of _Latex_ packages used in the documents :
 - [graphicx](https://www.ctan.org/pkg/graphicx) The package builds upon the graphics package, providing a key-value
           interface for optional arguments to the `\includegraphics` command.
 - [hyperref](https://www.ctan.org/pkg/hyperref) The __hyperref__ package is used to handle cross-referencing commands in
-          Latex to produce hypertext links in the document.
+          _LaTeX_ to produce hypertext links in the document.
 - [kvoption](https://www.ctan.org/pkg/kvoptions) This package offers support for package authors who want to use options
           in key-value format for their package options.
-- [lastpage](https://www.ctan.org/pkg/lastpage) Reference the number of pages in your Latex document through the
+- [lastpage](https://www.ctan.org/pkg/lastpage) Reference the number of pages in your _LaTeX_ document through the
           introduction of a new label.
 - [lmodern](https://www.ctan.org/tex-archive/info/lmodern) Provide some symbol.
 - [longtable](https://www.ctan.org/pkg/longtable) Allows writing tables that continue to the next page.

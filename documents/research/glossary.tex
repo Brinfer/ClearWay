@@ -1,9 +1,57 @@
-% \newglossaryentry{tag}
-% {
-%     name={displaydTitle}, % Displayed as the title of the word in the glossary, it's used if text is not found
-%     description={definition of the word},
-%     plural={plural of the word}
-%     text={displayedText}, % displayed in the text of the document
-%     firstplural={plural of the word}, % Displayed at the first call with glspl instead of gls
-%     first={displayedText}, % Displayed at the first call gls
-% }
+\newglossaryentry{TCP}
+{
+name={Transmission Control Protocol},
+description={Protocole au sein de la suite de protocoles Internet, un ensemble de normes
+        permettant aux systèmes de communiquer sur Internet. Il est classé en tant que protocole de
+        "couche de transport" car il crée et maintient des connexions entre hôtes.},
+plural={TCP},
+text={TCP},
+firstplural={Transmission Control Protocol (TCP)},
+first={Transmission Control Protocol (TCP)},
+}
+
+\newglossaryentry{UDP}
+{
+name={User Datagram Protocol},
+description={Protocoles de télécommunication utilisés par Internet. Il fait partie de la couche
+        transport du modèle OSI, quatrième couche de ce modèle, comme \gls{TCP}.},
+plural={UDP},
+text={UDP},
+firstplural={User Datagram Protocol (UDP)},
+first={User Datagram Protocol (UDP)},
+}
+
+\newglossaryentry{SSH}
+{
+name={Secure Shell},
+description={Protocole de communication et programme informatique, permettant la connexion d'une
+        machine distante (serveur) via une liaison sécurisée dans le but de transférer des fichiers
+        ou des commandes en toute sécurité.},
+plural={SSH},
+text={SSH},
+firstplural={Secure Shell (SSH)},
+first={Secure Shell (SSH)},
+}
+
+\newglossaryentry{FTP}
+{
+name={File Transfer Protocol},
+description={Logiciel utilisé dans le transfert de fichiers entre deux ordinateurs. Il est, avec le
+        client FTP, l'une des deux composantes d'un transfert de fichiers via le langage FTP.},
+plural={FTP},
+text={FTP},
+firstplural={File Transfer Protocol (FTP)},
+first={File Transfer Protocol (FTP)},
+}
+
+\newglossaryentry{SCTP}
+{
+name={Stream Control Transmission Protocol},
+description={Protocole de transport, SCTP est équivalent dans un certain sens au \gls{TCP} ou à
+        l'\gls{UDP}. En effet, il fournit des services similaires à \gls{TCP}, assurant
+        optionnellement la fiabilité, la remise en ordre des séquences et le contrôle de congestion.},
+plural={SCTP},
+text={SCTP},
+firstplural={Stream Control Transmission Protocol (SCTP)},
+first={Stream Control Transmission Protocol (SCTP)},
+}

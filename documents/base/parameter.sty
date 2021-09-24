@@ -133,17 +133,11 @@
 
 \setglossarystyle{altlisthypergroup}
 
-\ProvideDocumentCommand{\printglossdef}{o m}{\footnote{#1: #2}}
 \GlsXtrEnableEntryUnitCounting{general}{0}{page} % Count number of occurrence by unit, by page of the group general
 
 % If it first occurence of the label
 %   then a foot note is added with the description linked to the label
-% else do nothing
-\renewcommand{\glsxtrpostlink}{%
-    \glsxtrifwasfirstuse%
-        {\printglossdef[\glsentryname{\glslabel}]{\glsentrydesc{\glslabel}}}%
-        {}%
-}
+\defglsdisplayfirst{#1#4\footnote{#1: #2}}
 
 % If it first occurence of the label
 %   then suppress the hyperlink to the glossary
