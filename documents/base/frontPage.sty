@@ -1,0 +1,108 @@
+%-----------------------------------------------------------------
+% LaTeX template for a document
+% Written By: Pierre-Louis GAUTIER
+% Date Updated: September 24, 2021 (v1.2.2)
+%-----------------------------------------------------------------
+
+\ProvidesPackage{FrontPage}
+\RequirePackage{kvoptions}
+\RequirePackage{Parameter}
+
+\DeclareStringOption[]{logoCompany}[]
+\DeclareStringOption[]{nameCompany}[]
+\DeclareStringOption[]{logoSchool}[]
+\DeclareStringOption[]{nameSchool}[]
+\DeclareStringOption[]{version}[]
+\DeclareStringOption[]{statue}[]
+\DeclareStringOption[]{texte}[]
+
+\ProcessKeyvalOptions*
+
+\fancypagestyle{} % No header and footer for this page
+{
+    \fancyhf{}
+    \fancyrf{}
+}
+
+\makeatletter
+
+\renewcommand\maketitle{
+    \thispagestyle{empty}
+
+    \ifx\FrontPage@logoCompany\empty
+    \else
+        \ifx\FrontPage@logoSchool\empty
+            \begin{figure}[ht]
+                \centering
+                \includegraphics[width=0.3\textwidth]{\FrontPage@logoCompany}
+            \end{figure}
+        \else
+            \begin{minipage}{.47\textwidth}
+                \centering
+                \begin{flushleft}
+                    \includegraphics[width=50mm]{\FrontPage@logoSchool}
+                \end{flushleft}
+            \end{minipage}
+            \begin{minipage}{.47\textwidth}
+                \centering
+                \begin{flushright}
+                    \hspace*{1cm} \includegraphics[width=50mm]{\FrontPage@logoCompany}
+                \end{flushright}
+            \end{minipage}\\[1.5cm]
+        \fi
+    \fi
+
+    \begin{center}
+        \rule{\linewidth}{0.5mm}\\[0.4cm]
+        \begin{center}
+            \huge
+            \textbf{\@title}\\
+        \end{center}
+        \rule{\linewidth}{0.5mm}\\[0.4cm]
+    \end{center}
+
+    \ifx\FrontPage@logoSchool\empty
+    \else
+        \if\FrontPage@logoCompany\empty
+            \begin{figure}[ht]
+                \centering
+                \includegraphics[width=0.3\textwidth]{\FrontPage@logoSchool}
+            \end{figure}
+        \else
+        \fi
+    \fi
+
+    \ifx\FrontPage@nameCompany\empty
+    \else
+        \begin{center}\large
+            \textsc{\FrontPage@nameCompany}\\
+        \end{center}
+    \fi
+    \ifx\FrontPage@nameSchool\empty
+    \else
+        \begin{center}\large
+            \textsc{\FrontPage@nameSchool}\\
+        \end{center}
+    \fi
+
+    \vspace*{2cm}
+
+    \ifx\FrontPage@version\empty
+    \else
+        Version : \FrontPage@version
+    \fi
+
+    \ifx\FrontPage@statue\empty
+    \else
+        Statue : \FrontPage@statue
+    \fi
+
+    \vspace*{2cm}
+
+    \ifx\FrontPage@texte\empty
+    \else
+        \FrontPage@texte
+    \fi
+}
+
+\makeatother

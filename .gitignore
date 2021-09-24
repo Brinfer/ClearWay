@@ -1,2 +1,18 @@
 # IDE setting
 .vscode/
+
+# Latex output file
+*.aux
+*.fdb_latexmk
+*.fls
+*.glg
+*.glo
+*.gls
+*.ist
+*.lof
+*.log
+*.lot
+*.pdf
+*.out
+*.synctex.gz
+*.toc
