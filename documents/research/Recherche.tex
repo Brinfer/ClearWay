@@ -43,6 +43,10 @@
 \loadglsentries{glossary.tex}
 \loadglsentries[ignored]{glossary-ignored.tex}
 
+%% Load the bibliography from the given files %%
+
+\addbibresource{biblio.bib}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
@@ -55,11 +59,13 @@
 \tableofcontents
 
 \clearpage
-\part*{Annex}
+\part*{Annexes}
 \listoffigures
 \listoftables
 
 \clearpage
 \printglossary % Display the glossary, see the documentation for the options
+
+\printbibliography
 
 \end{document}
