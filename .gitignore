@@ -3,6 +3,9 @@
 
 # Latex output file
 *.aux
+*.bbl
+*.bcf
+*-blx.bib
 *.fdb_latexmk
 *.fls
 *.glg
@@ -13,7 +16,8 @@
 *.log
 *.lot
 _minted-*/
-*.pdf
 *.out
+*.pdf
+*.run.xml
 *.synctex.gz
 *.toc
