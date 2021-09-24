@@ -12,6 +12,7 @@
 *.lof
 *.log
 *.lot
+_minted-*/
 *.pdf
 *.out
 *.synctex.gz

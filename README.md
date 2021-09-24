@@ -50,10 +50,10 @@ In order to use the git hooks implementer correctly, a version of __Python 3.6__
 
 ### 4.2. Latex
 
-The drafting of documents is done in latex, some packages are necessary.
+The drafting of documents is done in _Latex_, some packages are necessary.
 
 In order to use cross-references, use BibTeX for your bibliography or if you want to have a glossary, the program [latexmk](https://mg.readthedocs.io/latexmk.html) is used.
-Below the list of latex packages used in the documents :
+Below the list of _Latex_ packages used in the documents :
 
 - [ae](https://www.ctan.org/pkg/ae)
 - [aeguill](https://www.ctan.org/pkg/aeguill) This package manages culturally-determined typographical (and other)
@@ -78,6 +78,7 @@ Below the list of latex packages used in the documents :
           introduction of a new label.
 - [lmodern](https://www.ctan.org/tex-archive/info/lmodern) Provide some symbol.
 - [longtable](https://www.ctan.org/pkg/longtable) Allows writing tables that continue to the next page.
+- [minted](https://www.ctan.org/pkg/minted) The package that facilitates expressive syntax highlighting in _LaTeX_ using the powerful _Pygments_ library.
 - [multirow](https://www.ctan.org/pkg/multirow) The package has a lot of flexibility, including an option for specifying
           an entry at the “natural” width of its text.
 - [tabularx](https://www.ctan.org/pkg/tabularx) The package defines an environment __tabularx__, an extension of
@@ -87,3 +88,4 @@ Below the list of latex packages used in the documents :
           from various title styles.
 - [xcolor](https://www.ctan.org/pkg/xcolor) The package starts from the basic facilities of the __color__ package,
           and provides easy driver-independent access.
+- [xparse](https://www.ctan.org/pkg/xparse) The package provides a high-level interface for producing document-level commands.
