@@ -7,7 +7,8 @@
 \label{sec:camera_Objectifs}
 
 Notre système ClearWay sera équipé d'une caméra permettant de détecter les cyclistes. 
-Il est important de trouver le meilleur positionnement et la meilleure configuration de cette dernière par rapport à son environnement afin d'optimiser la détection des cyclistes. 
+Il est important de trouver le meilleur positionnement et la meilleure configuration 
+de cette dernière par rapport à son environnement afin d'optimiser la détection des cyclistes. 
 
 \subsection{Méthodologie de recherche}
 \label{sec:camera_Methodo}
@@ -19,9 +20,10 @@ La méthodologie de recherche sera orientée afin de trouver des résultats pert
     \item La distance, angle et hauteur de la caméra par rapport à son environnement
     \item Le champs de vision de la caméra
 \end{itemize}
-Ces investigations seront menées grâce à internet en utilisant les filtres les pertinent pour chaque recherche, afin d'avoir des 
-résultats cohérent et pallier les recherches personnalisées liés aux algorithmes de Google.
-Pour ce qui est des spécifications de la caméra, nous étudierons ce qui se fait dans le monde de télésurveillance municipale en étudiant les spécifications des leaders du marché mondial
+Ces investigations seront menées grâce à internet en utilisant les filtres les pertinent pour chaque recherche. 
+Cela permettra d'avoir des résultats cohérent et de pallier les recherches personnalisées liés aux algorithmes de Google.
+Pour ce qui est des spécifications de la caméra, nous étudierons ce qui se fait dans 
+le monde de télésurveillance municipale en étudiant les spécifications des leaders du marché mondial.
 
 \subsection{Résultats}
 \label{sec:camera_resultats}
@@ -34,13 +36,15 @@ Nous considérons que notre système sera installé majoritairement en ville.
 En prenant en compte un cycliste circulant entre 10km/h (2,8m/s) et 50km/h (14m/s) nous réunissons la majorité des usagers. 
 En prenant le cas le plus extrême, 50km/h, il nous faudrait soit :
 \begin{itemize}
-    \item Une distance de détection inférieur à 10 mètres, nécessitant plus de 2 images par seconde.
-    \item Une distance de détection comprise entre 10 et 16 mètres et une acquisition de 2 images par seconde afin d’être sûr de voir l’usager.
-    \item Une distance de détection comprise entre 20 et 30 mètres et une acquisition d’image de 1 fps qui permet de ménager les ressources de calcul de l’algorithme.
-    \item Une distance de détection à plus de 30 mètres
+    \item Une distance de détection inférieur à 10 mètres, nécessitant minimum 2 images par seconde.
+    \item Une distance de détection comprise entre 10 et 19 mètres et une acquisition de 2 images par seconde afin 
+    d’être sûr de voir l’usager.
+    \item Une distance de détection comprise entre 20 et 30 mètres et une acquisition d’image de 1 image par seconde qui permet 
+    de ménager les ressources de calcul de l’algorithme.
+    \item Une distance de détection à plus de 30 mètres et une acquisition de moins d'une image par seconde
 \end{itemize}
 D'un point de vue matériel, il parait plus évident de soulager les calculs en ayant moins de traitement à faire. 
-Ainsi, il faudrait orienter la caméra afin d'avoir un minimum d'une image par seconde.
+Ainsi, il faudrait orienter la caméra afin d'avoir une période se rapprochant d'une image par seconde, tout en ayant une détection optimale.
 
 \subsubsection{Longueur focale appropriée à notre besoin}
 \label{sec:camera_focale}
@@ -50,18 +54,39 @@ et le grossissement (la taille des éléments individuels).
 Plus la longueur focale est étendue, plus le champ angulaire est étroit et plus le grossissement est élevé. 
 Plus la longueur focale est courte, plus l’angle de vue est large et plus le grossissement est réduit."} \cite{focale}
 
+En plus de la focale, le champs de vision d'une' caméra peut évoluer entre deux caméras ayant la même longueur focale 
+si elles ont une taille de capteur différent.
+Une caméra ou un appareil photo est vendu avec un \gls{CROP} qui est propre à chaque taille de capteur. 
+Ce désagrément peut être compensé par une longueur focale plus faible. 
+Le capteur plein format est la référence afin d'énoncer la longueur focale.
+Pour nous rendre compte des écarts qu'il y a entre la taille d'une image en plein format et ce qui est vraiment perçu par l'appareil,
+les longueurs foales qui suivent seront converties en équivalent plein format.
+
 Comme indiqué ci-dessus, nous recherchons une solution permettant d'avoir une distance de détection importante.
-Pour ce faire, il faut avoir une distance focale faible, inférieur à 15mm.
+Pour ce faire, il faut avoir une distance focale faible, inférieur à 25mm.
 En parcourant le site des leaders mondiaux de caméras de surveillance extérieur 
 (\href{https://media.pelco.com/wp-content/uploads/2020/11/10145554/SC-2042-Quick-Reference-Guide-update-QRG-April-2020.pdf}{Pelco}, 
 \href{https://www.axis.com/fr-fr/products/axis-q16-series}{Axis} et
 \href{https://business.panasonic.fr/solutions-de-securite/cam%C3%A9ra-bullet-ext%C3%A9rieure-4k-plateforme-ouverte-intelligence-artificielle/wv-x1571ln}{Panasonic})
-nous arrivons au constat qu'une focale est comprise entre 2.8mm et 8.3mm.
-C'est une plage de valeur correcte par rapport à nos exigeances.
+nous arrivons au constat qu'une focale est comprise entre 2,8mm et 8,3mm mais que toutes ces caméras ont des capteur compacts.
+Néanmoins, il faudra prendre en compte que ces caméras n'ont pas des capteurs plein format. En effet, si on prend l'exemple des 
+produits ci-dessus, la taille du capteur est comprise entre 1/3"(3,6 x 4,8 mm) et 1"(13,2 x 8,8 mm). 
+Pour connaitre l'équivalent en terme de distance focale, il faut faire le ration entre la taille d'un capteur plein format (36 x 24 mm):
+\begin{itemize}
+    \item Pour le modèle \href{https://www.axis.com/fr-fr/products/axis-q1645#technical-specifications}{Axis Q1645}, on a une taille de capteur de 1/2"
+    ce qui fait un coefficient multiplicateur de 5,625x. C'est à dire que malgré une distance focale annoncée de 3.9mm, son équivalent pour un capteur plein format est de 22mm.
+    \item Pour le modèle \href{https://www.cdw.com/product/panasonic-i-pro-extreme-wv-s1531ln-network-surveillance-camera/4546973#PO}{Panasonic i-Pro Extreme WV-S1531LN - network surveillance camera}
+    la taille du capteur est de 1/3", ce qui fait un coefficient multiplicateur de 10x. Ainsi, même si la distance focale minimale est annoncée à 2,8mm, son équivalent pour un capteur plein format est de 28 mm
+\end{itemize}
+
+
+Nous pouvons également avoir une distance de détection importante en ayant une focale plus longue mais en inclinant moins cette dernière vers le sol.
+
 
 \subsubsection{La distance, angle et hauteur de la caméra}
 \label{sec:camera_distance}
 
+%//TODO Mettre les recherche consernant 
 
 \subsection{Conclusion}
 \label{Conclusion}
