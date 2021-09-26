@@ -21,3 +21,4 @@ _minted-*/
 *.run.xml
 *.synctex.gz
 *.toc
+*.blg
