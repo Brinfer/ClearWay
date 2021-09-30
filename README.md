@@ -61,6 +61,7 @@ Below the list of _Latex_ packages used in the documents :
 - [babel](https://www.ctan.org/pkg/babel) This package manages culturally-determined typographical (and other) rules
           or a wide range of languages.
 - [biblatex](https://www.ctan.org/pkg/biblatex) _BibLaTeX_ is a complete reimplementation of the bibliographic facilities provided by _LaTeX_.
+- [csquotes](https://www.ctan.org/pkg/csquotes) This package provides advanced facilities for inline and display quotations.
 - [enumitem](https://www.ctan.org/pkg/enumitem) This package provides user control over the layout of the three basic
           list environments: enumerate, itemize and description.
 - [fancyhdr](https://www.ctan.org/pkg/fancyhdr) The package provides extensive facilities, both for constructing headers

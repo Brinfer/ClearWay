@@ -24,7 +24,6 @@
 % ---------------------------------------------------------------------------------------
 
 \usepackage{ae}
-\usepackage{xparse}
 \usepackage{lmodern} % Vector font loads which fontenc does not allow, to load before this one
 
 \usepackage[\Parameter@language]{babel} % Use french dictionary
@@ -34,7 +33,6 @@
 \usepackage[T1]{fontenc} % Allows to load hyphenation rules for accented words
 
 \usepackage{graphicx}
-\usepackage[table]{xcolor}
 \usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
 
 \usepackage{tabularx}
@@ -42,6 +40,17 @@
 \usepackage{multirow}
 
 \usepackage{xparse}
+
+% ---------------------------------------------------------------------------------------
+%
+% Define general variable
+%
+% ---------------------------------------------------------------------------------------
+\usepackage[table]{xcolor}
+
+\definecolor{tableColor}{rgb}{0.85,0.90,0.99} % light blue
+\definecolor{tableColorDark}{rgb}{0.63,0.77,0.97}
+\definecolor{citation}{rgb}{0.0, 0.42, 0.24}
 
 % ---------------------------------------------------------------------------------------
 %
@@ -137,8 +146,14 @@
 
 % If it first occurence of the label
 %   then a foot note is added with the description linked to the label
-\defglsdisplayfirst{#1#4\footnote{#1: #2}}
-
+\defglsentryfmt{%
+    \glsgenentryfmt%
+    \ifglsused{\glslabel}%
+    {}%
+    {% First use
+        \footnote{\glsentryname{\glslabel}: \glsdesc{\glslabel}}%
+    }%
+}
 % If it first occurence of the label
 %   then suppress the hyperlink to the glossary
 % else
@@ -368,9 +383,11 @@
 
 % ---------------------------------------------------------------------------------------
 %
-% Define general variable
+% Quote personalization
 %
 % ---------------------------------------------------------------------------------------
 
-\definecolor{tableColor}{rgb}{0.85,0.90,0.99} % light blue
-\definecolor{tableColorDark}{rgb}{0.63,0.77,0.97}
+\usepackage[autostyle=true]{csquotes}
+
+\let\oldenquote\enquote
+\renewcommand{\enquote}[1]{\textcolor{citation}{\oldenquote{\textit{#1}}}}
