@@ -47,15 +47,47 @@ Les différents modes de communication et protocole étudiés seront :
 \paragraph{\glsentryname{wifi}}
 \label{sec:wifi}
 
+Il existe différente version et norme de \gls{wifi}, chacune ayant un débit et une portée différente.
+La plupart des cartes réseaux sont adapté pour la norme \textbf{802.11}, se divisant en différents standards
+\cite{wifi}. Il est possible d’utiliser n’importe quel protocole de transport basé sur \gls{ip}.\newline
+
+\begin{table}[ht!]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabular}{|c|c|c|c|}
+        % Header
+        \hline
+        \rowcolor{tableColorDark} Normes & Débit de données & Portées & Fréquence d'émission   \\
+        \hline
+
+        % Data
+        \gls{wifi} 802.11a               & 30 Mbit/s        & 10 m    & 5 GHz                  \\\hline
+        \gls{wifi} 802.11b               & 6 Mbit/s         & 300 m   & 2.4 GHz                \\\hline
+        \gls{wifi} 802.11g               & 26 Mbit/s        & 70 m    & 2.4 GHz                \\\hline
+        \gls{wifi} 802.11n               & 600 Mbit/s       & 70 m    & 2.4 GHz ou 5 GHz       \\\hline
+        \gls{wifi} 802.11ac              & 7 Gbit/s         & 30 m    & 2.4 GHz et 5 GHz       \\\hline
+        \gls{wifi} 802.11ax              & 10 Gbit/s        & 700 m   & Entre 2.4 GHz et 6 GHz \\\hline
+        \gls{wifi} 802.16d               & 12 Mbit/s        & 20 km   & Entre 2 GHz et 11 GHz  \\\hline
+        \gls{wifi} 802.16e               & 30 Mbit/s        & 3 km    & Entre 3.5 GHz et 6 GHz \\\hline
+    \end{tabular}
+    \label{tab:debitPorteeWifi}
+    \caption{Débit et portée du \glsentryname{wifi}}
+    \nocite{debitPortee}
+\end{table}
+
 \paragraph{\glsentryname{bluetooth}}
 \label{sec:bluetooth}
 
 Le \gls{bluetooth} sert à la transmission entre divers appareils numérique, avec ou sans connexion,
-de données. Contrairement à d'autre technologie de transfert de données, le \gls{bluetooth} est
+de données. Contrairement à d'autre technologie de transfert de données, il est
 spécialisé dans pour les transferts sur des distances relativement courtes et une basse
-consommation. Toutefois, il ne permet pas d'atteindre des débits de transfert élevé.
+consommation. Toutefois, il ne permet pas d'atteindre des débits de transfert élevé.\newline
+Le \gls{bluetooth} se distingue du \gls{wifi} par une faible consommation énergétique. Il
+ne nécessite en moyenne que 3\% de l'énergie nécessaire au \gls{wifi} pour la même tâche \cite{bluetoothConsumption}.
+Le \gls{ble}, qui est une variante, permet une consommation encore plus faible.\newline
+On peut résumer les performances du \gls{bluetooth} par ce tableau \cite{debitPortee, ble}.
 
-\begin{table}[ht]
+\begin{table}[ht!]
     \centering
     \rowcolors{2}{tableColor}{white}
     \begin{tabular}{|c|c|c|c|}
@@ -70,12 +102,11 @@ consommation. Toutefois, il ne permet pas d'atteindre des débits de transfert �
         \gls{bluetooth} 3.0              & 2,1 Mbit/s       & 10 m    & 2,4 GHz              \\\hline
         \gls{bluetooth} 4.x              & 3 Mbit/s         & 60 m    & 2,4 GHz              \\\hline
         \gls{bluetooth} 5.0              & 2 Mbit/s         & 200 m   & 2,4 GHz              \\\hline
-        \gls{ble}                        & 1 Mbit/s         & 10 m    & 2,4 GHz              \\\hline
+        \gls{ble}                        & 1 Mbit/s         & 10 m    & 2,4 GHz ou 5 GHz     \\\hline
     \end{tabular}
     \label{tab:debitPorteeBluetooth}
     \caption{Débit et portée du \glsentryname{bluetooth}}
-    \nocite{debitPortee}
-    \nocite{ble}
+    \nocite{ble}\nocite{debitPortee}
 \end{table}
 
 \paragraph{\glsentryname{lora}}
