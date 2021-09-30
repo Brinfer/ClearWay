@@ -19,6 +19,6 @@ _minted-*/
 *.out
 *.pdf
 *.run.xml
-*.synctex.gz
+*.synctex*
 *.toc
 *.blg

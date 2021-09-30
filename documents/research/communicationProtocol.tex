@@ -9,21 +9,30 @@ pouvant être utilisé dans ce projet afin de répondre au mieux aux différents
 
 Les différents critères étudiés sont :
 
-\begin{enumerate}
+\begin{itemize}
     \item Le mode de transmission et sa portée
     \item Le débit de la transmission
     \item La consommation énergétique
-\end{enumerate}
+\end{itemize}
 
-Les différents protocoles et logiciels étudiés seront :
+Les différents modes de communication et protocole étudiés seront :
 
-\begin{enumerate}
-    \item \gls{TCP}
-    \item \gls{SCTP}
-    \item \gls{UDP}
-    \item \gls{SSH}
-    \item \gls{FTP}
-\end{enumerate}
+\begin{itemize}
+    % \item Les protocoles internet :
+    %       \begin{itemize}
+    %           \item \gls{TCP}
+    %           \item \gls{SCTP}
+    %           \item \gls{UDP}
+    %           \item \gls{SSH}
+    %           \item \gls{FTP}
+    %       \end{itemize}
+    \item Les communications radio :
+          \begin{itemize}
+              \item \gls{wifi}
+              \item \gls{bluetooth}
+              \item \gls{lora}
+          \end{itemize}
+\end{itemize}
 
 \subsection{Méthode de recherche}
 \label{sec:comparaisonProtocoleCommnunicationMethode}
@@ -32,22 +41,62 @@ Les différents protocoles et logiciels étudiés seront :
 \subsection{Résultat}
 \label{sec:comparaisonProtocoleCommnunicationResultats}
 
-\subsubsection{\glsentryname{TCP}}
-\label{sec:tcp}
+\subsubsection{Les communications radio}
+\label{sec:communicationRadio}
 
-\Gls{TCP} permet la transmission bilatérale d’informations.
+\paragraph{\glsentryname{wifi}}
+\label{sec:wifi}
 
-\subsubsection{\glsentryname{SCTP}}
-\label{sec:sctp}
+\paragraph{\glsentryname{bluetooth}}
+\label{sec:bluetooth}
 
-\subsubsection{\glsentryname{UDP}}
-\label{sec:udp}
+Le \gls{bluetooth} sert à la transmission entre divers appareils numérique, avec ou sans connexion,
+de données. Contrairement à d'autre technologie de transfert de données, le \gls{bluetooth} est
+spécialisé dans pour les transferts sur des distances relativement courtes et une basse
+consommation. Toutefois, il ne permet pas d'atteindre des débits de transfert élevé.
 
-\subsubsection{\glsentryname{SSH}}
-\label{sec:ssh}
+\begin{table}[ht]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabular}{|c|c|c|c|}
+        % Header
+        \hline
+        \rowcolor{tableColorDark} Normes & Débit de données & Portées & Fréquence d'émission \\
+        \hline
 
-\subsubsection{\glsentryname{FTP}}
-\label{sec:ftp}
+        % Data
+        \gls{bluetooth} 1.2              & 720 Kbit/s       & 10 m    & 2,4 GHz              \\\hline
+        \gls{bluetooth} 2.0              & 2,1 Mbit/s       & 10 m    & 2,4 GHz              \\\hline
+        \gls{bluetooth} 3.0              & 2,1 Mbit/s       & 10 m    & 2,4 GHz              \\\hline
+        \gls{bluetooth} 4.x              & 3 Mbit/s         & 60 m    & 2,4 GHz              \\\hline
+        \gls{bluetooth} 5.0              & 2 Mbit/s         & 200 m   & 2,4 GHz              \\\hline
+        \gls{ble}                        & 1 Mbit/s         & 10 m    & 2,4 GHz              \\\hline
+    \end{tabular}
+    \label{tab:debitPorteeBluetooth}
+    \caption{Débit et portée du \glsentryname{bluetooth}}
+    \nocite{debitPortee}
+    \nocite{ble}
+\end{table}
+
+\paragraph{\glsentryname{lora}}
+\label{sec:lora}
+
+% \subsubsection{\glsentryname{TCP}}
+% \label{sec:tcp}
+
+% \Gls{TCP} permet la transmission bilatérale d’informations.
+
+% \subsubsection{\glsentryname{SCTP}}
+% \label{sec:sctp}
+
+% \subsubsection{\glsentryname{UDP}}
+% \label{sec:udp}
+
+% \subsubsection{\glsentryname{SSH}}
+% \label{sec:ssh}
+
+% \subsubsection{\glsentryname{FTP}}
+% \label{sec:ftp}
 
 \subsection{Conclusion}
 \label{sec:comparaisonProtocoleCommnunicationConclusion}
