@@ -68,6 +68,8 @@
 
 \setlength{\headheight}{33pt}
 
+\chead{\@author}
+
 \ifx\Parameter@imageHeaderLeft\empty
 \else
     \lhead{\includegraphics[height=1cm]{\Parameter@imageHeaderLeft}}
@@ -80,7 +82,6 @@
 \fi
 
 \lfoot{\@date}
-\cfoot{\@author}
 \rfoot{page \thepage / \pageref*{LastPage}}
 
 \renewcommand{\headrulewidth}{1pt} % Rule for line under header, set at 0 for hide it
@@ -359,7 +360,9 @@
 
 \usepackage{enumitem} % Control layout of itemize, enumerate, description
 
-\setlist[itemize]{label=\textcolor{black}{•}} % The label of the list is by default a bullet
+\setlist[itemize, 1]{label=\textcolor{black}{•}} % The label of the list at the first level is by default a bullet
+\setlist[itemize, 2]{label=$\circ$} % The label of the list at the second level is by default a empty circle
+\setlist[itemize, 3]{label=$\square$} % The label of the list at the third level is by default a square
 
 % ---------------------------------------------------------------------------------------
 %
