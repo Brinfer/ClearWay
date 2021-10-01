@@ -55,7 +55,7 @@ The drafting of documents is done in _LaTeX_, some packages are necessary.
 In order to use cross-references, use BibTeX for your bibliography or if you want to have a glossary, the program [latexmk](https://mg.readthedocs.io/latexmk.html) is used.
 Below the list of _Latex_ packages used in the documents :
 
-- [ae](https://www.ctan.org/pkg/ae)
+- [ae](https://www.ctan.org/pkg/ae)  A set of virtual fonts which emulates T1 coded fonts using the standard CM fonts.
 - [aeguill](https://www.ctan.org/pkg/aeguill) This package manages culturally-determined typographical (and other)
           rules for a wide range of languages.
 - [babel](https://www.ctan.org/pkg/babel) This package manages culturally-determined typographical (and other) rules
