@@ -1,7 +1,7 @@
 %-----------------------------------------------------------------
 % LaTeX template for a document
 % Written By: Pierre-Louis GAUTIER
-% Date Updated: September 24, 2021 (v1.2.2)
+% Date Updated: October 01, 2021 (v1.2.3)
 %-----------------------------------------------------------------
 
 \ProvidesPackage{Parameter}
@@ -51,6 +51,7 @@
 \definecolor{tableColor}{rgb}{0.85,0.90,0.99} % light blue
 \definecolor{tableColorDark}{rgb}{0.63,0.77,0.97}
 \definecolor{citation}{rgb}{0.0, 0.42, 0.24}
+\definecolor{example}{rgb}{0.52, 0.52, 0.51}
 
 % ---------------------------------------------------------------------------------------
 %
@@ -349,7 +350,7 @@
 %
 % ---------------------------------------------------------------------------------------
 
-\setlength{\parindent}{0pt} % Size of the indent when start a new paragraph
+% \setlength{\parindent}{0pt} % Size of the indent when start a new paragraph
 
 % ---------------------------------------------------------------------------------------
 %
@@ -392,4 +393,14 @@
 \usepackage[autostyle=true]{csquotes}
 
 \let\oldenquote\enquote
+\let\oldblockquote\blockquote
 \renewcommand{\enquote}[1]{\textcolor{citation}{\oldenquote{\textit{#1}}}}
+\renewcommand{\blockquote}[1]{\textcolor{citation}{\oldblockquote{\textit{#1}}}}
+
+% ---------------------------------------------------------------------------------------
+%
+% Define new environnment
+%
+% ---------------------------------------------------------------------------------------
+
+\newenvironment{example}{\par\leftskip=1cm\rightskip=1cm\small\color{example}}{\par}
