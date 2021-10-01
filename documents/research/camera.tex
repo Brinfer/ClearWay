@@ -10,17 +10,19 @@ Notre système ClearWay sera équipé d'une caméra permettant de détecter les 
 Il est important de trouver le meilleur positionnement et la meilleure configuration
 de cette dernière par rapport à son environnement afin d'optimiser la détection des cyclistes.
 
+De ce fait, nous chercherons les paramètres optimaux permettant de pallier la problématique de notre sujet.
+
 \subsection{Méthodologie de recherche}
 \label{sec:camera_Methodo}
 
 La méthodologie de recherche sera orientée afin de trouver des résultats pertinents concernant :
 \begin{itemize}
     \item Nos besoins par rapport aux cyclistes
+    \item Les infrastructures déjà installés
     \item La longueur focale appropriée à notre besoin
-    \item La distance, angle et hauteur de la caméra par rapport à son environnement
-    \item Le champ de vision de la caméra
+    \item La distance, l'angle et la hauteur de la caméra par rapport à son environnement
 \end{itemize}
-Ces investigations seront menées grâce à internet en utilisant les filtres les pertinents pour chaque recherche.
+Ces investigations seront menées grâce à internet en utilisant les filtres les plus pertinents pour chaque recherche.
 Cela permettra d'avoir des résultats cohérents et de pallier les recherches personnalisées liées aux algorithmes de Google.
 Pour ce qui est des spécifications de la caméra, nous étudierons ce qui se fait dans
 le monde de télésurveillance municipale en étudiant les spécifications des leaders du marché mondial.
@@ -45,16 +47,24 @@ En prenant le cas le plus extrême, 50 km/h, il nous faudrait soit :
 \end{itemize}
 D'un point de vue matériel, il parait plus évident de soulager les calculs en ayant moins de traitement à faire.
 
-Ainsi, nous éliminons les cas où la distance de détection trop faible ou trop élevée. Ils ne sont pas favorables pour notre système.
-En effet, si la distance de détection est trop large, notre système ne fonctionnera pas correctement (si un cycliste est détecté à 80 mètres et qu'il roule à 10 km/h,
-il faudrait 30 secondes pour qu'il arrive à l'intersection, tandis que s'il roule à 50 km/h il lui faut que cinq secondes).
+Ainsi, nous éliminons les cas où la distance de détection est trop faible, car le nombre d'images par seconde est conséquent.
+Dans le cas, il faudra beaucoup de ressources logicielles et énergétiques pour que ClearWay fonctionne.
+De plus, il n'est pas optimal d'avoir une distance de détection trop élevée.
+En effet, si la distance de détection est trop large, notre système ne fonctionnera pas correctement.
+Prenons l'exemple d'un système où notre panneau et la caméra se trouvent au même endroit et que l'algorithme de détection est idéal,
+c'est-à-dire qu'il analyse en temps réel l'image reçue.
+\begin{example}
+    Si un cycliste est détecté à 80 mètres et qu'il roule à 10 km/h, il faudrait 30 secondes pour qu'il arrive à l'intersection,
+    tandis que s'il roule à 50 km/h il lui faut que cinq secondes. La plage temporaire est trop large,
+    car on ne peut pas allumer le panneau pendant 30 secondes, car c'est trop long. Il faudrait pouvoir détecter la vitesse des usagers.
+    De plus, dans le cas où le cycliste circule à grande vitesse, le temps d'affichage du panneau est trop cours.
+\end{example}
 
-Dans le cas contraire, la distance est trop faible et il faudra beaucoup de ressources logicielles et énergétiques pour que ClearWay fonctionne.
 
 Idéalement, il faudrait orienter la caméra afin d'avoir une période se rapprochant d'une image par seconde, tout en ayant une détection optimale.
-Ainsi nous allons nous intéressé aux cas où le champ de vision de la caméra est compris entre 10 et 30 mètres.
+Ainsi nous allons nous intéresser aux cas où le champ de vision de la caméra est compris entre 10 et 30 mètres.
 
-\subsubsection{Infrastructures déjà installées en ville}
+\subsubsection{Infrastructures déjà installées dans les villes}
 \label{sec:camera_infra}
 Les caméras de surveillance sont de plus en plus présentes dans nos villes. Ces dispositifs peuvent être utiles à notre projet en cas d'évolution.
 En effet, si nous réfléchissons ClearWay de façon à ce que le système de caméra se rapproche de celui des infrastructures déjà en place,
@@ -68,7 +78,7 @@ Pour celles qui sont fixes, elles sont installées entre 2m40 et 3m20. Les carac
 \blockquote{La longueur focale nous indique le champ angulaire (la partie de la scène qui sera capturée)
     et le grossissement (la taille des éléments individuels).
     Plus la longueur focale est étendue, plus le champ angulaire est étroit et plus le grossissement est élevé.
-    Plus la longueur focale est courte, plus l’angle de vue est large et plus le grossissement est réduit.\cite{focale}}
+    Plus la longueur focale est courte, plus l’angle de vue est large et plus le grossissement est réduit. \cite{focale}}
 
 En plus de la focale, le champ de vision d'une caméra peut évoluer entre deux caméras ayant la même longueur focale
 si elles ont une taille de capteur différent.
@@ -76,20 +86,22 @@ En effet, une caméra ou un appareil photo est vendu avec un \gls{CROP} qui est 
 Ce désagrément peut être compensé par une longueur focale plus faible.
 Le capteur plein format est la référence afin d'énoncer la longueur focale.
 Pour nous rendre compte des écarts qu'il y a entre la taille d'une image en plein format et ce qui est vraiment perçu par l'appareil,
-les longueurs focales qui suivent seront converties en équivalent plein format lorsqu'il y aura la mention (EPF).
+les longueurs focales qui suivent seront converties en équivalent plein format lorsqu'il y aura la mention \gls{epf}.
 
 Comme indiqué ci-dessus, nous recherchons une solution permettant d'avoir une distance de détection importante.
-Pour ce faire, il faut avoir une distance focale faible, inférieur à 25 mm(EPF).
+Pour ce faire, il faut avoir une distance focale faible, inférieur à 25 mm(\gls{epf}).
+
 En parcourant le site des leaders mondiaux de caméras de surveillance extérieures fixes
-(\cite{pelco}, \cite{axis} et \cite{panasonic})
+(Pelco \cite{pelco}, Axis \cite{axis} et Panasonic \cite{panasonic})
 nous arrivons au constat qu'une focale pour les caméras de surveillance fixes est comprise entre 2,8 mm et 8,3 mm, mais que toutes ces caméras ont des capteurs compacts, donc ayant un coefficient multiplicateur élevé.
 En effet, si on prend l'exemple des produits ci-dessus, la taille du capteur est comprise entre 1/3"(3,6 x 4,8 mm) et 1"(13,2 x 8,8 mm).
-Pour connaitre l'équivalent en termes de distance focale, il faut faire le rapport entre la taille d'un capteur plein format (36 x 24 mm) :
+Pour connaitre l'équivalent en termes de distance focale, il faut faire le rapport entre la taille d'un capteur plein format (36 x 24 mm)
+et celui du capteur de la caméra pour laquelle on veut le coefficient multiplicateur :
 \begin{itemize}
-    \item Pour le modèle \cite[AXIS Q1645]{axisQ1645}, on a une taille de capteur de 1/2"
-          ce qui fait un coefficient multiplicateur de 5,625x. C'est-à-dire que malgré une distance focale annoncée de 3.9 mm, son équivalent pour un capteur plein format est de 22 mm.
-    \item Pour le modèle \cite[Panasonic i-Pro Extreme WV-S1531LN - network surveillance camera]{panaIPro}
-          la taille du capteur est de 1/3", ce qui fait un coefficient multiplicateur de 10x. Ainsi, même si la distance focale minimale est annoncée à 2,8 mm, son équivalent pour un capteur plein format est de 28 mm
+    \item Pour le modèle Axis Q1645 \cite{axisQ1645}, on a une taille de capteur de 1/2"
+          ce qui fait un coefficient multiplicateur de 5,625x. C'est-à-dire que malgré une distance focale annoncée de 3.9 mm, son \gls{epf} est de 22 mm.
+    \item Pour le modèle Panasonic i-Pro Extreme WV-S1531LN \cite{panaIPro}
+          la taille du capteur est de 1/3", ce qui fait un coefficient multiplicateur de 10x. Ainsi, même si la distance focale minimale est annoncée à 2,8 mm, son \gls{epf} est de 28 mm
 \end{itemize}
 
 Nous pouvons également avoir une distance de détection importante en ayant une focale plus longue. Pour ce faire il faut une inclinaison moindre entre cette dernière et le sol.
@@ -99,29 +111,72 @@ Nous pouvons également avoir une distance de détection importante en ayant une
 \label{sec:camera_distance}
 D'après les résultats précédents, nous avons accès nos recherches sur des caméras ayant une focale faible.
 
-Le système idéal serait celui qui se rapproche le plus possible de la hauteur d'une personne sur un vélo (comprise en un mètre et deux mètres).
-L'inconvénient d'un tel dispositif, c'est l'obstruction d'un champ de vision par un élément tiers, une voiture, un camion, etc. Pour pallier ce problème,
-la caméra devra se trouver à une hauteur supérieure de deux mètres, sans pour autant être trop haute. En effet, plus l'appareil est haut, plus le champ de vision est grand.
+La hauteur idéale du système serait celle se rapproche le plus possible de celle d'une personne sur un vélo (comprise en un mètre et deux mètres).
+L'inconvénient d'un tel dispositif, c'est l'obstruction du champ de vision par un élément tiers, une voiture, un camion, etc. Pour pallier ce problème,
+la caméra devra se trouver à une hauteur supérieure de deux mètres, sans pour autant être trop haute. En effet, plus l'appareil est haut,
+plus le champ de vision est grand et ce n'est pas ce que l'on recherche.
 
-En étudiant les manuels d'installation des fabricants de caméras, nous obtenons les paramètres suivants :
-\begin{itemize}
-    \item (1) Une caméra à une hauteur de 2,70 mètres avec un angle de 85° et une focale de 3,3 mm :
-          Ces paramètres correspondent à la distance maximale de reconnaissance. Une voiture peut être détectée à 80 mètres grâce à cette configuration
-    \item (2) Une caméra à une hauteur de 3 mètres avec une focale de 4 mm et un angle de 70° :
-          La caméra est capable de détecter un objet à plus de 20 mètres. Dans ce cas, 99\% des objets à détecter le sont.
-    \item (3) Une caméra à une hauteur de 3 mètres avec une focale de 4 mm et un angle compris entre 0 et 10° :
-          La distance et l'angle de détection ne sont pas optimaux. En effet, peu de symbole sont reconnus dans une image ayant cette configuration.
-    \item (4) Une caméra à une hauteur de 25-31 mètres avec une focale de 4 mm et un angle de 60° :
-          Ces paramètres offres un champ de vision de plus de 30 mètres, près de 99\% des symboles sont reconnus.
-    \item (4) Une caméra à une hauteur de 10-16 mètres avec une focale de 4 mm et un angle de 0 à 10°
-          À l'instar du car où la caméra était à trois mètres avec un angle de 0-10°, le taux de reconnaissance est nettement dégradé.
-    \item (4) Une caméra à une hauteur de 1,50 mètre avec une focale de 2,4 mm et un angle de 90° :
-          Cette configuration correspond à celle qui détecte le plus rapidement et avec la plus grande fiabilité les usagers de la route.
-\end{itemize}
-Nous pouvons observer que toutes les caméras ayant un angle compris entre 0 - 10° et 80-90° ne sont pas adaptés,
-car soit le champ de vison est trop large soit trop étroit. Ainsi elles ne seront pas prises en compte dans le paragraphe suivant.
+En étudiant les manuels d'installation des fabricants de caméras \cite{ganz}, nous obtenons les paramètres suivants :
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|l|l|l|}
+        \hline
+        \rowcolor{tableColor}
+        \cellcolor{tableColor}                           & Focale  & 3,3mm   & \cellcolor{tableColor}                           & \cellcolor{tableColor}                                            \\ \cline{2-3}
+        \rowcolor{tableColor}
+        \cellcolor{tableColor}                           & Hauteur & 2,70m   & \cellcolor{tableColor}                           & \cellcolor{tableColor}                                            \\ \cline{2-3}
+        \rowcolor{tableColor}
+        \multirow{-3}{*}{\cellcolor{tableColor}Config 1} & Angle   & 85°     & \multirow{-3}{*}{\cellcolor{tableColor}Résultat} & \multirow{-3}{*}{\cellcolor{tableColor}\begin{tabular}[c]{@{}l@{}}Ces paramètres correspondent à la distance maximale \\ de reconnaissance. Une voiture peut être détectée à 80 \\ mètres grâce à cette configuration\end{tabular}} \\ \hline
+                                                         & Focale  & 4 mm    &                                                  &                                                                   \\ \cline{2-3}
+                                                         & Hauteur & 3 m     &                                                  &                                                                   \\ \cline{2-3}
+        \multirow{-3}{*}{Config 2}                       & Angle   & 70°     & \multirow{-3}{*}{Résultat}                       & \multirow{-3}{*}{\begin{tabular}[c]{@{}l@{}}La caméra est capable de détecter un objet à plus de \\ 20 mètres. \\ Dans ce cas, 99\% des objets à détecter le sont.\end{tabular}}                       \\ \hline
+        \rowcolor{tableColor}
+        \cellcolor{tableColor}                           & Focale  & 4 mm    & \cellcolor{tableColor}                           & \cellcolor{tableColor}                                            \\ \cline{2-3}
+        \rowcolor{tableColor}
+        \cellcolor{tableColor}                           & Hauteur & 3 m     & \cellcolor{tableColor}                           & \cellcolor{tableColor}                                            \\ \cline{2-3}
+        \rowcolor{tableColor}
+        \multirow{-3}{*}{\cellcolor{tableColor}Config 3} & Angle   & 10°     & \multirow{-3}{*}{\cellcolor{tableColor}Résultat} & \multirow{-3}{*}{\cellcolor{tableColor}\begin{tabular}[c]{@{}l@{}}La distance et l’angle ne sont pas optimaux. \\ En effet, peu de symbole sont reconnus dans une \\ image ayant cette configuration.\end{tabular}} \\ \hline
+                                                         & Focale  & 4 mm    &                                                  &                                                                   \\ \cline{2-3}
+                                                         & Hauteur & 25-31 m &                                                  &                                                                   \\ \cline{2-3}
+        \multirow{-3}{*}{Config 4}                       & Angle   & 60°     & \multirow{-3}{*}{Résultat}                       & \multirow{-3}{*}{\begin{tabular}[c]{@{}l@{}}Ces paramètres offres un champ de vision de plus de \\ 30 mètres, près de 99\% des symboles sont reconnus. \\ Néanmoins, la détection dépend beaucoup de l'angle \\ des symboles arrivant.\end{tabular}}                       \\ \hline
+        \rowcolor{tableColor}
+        \cellcolor{tableColor}                           & Focale  & 4 mm    & \cellcolor{tableColor}                           & \cellcolor{tableColor}                                            \\ \cline{2-3}
+        \rowcolor{tableColor}
+        \cellcolor{tableColor}                           & Hauteur & 10-16 m & \cellcolor{tableColor}                           & \cellcolor{tableColor}                                            \\ \cline{2-3}
+        \rowcolor{tableColor}
+        \multirow{-3}{*}{\cellcolor{tableColor}Config 5} & Angle   & 10°     & \multirow{-3}{*}{\cellcolor{tableColor}Résultat} & \multirow{-3}{*}{\cellcolor{tableColor}\begin{tabular}[c]{@{}l@{}}À l’instar de la configuration 3, le taux de \\ reconnaissance est nettement dégradé avec \\ un angle si faible.\end{tabular}} \\ \hline
+                                                         & Focale  & 2.4 mm  &                                                  &                                                                   \\ \cline{2-3}
+                                                         & Hauteur & 2 m     &                                                  &                                                                   \\ \cline{2-3}
+        \multirow{-3}{*}{Config 6}                       & Angle   & 90°     & \multirow{-3}{*}{Résultat}                       & \multirow{-3}{*}{\begin{tabular}[c]{@{}l@{}}Détection rapide et fiable des usagers de la route. \\ Néanmoins, si un cycliste se trouve derrière \\ un SUV, il ne sera pas détecté.\end{tabular}}                      \\ \hline
+    \end{tabular}
+    \caption{Comparatif des différentes configurations d'une caméra}
+    \label{fig:comparatifCamera}
+\end{table}
+
+% \begin{itemize}
+%     \item (1) Une caméra à une hauteur de 2,70 mètres avec un angle de 85° et une focale de 3,3 mm :
+%           Ces paramètres correspondent à la distance maximale de reconnaissance. Une voiture peut être détectée à 80 mètres grâce à cette configuration.
+%     \item (2) Une caméra à une hauteur de 3 mètres avec une focale de 4 mm et un angle de 70° :
+%           La caméra est capable de détecter un objet à plus de 20 mètres. Dans ce cas, 99\% des objets à détecter le sont.
+%     \item (3) Une caméra à une hauteur de 3 mètres avec une focale de 4 mm et un angle compris entre 0 et 10° :
+%           La distance et l'angle de détection ne sont pas optimaux. En effet, peu de symbole sont reconnus dans une image ayant cette configuration.
+%     \item (4) Une caméra à une hauteur de 25-31 mètres avec une focale de 4 mm et un angle de 60° :
+%           Ces paramètres offres un champ de vision de plus de 30 mètres, près de 99\% des symboles sont reconnus.
+%     \item (4) Une caméra à une hauteur de 10-16 mètres avec une focale de 4 mm et un angle de 0 à 10°
+%           À l'instar du car où la caméra était à trois mètres avec un angle de 0-10°, le taux de reconnaissance est nettement dégradé.
+%     \item (4) Une caméra à une hauteur de 1,50 mètre avec une focale de 2,4 mm et un angle de 90° :
+%           Cette configuration correspond à celle qui détecte le plus rapidement et avec la plus grande fiabilité les usagers de la route.
+% \end{itemize}
+Nous pouvons observer que toutes les caméras ayant un angle compris entre 0 - 10° et 80-90° ne sont pas adaptés.
+Soit le champ de vison est trop large soit trop étroit. Ainsi, elles ne seront pas adaptées à notre besoin.
 Les appareils se trouvant à une distance supérieure de 10 mètres ne correspondent pas aux dispositifs fixes de surveillance présents dans les villes aujourd'hui.
-En éliminant les trois cas précédents, ils nous restent uniquement le cas 2, qui correspond aux exigences spécifiées dans le paragraphe \ref{sec:camera_cycliste}.
+
+Cela nous permet d'éliminer cinq configurations, ils nous restent uniquement le cas 2, 
+qui correspond aux exigences spécifiées dans le paragraphe \ref{sec:camera_cycliste}.
 
 
 \subsection{Conclusion}
@@ -130,36 +185,32 @@ Cette recherche concernant les caméras avait pour ambition de trouver le meille
 Il a fallu dans un premier temps réunir les informations, les analyser, les traiter et établir une conclusion pour chaque sous-partie.
 
 En prenant en compte la vitesse maximale d'un cycliste, nous sommes arrivés à quatre dispositifs possibles. Nous avons constaté qu'il était intéressant
-d'avoir une détection nécessitant peu d'image par seconde. En effet, cela permet d'avoir un système moins gourmand en ressources logiciel.
+d'avoir une détection nécessitant peu d'image par seconde. En effet, cela permet d'avoir un système moins gourmand en ressources logicielles.
 
 Les paramètres permettant de régler physiquement une caméra de détection sont primordiaux afin que le système soit optimisé.
-En effet, si la caméra est mal orientée il faudra traiter trop de donnée dans un cas ou pas assez ce qui peut amener à un système inefficace et énergivore.
+En effet, si la caméra est mal orientée il faudra traiter trop de donnée dans un cas, ce qui est énergivore ou pas assez donnée, ce qui est inefficace.
 Voyons ce que nos recherches nous ont enseignées :
-\newline \newline
 
-\textbf{Distance focale :}
-\newline
+\subsubsection*{Distance focale}
 En nous renseignant sur les différentes caméras fixes de vidéo-surveillance installées, il s’avère que les caméras utilisées embarquent un grand angle.
 Pour notre système, il est également important de choisir une longueur focale proche de celles présentes sur les infrastructures déjà existantes.
 En effet, ça permettra d'avoir un système plus évolutif, si nous voulons implémenter ClearWay sur le matériel déjà présent dans les villes.
 D'après la section \ref{sec:camera_focale}, il faudrait que la focale soit comprise entre 1.8 mm et 3.8 mm pour se rapprocher au plus de ces dispositifs.
-De plus, quel que soit le coefficient multiplicateur, un tel optique aura une focale(EPF) acceptable.
-\newline \newline
+De plus, quel que soit le coefficient multiplicateur, un tel optique aura une focale (\gls{epf}) acceptable.
 
-\textbf{Hauteur :}
-\newline
-Comme décrit dans le paragraphe \ref{sec:camera_distance}, il faut que l'objet dépasse les voitures afin de pouvoir voir derrière elles.
+\subsubsection*{Hauteur :}
+
+Comme décrit dans le paragraphe \ref{sec:camera_distance}, il faut que l'objectif surpasse les voitures afin de pouvoir voir derrière elles.
 Dans le cas contraire, ClearWay pourrait "louper" des cyclistes alors qu'ils se trouvent derrière des voitures.
 Ainsi une haute comprise entre 2m50 et 3m60 semble convenir à nos besoins, de plus c'est la hauteur à laquelle se trouve la vidéosurveillance des villes.
-\newline \newline
-\textbf{Angle de vue}
-\newline
+
+\subsubsection*{Angle de vue}
 Nous avons pu voir que l'angle de vue de la caméra influence la détection des symboles dans l'image. Une détection correcte se trouve entre 90° et 60°.
-Néanmoins, d'après les conclusions précédentes, nous considérerons que l'angle optimal est de 70°.\newline\newline
-\textbf{Distance de détection}
-\newline
+Néanmoins, d'après les conclusions précédentes, nous considérerons que l'angle optimal est de 70°.
+
+\subsubsection*{Distance de détection}
 Nous avons vu qu'un champ de vision trop grand n'aide pas à servir notre problème. Dans le cas contraire la distance est trop faible pour analyser correctement l'image.
 Les résultats des parties \ref{sec:camera_cycliste} et \ref{sec:camera_distance} sont très proches.
 La première section mentionne une distance de détection de 10 à 30 mètres. Pour la seconde, la distance de détection est de 20 mètres.
-Cette distance est suffisante afin d'avoir qu'une image par seconde. Néanmoins, il ne s'agit pas de jouer avec la sécurité des cyclistes.
+Cette distance est suffisante afin d'avoir qu'une image par seconde à traiter. Néanmoins, il ne s'agit pas de jouer avec la sécurité des cyclistes.
 Si le matériel le permet, il est conseillé de doubler le nombre d'images par seconde.
