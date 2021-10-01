@@ -18,27 +18,19 @@ Les différents critères étudiés sont :
 Les différents modes de communication et protocole étudiés seront :
 
 \begin{itemize}
-    % \item Les protocoles internet :
-    %       \begin{itemize}
-    %           \item \gls{TCP}
-    %           \item \gls{SCTP}
-    %           \item \gls{UDP}
-    %           \item \gls{SSH}
-    %           \item \gls{FTP}
-    %       \end{itemize}
     \item Les communications radio :
           \begin{itemize}
               \item \gls{wifi}
+              \item \gls{wimax}
               \item \gls{bluetooth}
-              \item \gls{lora}
+              \item \gls{lorawan}
           \end{itemize}
 \end{itemize}
 
 \subsection{Méthode de recherche}
 \label{sec:comparaisonProtocoleCommnunicationMethode}
 
-
-\subsection{Résultat}
+\subsection{Résultats}
 \label{sec:comparaisonProtocoleCommnunicationResultats}
 
 \subsubsection{Les communications radio}
@@ -67,13 +59,41 @@ La plupart des cartes réseaux sont adapté pour la norme \textbf{802.11}, se di
         \gls{wifi} 802.11n               & 600 Mbit/s       & 70 m    & 2.4 GHz ou 5 GHz       \\\hline
         \gls{wifi} 802.11ac              & 7 Gbit/s         & 30 m    & 2.4 GHz et 5 GHz       \\\hline
         \gls{wifi} 802.11ax              & 10 Gbit/s        & 700 m   & Entre 2.4 GHz et 6 GHz \\\hline
-        \gls{wifi} 802.16d               & 12 Mbit/s        & 20 km   & Entre 2 GHz et 11 GHz  \\\hline
-        \gls{wifi} 802.16e               & 30 Mbit/s        & 3 km    & Entre 3.5 GHz et 6 GHz \\\hline
     \end{tabular}
     \label{tab:debitPorteeWifi}
     \caption{Débit et portée du \glsentryname{wifi}}
     \nocite{debitPortee}
 \end{table}
+
+\paragraph{\glsentryname{wimax}}
+\label{sec:wimax}
+
+Le \gls{wimax} est un ensemble de normes techniques basées sur le standard de transmission radio \textbf{802.16}
+permettant la transmission de données \gls{ip}.\newline
+Il a pour principale particularité de supporter un haut débit de données (jusqu’à 75 Mbit/s en théorie, mais
+excède rarement 20 Mbit/s sur quelques dizaines de kilomètres en condition réelle) sur des distances très importantes,
+comprises entre 10 et 50 kilomètres selon les obstacles rencontrés par les ondes, sa capacité à prioriser les usages de
+la bande passante disponible entre les différents utilisateurs. \enquote{Ces qualités en font donc une sorte
+    de \gls{wifi} survitaminé} \cite{wimax}.
+
+\begin{table}[ht!]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabular}{|c|c|c|c|}
+        % Header
+        \hline
+        \rowcolor{tableColorDark} Normes & Débit de données & Portées & Fréquence d'émission   \\
+        \hline
+
+        % Data
+        \gls{wimax} 802.16d              & 12 Mbit/s        & 20 km   & Entre 2 GHz et 11 GHz  \\\hline
+        \gls{wimax} 802.16e              & 30 Mbit/s        & 3 km    & Entre 3.5 GHz et 6 GHz \\\hline
+    \end{tabular}
+    \label{tab:debitPorteeWimax}
+    \caption{Débit et portée du \glsentryname{wimax}}
+    \nocite{debitPortee}
+\end{table}
+
 
 \paragraph{\glsentryname{bluetooth}}
 \label{sec:bluetooth}
@@ -109,25 +129,33 @@ On peut résumer les performances du \gls{bluetooth} par ce tableau \cite{debitP
     \nocite{ble}\nocite{debitPortee}
 \end{table}
 
-\paragraph{\glsentryname{lora}}
-\label{sec:lora}
+\paragraph{\glsentryname{lorawan}}
+\label{sec:lorawan}
 
-% \subsubsection{\glsentryname{TCP}}
-% \label{sec:tcp}
+Le protocole \gls{lorawan} se veut simple, peu coûteux à implémenter et économe en énergie plutôt que permettant des débits élevés en
+utilisant la technologie \gls{lora}.\cite{lorawan}. Cette technologie a pour priorité la faible consommation d'énergie.\newline
 
-% \Gls{TCP} permet la transmission bilatérale d’informations.
+Tout comme le \gls{wimax}, \gls{lora} capacité à prioriser les usages de la bande passante disponible du
+réseau des nœuds et augmenté la durée de vie de la batterie.
 
-% \subsubsection{\glsentryname{SCTP}}
-% \label{sec:sctp}
+\begin{table}[ht!]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \resizebox{\textwidth}{!}{%
+        \begin{tabular}{|c|c|c|c|}
+            % Header
+            \hline
+            \rowcolor{tableColorDark} Normes & Débit de données         & Portées                                & Fréquence d'émission \\
+            \hline
 
-% \subsubsection{\glsentryname{UDP}}
-% \label{sec:udp}
-
-% \subsubsection{\glsentryname{SSH}}
-% \label{sec:ssh}
-
-% \subsubsection{\glsentryname{FTP}}
-% \label{sec:ftp}
+            % Data
+            \gls{lora}                       & 10.3 kbit/s à 100 kbit/s & de quelques km\newline à plus de 10 km & 868 MHz en Europe    \\\hline
+        \end{tabular}%
+    }
+    \label{tab:debitPorteeLora}
+    \caption{Débit et portée du \glsentryname{lora}}
+    \nocite{debitPortee}
+\end{table}
 
 \subsection{Conclusion}
 \label{sec:comparaisonProtocoleCommnunicationConclusion}

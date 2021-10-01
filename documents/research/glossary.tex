@@ -14,7 +14,7 @@
 {
     name={User Datagram Protocol},
     description={Protocoles de télécommunication utilisés par Internet. Il fait partie de la couche
-            transport du modèle OSI, quatrième couche de ce modèle, comme \gls{TCP}.},
+            transport du modèle OSI, quatrième couche de ce modèle, comme \glsentrytext{TCP}.},
     plural={UDP},
     text={UDP},
     firstplural={User Datagram Protocol (UDP)},
@@ -47,8 +47,8 @@
 \newglossaryentry{SCTP}
 {
     name={Stream Control Transmission Protocol},
-    description={Protocole de transport, SCTP est équivalent dans un certain sens au \gls{TCP} ou à
-            l'\gls{UDP}. En effet, il fournit des services similaires à \gls{TCP}, assurant
+    description={Protocole de transport, SCTP est équivalent dans un certain sens au \glsentrytext{TCP} ou à
+            l'\gls{UDP}. En effet, il fournit des services similaires à \glsentrytext{TCP}, assurant
             optionnellement la fiabilité, la remise en ordre des séquences et le contrôle de congestion.},
     plural={SCTP},
     text={SCTP},
@@ -80,7 +80,7 @@
 
 \newglossaryentry{ble}{
     name={Bluetooth Low Energy},
-    description={Le Bluetooth Low Energy est une alternative au \gls{bluetooth} classique, avec une
+    description={Le Bluetooth Low Energy est une alternative au \glsentrytext{bluetooth} classique, avec une
             réduction du coût et de la consommation en puissance, tout en conservant une portée de
             communication équivalente.},
     plural={BLE},
@@ -90,10 +90,14 @@
 }
 
 \newglossaryentry{lora}{
-    name={LoRa},
+    name={Long Range},
     description={Protocole de télécommunication radio permettant la communication à bas débit d'objets connectés.
             Le signal radio est émis sur une grande largeur spectrale, pour limiter au maximum le risque d'interférence
             avec des signaux parasites.},
+    plural={LoRa},
+    text={LoRa},
+    firstplural={Long Range (LoRa)},
+    first={Long Range (LoRa)},
 }
 
 \newglossaryentry{ip}{
@@ -103,4 +107,24 @@
     text={IP},
     firstplural={Internet Protocol (IP)},
     first={Internet Protocol (IP)},
+}
+
+\newglossaryentry{wimax}{
+    name={Worldwide Interoperability for Microwave Access},
+    description={Standard de communication sans fil. Aujourd'hui il est surtout utilisé comme système de transmission et
+            d'accès à Internet à haut débit, portant sur une zone géographique étendue.},
+    plural={WIMAX},
+    text={WIMAX},
+    firstplural={Worldwide Interoperability for Microwave Access (WIMAX)},
+    first={Worldwide Interoperability for Microwave Access (WIMAX)},
+}
+
+\newglossaryentry{lorawan}{
+    name={Long Range Wide-Area Network},
+    description={Protocole de télécommunication permettant la communication à bas débit, par radio, d'objets à faible
+            consommation électrique communiquant selon la technologie \glsentrytext{lora} et connectés à l'Internet.},
+    plural={LoRaWAN},
+    text={LoRaWAN},
+    firstplural={Long Range Wide-Area Network (LoRaWAN)},
+    first={Long Range Wide-Area Network (LoRaWAN)},
 }
