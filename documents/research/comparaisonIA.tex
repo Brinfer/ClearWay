@@ -10,7 +10,7 @@ permettant de détecter des cyclistes à partir d'une vidéo.
 \subsection{Méthode de recherche}
 \label{sec:comparaisonIA:methode_recherche}
 
-Après quelques recherches, nous avons trouvé 2 bibliothèques d'intelligence artificielle 
+Après quelques recherches, nous avons trouvé 2 bibliothèques d'intelligence artificielle
 qui permettent de détecter des objets à partir d'une vidéo : ImageAI et OpenCV.
 Elles fonctionnent avec le langage de programmation Python.
 
@@ -56,7 +56,7 @@ Nous utilisons la version 3 de YOLO qui date de 2018, car celle-ci est à la foi
 Nous avons comparé nos 2 programmes utilisant respectivement les bibliothèques ImageAI et OpenCV avec leurs différents paramètres.
 Le programme utilisant ImageAI a donc été testé avec ses différentes vitesses de détection : normal, fast, fastest et flash.
 La vitesse "faster" a été écartée car elle ne permettait pas de détecter de vélo sur notre vidéo de référence.
-De même, le programme utilisant OpenCV a été testé avec un algorithme étant entraîné à différentes tailles d'images : 
+De même, le programme utilisant OpenCV a été testé avec un algorithme étant entraîné à différentes tailles d'images :
 (320px, 320px), (416px, 416px) et (608px, 608px).
 
 La \gls{video de reference} que nous avons utilisée est une vidéo de 15 secondes suivant un cycliste sur une route.
@@ -82,112 +82,113 @@ Il est à noter que cet ordinateur ne dispose pas de GPU NVIDIA, ce qui aurait a
 \subsection{Résultats}
 \label{sec:comparaisonIA:resultats}
 
-\subsubsection{Comparaison à 1 image par seconde}
+\subsubsection{Comparaison à 1'image par seconde}
 \label{sec:comparaisonIA:resultats:1fps}
 
-\begin{center}
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{img/result_1fps.png}
-    \captionof{figure}{Comparaison des bibliothèques ImageAI et OpenCV à 1 ips}
-\end{center}
+    \includegraphics[width=0.7\textwidth]{img/result_1fps.png}
+    \caption{Comparaison des bibliothèques ImageAI et OpenCV à 1 ips}
+\end{figure}
 
 Le tableau~\ref{tab_1fps} présente l'efficacité des 2 programmes suivant leurs différents paramètres à 1 ips.
 Il renseigne le nombre de fois que le vélo a été détecté sur la vidéo ayant 1 ips.
 Lorsque le vélo est détecté 2 fois sur une image, cela n'est pas pris en compte dans le nombre de détections.
 Cependant, cela apparaît dans la colonne "Détection en double".
 
-
-\begin{center}
+\begin{table}[H]
+    \centering
     \rowcolors{2}{tableColor}{white}
     \begin{tabular}{|c|c|c|c|}
         \hline
         \rowcolor{tableColorDark} Paramètres & Nb de détections & Détection en double \\
-        \hline 
+        \hline
 
-        imageAI\_normal                      &        9         &         1           \\\hline
-        imageAI\_fast                        &        8         &         0           \\\hline
-        imageAI\_fastest                     &        6         &         0           \\\hline
-        imageAI\_flash                       &        5         &         0           \\\hline
-        openCV\_320                          &        9         &         0           \\\hline
-        openCV\_416                          &        9         &         0           \\\hline
-        openCV\_608                          &        8         &         1           \\\hline
+        imageAI\_normal                      & 9                & 1                   \\\hline
+        imageAI\_fast                        & 8                & 0                   \\\hline
+        imageAI\_fastest                     & 6                & 0                   \\\hline
+        imageAI\_flash                       & 5                & 0                   \\\hline
+        openCV\_320                          & 9                & 0                   \\\hline
+        openCV\_416                          & 9                & 0                   \\\hline
+        openCV\_608                          & 8                & 1                   \\\hline
     \end{tabular}
-    \captionof{table}{Comparaison de l'efficacité des 2 programmes suivant leurs différents paramètres à 1 ips}
+    \caption{Comparaison de l'efficacité des 2 programmes suivant leurs différents paramètres à 1 ips}
     \label{tab_1fps}
-\end{center}
-
+\end{table}
 
 \subsubsection{Comparaison à 2 images par seconde}
 \label{sec:comparaisonIA:resultats:2fps}
 
-\begin{center}
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{img/result_2fps.png}
-    \captionof{figure}{Comparaison des bibliothèques ImageAI et OpenCV à 2 ips}
-\end{center}
+    \includegraphics[width=0.7\textwidth]{img/result_2fps.png}
+    \caption{Comparaison des bibliothèques ImageAI et OpenCV à 2 ips}
+\end{figure}
 
 Le tableau~\ref{tab_2fps} présente l'efficacité des 2 programmes suivant leurs différents paramètres à 2 ips.
 Il renseigne le nombre de fois que le vélo a été détecté sur la vidéo ayant 2 ips.
 Lorsque le vélo est détecté 2 fois sur une image, cela n'est pas pris en compte dans le nombre de détections.
 Cependant, cela apparaît dans la colonne "Détection en double".
 
-\begin{center}
-    \rowcolors{2}{tableColor}{white}
-    \begin{tabular}{|c|c|c|c|}
-        \hline
-        \rowcolor{tableColorDark} Paramètres & Nb de détections & Détection en double \\
-        \hline 
+\begin{table}
+    \begin{center}
+        \rowcolors{2}{tableColor}{white}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \rowcolor{tableColorDark} Paramètres & Nb de détections & Détection en double \\
+            \hline
 
-        imageAI\_normal                      &        14        &         1           \\\hline
-        imageAI\_fast                        &        14        &         0           \\\hline
-        imageAI\_fastest                     &        11        &         0           \\\hline
-        imageAI\_flash                       &        9         &         0           \\\hline
-        openCV\_320                          &        15        &         0           \\\hline
-        openCV\_416                          &        16        &         0           \\\hline
-        openCV\_608                          &        14        &         0           \\\hline
-    \end{tabular}
-    \captionof{table}{Comparaison de l'efficacité des 2 programmes suivant leurs différents paramètres à 2 ips}
-    \label{tab_2fps}
-\end{center}
+            imageAI\_normal                      & 14               & 1                   \\\hline
+            imageAI\_fast                        & 14               & 0                   \\\hline
+            imageAI\_fastest                     & 11               & 0                   \\\hline
+            imageAI\_flash                       & 9                & 0                   \\\hline
+            openCV\_320                          & 15               & 0                   \\\hline
+            openCV\_416                          & 16               & 0                   \\\hline
+            openCV\_608                          & 14               & 0                   \\\hline
+        \end{tabular}
+        \caption{Comparaison de l'efficacité des 2 programmes suivant leurs différents paramètres à 2 ips}
+        \label{tab_2fps}
+    \end{center}
+\end{table}
 
 \subsubsection{Comparaison à 3 images par seconde}
 \label{sec:comparaisonIA:resultats:3fps}
 
-\begin{center}
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{img/result_3fps.png}
-    \captionof{figure}{Comparaison des bibliothèques ImageAI et OpenCV à 3 ips}
-\end{center}
+    \includegraphics[width=0.7\textwidth]{img/result_3fps.png}
+    \caption{Comparaison des bibliothèques ImageAI et OpenCV à 3 ips}
+\end{figure}
 
 Le tableau~\ref{tab_3fps} présente l'efficacité des 2 programmes suivant leurs différents paramètres à 3 ips.
 Il renseigne le nombre de fois que le vélo a été détecté sur la vidéo ayant 3 ips.
 Lorsque le vélo est détecté 2 fois sur une image, cela n'est pas pris en compte dans le nombre de détections.
 Cependant, cela apparaît dans la colonne "Détection en double".
 
-
-\begin{center}
+\begin{table}
+    \centering
     \rowcolors{2}{tableColor}{white}
     \begin{tabular}{|c|c|c|c|}
         \hline
         \rowcolor{tableColorDark} Paramètres & Nb de détections & Détection en double \\
-        \hline 
+        \hline
 
-        imageAI\_normal                      &        20        &         1           \\\hline
-        imageAI\_fast                        &        20        &         0           \\\hline
-        imageAI\_fastest                     &        16        &         0           \\\hline
-        imageAI\_flash                       &        13        &         0           \\\hline
-        openCV\_320                          &        21        &         0           \\\hline
-        openCV\_416                          &        22        &         0           \\\hline
-        openCV\_608                          &        22        &         0           \\\hline
+        imageAI\_normal                      & 20               & 1                   \\\hline
+        imageAI\_fast                        & 20               & 0                   \\\hline
+        imageAI\_fastest                     & 16               & 0                   \\\hline
+        imageAI\_flash                       & 13               & 0                   \\\hline
+        openCV\_320                          & 21               & 0                   \\\hline
+        openCV\_416                          & 22               & 0                   \\\hline
+        openCV\_608                          & 22               & 0                   \\\hline
     \end{tabular}
-    \captionof{table}{Comparaison de l'efficacité des 2 programmes suivant leurs différents paramètres à 3 ips}
+    \caption{Comparaison de l'efficacité des 2 programmes suivant leurs différents paramètres à 3 ips}
     \label{tab_3fps}
-\end{center}
+\end{table}
 
 \subsection{Conclusion}
 \label{sec:comparaisonIA:conclusion}
 
-Les 3 tests réalisés nous montrent que c'est la bibliothèque OpenCV, 
+Les 3 tests réalisés nous montrent que c'est la bibliothèque OpenCV,
 associée à l'algorithme YOLOv3 étant entraîné aux images de taille (320px, 320px) qui est la plus rapide.
 Ces paramètres font également partie de ceux présentant la meilleure efficacité en termes de nombre de détections du vélo.
 Nous choisissons donc ces paramètres pour notre projet.
