@@ -6,7 +6,7 @@
 \subsection{Objectifs}
 \label{sec:camera_Objectifs}
 
-Notre système ClearWay sera équipé d'une caméra permettant de détecter les cyclistes.
+Notre système \gls{sae} sera équipé d'une caméra permettant de détecter les cyclistes.
 Il est important de trouver le meilleur positionnement et la meilleure configuration
 de cette dernière par rapport à son environnement afin d'optimiser la détection des cyclistes.
 
@@ -43,12 +43,12 @@ En prenant le cas le plus extrême, 50 km/h, il nous faudrait soit :
           d’être sûr de voir l’usager.
     \item Une distance de détection comprise entre 20 et 30 mètres et une acquisition d’image d'une image par seconde qui permet
           de ménager les ressources de calcul de l’algorithme.
-    \item Une distance de détection à plus de 30 mètres et une acquisition de moins d'une image par seconde
+    \item Une distance de détection à plus de 30 mètres et une acquisition de moins d'une image par seconde.
 \end{itemize}
 D'un point de vue matériel, il parait plus évident de soulager les calculs en ayant moins de traitement à faire.
 
 Ainsi, nous éliminons les cas où la distance de détection est trop faible, car le nombre d'images par seconde est conséquent.
-Dans le cas, il faudra beaucoup de ressources logicielles et énergétiques pour que ClearWay fonctionne.
+Dans le cas, il faudra beaucoup de ressources logicielles et énergétiques pour que \gls{sae} fonctionne.
 De plus, il n'est pas optimal d'avoir une distance de détection trop élevée.
 En effet, si la distance de détection est trop large, notre système ne fonctionnera pas correctement.
 Prenons l'exemple d'un système où notre panneau et la caméra se trouvent au même endroit et que l'algorithme de détection est idéal,
@@ -57,7 +57,7 @@ c'est-à-dire qu'il analyse en temps réel l'image reçue.
     Si un cycliste est détecté à 80 mètres et qu'il roule à 10 km/h, il faudrait 30 secondes pour qu'il arrive à l'intersection,
     tandis que s'il roule à 50 km/h il lui faut que cinq secondes. La plage temporaire est trop large,
     car on ne peut pas allumer le panneau pendant 30 secondes, car c'est trop long. Il faudrait pouvoir détecter la vitesse des usagers.
-    De plus, dans le cas où le cycliste circule à grande vitesse, le temps d'affichage du panneau est trop cours.
+    De plus, dans le cas où le cycliste circule à grande vitesse, le temps d'affichage du panneau est trop court.
 \end{example}
 
 
@@ -67,7 +67,7 @@ Ainsi nous allons nous intéresser aux cas où le champ de vision de la caméra 
 \subsubsection{Infrastructures déjà installées dans les villes}
 \label{sec:camera_infra}
 Les caméras de surveillance sont de plus en plus présentes dans nos villes. Ces dispositifs peuvent être utiles à notre projet en cas d'évolution.
-En effet, si nous réfléchissons ClearWay de façon à ce que le système de caméra se rapproche de celui des infrastructures déjà en place,
+En effet, si nous réfléchissons \gls{sae} de façon à ce que le système de caméra se rapproche de celui des infrastructures déjà en place,
 il sera plus aisé de faire évoluer le système de façon à ce qu'il s'intègre à ces dispositifs.
 Il n'y a aucun standard concernant l'installation d'une caméra de surveillance. Néanmoins, nous pouvons exclure celles qui sont rotatives.
 Pour celles qui sont fixes, elles sont installées entre 2m40 et 3m20. Les caractéristiques de ces dernières sont décryptées dans les paragraphes qui suivent.
@@ -89,7 +89,7 @@ Pour nous rendre compte des écarts qu'il y a entre la taille d'une image en ple
 les longueurs focales qui suivent seront converties en équivalent plein format lorsqu'il y aura la mention \gls{epf}.
 
 Comme indiqué ci-dessus, nous recherchons une solution permettant d'avoir une distance de détection importante.
-Pour ce faire, il faut avoir une distance focale faible, inférieur à 25 mm(\gls{epf}).
+Pour ce faire, il faut avoir une distance focale faible, inférieur à 25 mm (\gls{epf}).
 
 En parcourant le site des leaders mondiaux de caméras de surveillance extérieures fixes
 (Pelco \cite{pelco}, Axis \cite{axis} et Panasonic \cite{panasonic})
@@ -100,8 +100,8 @@ et celui du capteur de la caméra pour laquelle on veut le coefficient multiplic
 \begin{itemize}
     \item Pour le modèle Axis Q1645 \cite{axisQ1645}, on a une taille de capteur de 1/2"
           ce qui fait un coefficient multiplicateur de 5,625x. C'est-à-dire que malgré une distance focale annoncée de 3.9 mm, son \gls{epf} est de 22 mm.
-    \item Pour le modèle Panasonic i-Pro Extreme WV-S1531LN \cite{panaIPro}
-          la taille du capteur est de 1/3", ce qui fait un coefficient multiplicateur de 10x. Ainsi, même si la distance focale minimale est annoncée à 2,8 mm, son \gls{epf} est de 28 mm
+    \item Pour le modèle Panasonic i-Pro Extreme WV-S1531LN \cite{panaIPro}.
+          la taille du capteur est de 1/3", ce qui fait un coefficient multiplicateur de 10x. Ainsi, même si la distance focale minimale est annoncée à 2,8 mm, son \gls{epf} est de 28 mm.
 \end{itemize}
 
 Nous pouvons également avoir une distance de détection importante en ayant une focale plus longue. Pour ce faire il faut une inclinaison moindre entre cette dernière et le sol.
@@ -117,10 +117,7 @@ la caméra devra se trouver à une hauteur supérieure de deux mètres, sans pou
 plus le champ de vision est grand et ce n'est pas ce que l'on recherche.
 
 En étudiant les manuels d'installation des fabricants de caméras \cite{ganz}, nous obtenons les paramètres suivants :
-% Please add the following required packages to your document preamble:
-% \usepackage{multirow}
-% \usepackage[table,xcdraw]{xcolor}
-% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+
 \begin{table}[ht!]
     \centering
     \begin{tabular}{|l|l|l|l|l|}
@@ -194,14 +191,14 @@ Voyons ce que nos recherches nous ont enseignées :
 \subsubsection*{Distance focale}
 En nous renseignant sur les différentes caméras fixes de vidéo-surveillance installées, il s’avère que les caméras utilisées embarquent un grand angle.
 Pour notre système, il est également important de choisir une longueur focale proche de celles présentes sur les infrastructures déjà existantes.
-En effet, ça permettra d'avoir un système plus évolutif, si nous voulons implémenter ClearWay sur le matériel déjà présent dans les villes.
+En effet, ça permettra d'avoir un système plus évolutif, si nous voulons implémenter \gls{sae} sur le matériel déjà présent dans les villes.
 D'après la section \ref{sec:camera_focale}, il faudrait que la focale soit comprise entre 1.8 mm et 3.8 mm pour se rapprocher au plus de ces dispositifs.
 De plus, quel que soit le coefficient multiplicateur, un tel optique aura une focale (\gls{epf}) acceptable.
 
 \subsubsection*{Hauteur}
 
 Comme décrit dans le paragraphe \ref{sec:camera_distance}, il faut que l'objectif surpasse les voitures afin de pouvoir voir derrière elles.
-Dans le cas contraire, ClearWay pourrait "louper" des cyclistes alors qu'ils se trouvent derrière des voitures.
+Dans le cas contraire, \gls{sae} pourrait "louper" des cyclistes alors qu'ils se trouvent derrière des voitures.
 Ainsi une haute comprise entre 2m50 et 3m60 semble convenir à nos besoins, de plus c'est la hauteur à laquelle se trouve la vidéosurveillance des villes.
 
 \subsubsection*{Angle de vue}
