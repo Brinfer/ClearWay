@@ -2,10 +2,13 @@
 
 \begin{table}[ht]
     \centering
-    % \rowcolors{2}{tableColor}{white}
-    \begin{longtable}{|c|l|p{2.1cm}|c|}
+    \begin{xltabular}{\linewidth}{| c
+        | >{\centering\arraybackslash}X
+        | >{\centering\arraybackslash}p{2.1cm}
+        | c|}
+
         \hline
-        \rowcolor{tableColorDark}  Date & \multicolumn{1}{c|}{Action}                               & Auteur            & Version
+        \rowcolor{tableColorDark}  Date & Action                 & Auteur               & Version
         \endfirsthead
         \hline
 
@@ -16,6 +19,6 @@
         01 octobre 2021                 & Relecture partie caméra                                   & \gls{damien}      & v0.0.5  \\\hline
         01 octobre 2021                 & Ajout différence entre serveur centralisé et décentralisé & \gls{damien}      & v0.0.6  \\\hline
         03 octobre 2021                 & Comparaison des bibliothèques d'intelligence artificielle & \gls{leo}         & v0.0.7  \\\hline
-    \end{longtable}
+    \end{xltabular}
     \label{tab:versionning}
 \end{table}
