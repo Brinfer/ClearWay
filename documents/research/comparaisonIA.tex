@@ -82,7 +82,7 @@ Il est à noter que cet ordinateur ne dispose pas de GPU NVIDIA, ce qui aurait a
 \subsection{Résultats}
 \label{sec:comparaisonIA:resultats}
 
-\subsubsection{Comparaison à 1'image par seconde}
+\subsubsection{Comparaison à 1 image par seconde}
 \label{sec:comparaisonIA:resultats:1fps}
 
 \begin{figure}[H]
@@ -130,25 +130,24 @@ Il renseigne le nombre de fois que le vélo a été détecté sur la vidéo ayan
 Lorsque le vélo est détecté 2 fois sur une image, cela n'est pas pris en compte dans le nombre de détections.
 Cependant, cela apparaît dans la colonne "Détection en double".
 
-\begin{table}
-    \begin{center}
-        \rowcolors{2}{tableColor}{white}
-        \begin{tabular}{|c|c|c|c|}
-            \hline
-            \rowcolor{tableColorDark} Paramètres & Nb de détections & Détection en double \\
-            \hline
+\begin{table}[H]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \rowcolor{tableColorDark} Paramètres & Nb de détections & Détection en double \\
+        \hline
 
-            imageAI\_normal                      & 14               & 1                   \\\hline
-            imageAI\_fast                        & 14               & 0                   \\\hline
-            imageAI\_fastest                     & 11               & 0                   \\\hline
-            imageAI\_flash                       & 9                & 0                   \\\hline
-            openCV\_320                          & 15               & 0                   \\\hline
-            openCV\_416                          & 16               & 0                   \\\hline
-            openCV\_608                          & 14               & 0                   \\\hline
-        \end{tabular}
-        \caption{Comparaison de l'efficacité des 2 programmes suivant leurs différents paramètres à 2 ips}
-        \label{tab_2fps}
-    \end{center}
+        imageAI\_normal                      & 14               & 1                   \\\hline
+        imageAI\_fast                        & 14               & 0                   \\\hline
+        imageAI\_fastest                     & 11               & 0                   \\\hline
+        imageAI\_flash                       & 9                & 0                   \\\hline
+        openCV\_320                          & 15               & 0                   \\\hline
+        openCV\_416                          & 16               & 0                   \\\hline
+        openCV\_608                          & 14               & 0                   \\\hline
+    \end{tabular}
+    \caption{Comparaison de l'efficacité des 2 programmes suivant leurs différents paramètres à 2 ips}
+    \label{tab_2fps}
 \end{table}
 
 \subsubsection{Comparaison à 3 images par seconde}
@@ -165,7 +164,7 @@ Il renseigne le nombre de fois que le vélo a été détecté sur la vidéo ayan
 Lorsque le vélo est détecté 2 fois sur une image, cela n'est pas pris en compte dans le nombre de détections.
 Cependant, cela apparaît dans la colonne "Détection en double".
 
-\begin{table}
+\begin{table}[H]
     \centering
     \rowcolors{2}{tableColor}{white}
     \begin{tabular}{|c|c|c|c|}
