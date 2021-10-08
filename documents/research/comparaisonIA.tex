@@ -11,7 +11,7 @@ permettant de détecter des cyclistes à partir d'une vidéo.
 \label{sec:comparaisonIA:methode_recherche}
 
 Après quelques recherches, nous avons trouvé 2 bibliothèques d'intelligence artificielle
-qui permettent de détecter des objets à partir d'une vidéo : ImageAI et OpenCV.
+qui permettent de détecter des objets à partir d'une vidéo : ImageAI et OpenCV \cite{ImageAI_site_officiel, OpenCV_site_officiel}.
 Elles fonctionnent avec le langage de programmation Python.
 
 \subsubsection{ImageAI}
@@ -26,19 +26,20 @@ Elle offre le choix de la vitesse de détection : normal, fast, faster, fastest 
 
 OpenCV laisse au codeur le soin de récupérer la position des objets, leur probabilité, et de dessiner un cadre autour de ces objets.
 Avec cette bibliothèque, une cinquantaine de lignes de code est nécessaire.
-Elle propose d'utiliser un algorithme étant entraîné à différentes tailles d'images : (320px, 320px), (416px, 416px) ou (608px, 608px).
+Elle propose d'utiliser un algorithme étant entraîné à différentes tailles d'images : (320 px, 320 px), (416 px, 416 px) ou (608 px, 608 px).
 
 \subsubsection{Règles à suivre par les programmes}
 \label{sec:comparaisonIA:methode_recherche:regles}
-Dans un premier temps, nous avons testé des programmes utilisant les bibliothèques ImageAI et OpenCV \cite{ImageAI, OpenCV}.
+Dans un premier temps, nous avons testé des programmes utilisant les bibliothèques ImageAI et OpenCV \cite{ImageAI_programme, OpenCV_programme}.
 Puis, nous avons adapté ces programmes à nos besoins.
 Afin de pouvoir comparer ces 2 bibliothèques, nous avons fixé les règles que nos 2 programmes doivent suivre :
 
 \begin{itemize}
     \item Détecter seulement les cyclistes et ignorer les autres objets
-    \item Considérer que les cyclistes sont détectés lorsqu'ils le sont avec une probabilité de minimum 50\%
+    \item Considérer que les cyclistes sont détectés lorsqu'ils le sont avec une probabilité de minimum 50\% (valeur arbitraire permettant de comparer les 2 bibliothèques)
     \item Lorsqu'un cycliste est détecté, afficher un message dans la console avec la probabilité associée
-    \item Réaliser un fichier vidéo de sortie au format "avi" ayant une image par seconde, et contenant des cadres autour des cyclistes détectés avec leur probabilité associée
+    \item Réaliser un fichier vidéo de sortie au format "avi" ayant une image par seconde, et contenant des cadres autour des cyclistes détectés avec leur probabilité associée. 
+    Cela permet d'évaluer l'efficacité des programmes en termes de nombre de détections de cyclistes.
     \item Utiliser l'algorithme d'intelligence artificielle YOLOv3
 \end{itemize}
 
@@ -57,16 +58,16 @@ Nous avons comparé nos 2 programmes utilisant respectivement les bibliothèques
 Le programme utilisant ImageAI a donc été testé avec ses différentes vitesses de détection : normal, fast, fastest et flash.
 La vitesse "faster" a été écartée car elle ne permettait pas de détecter de vélo sur notre vidéo de référence.
 De même, le programme utilisant OpenCV a été testé avec un algorithme étant entraîné à différentes tailles d'images :
-(320px, 320px), (416px, 416px) et (608px, 608px).
+(320 px, 320 px), (416 px, 416 px) et (608 px, 608 px).
 
 La \gls{video de reference} que nous avons utilisée est une vidéo de 15 secondes suivant un cycliste sur une route.
-Lorsque nous effections des tests avec la vidéo originale ayant 30 images par seconde (ips),
+Lorsque nous effections des tests avec la vidéo originale ayant 30 images par seconde (IPS),
 le temps de traitement de cette vidéo dépassait les 3 minutes.
-Nous avons donc choisi de tester cette vidéo avec 1 ips, 2 ips et 3 ips.
+Nous avons donc choisi de tester cette vidéo avec 1 IPS, 2 IPS et 3 IPS.
 
 Pour comparer nos 2 programmes avec leurs différents paramètres, nous avons réalisé un programme en Python permettant
 d'exécuter ces programmes tout en calculant leur temps d'exécution.
-Cela affiche ensuite ces différents temps sous la forme d'un diagramme en bâtons grâce à la bibliothèque matplotlib.
+Cela affiche ensuite ces différents temps sous la forme d'un diagramme en bâtons grâce à la bibliothèque matplotlib \cite{matplotlib}.
 Nous avons également réalisé un tableau montrant l'efficacité des 2 programmes suivant leurs différents paramètres.
 
 Ces tests ont été réalisé à partir d'un ordinateur ayant les paramètres suivant :
@@ -77,7 +78,6 @@ Ces tests ont été réalisé à partir d'un ordinateur ayant les paramètres su
     \item \gls{CPU} : Intel i7-10510U (8) @ 4.900GHz
     \item \gls{GPU} : Intel CometLake-U GT2 [UHD Graphics]
 \end{itemize}
-Il est à noter que cet ordinateur ne dispose pas de GPU NVIDIA, ce qui aurait augmenté la rapidité des tests.
 
 \subsection{Résultats}
 \label{sec:comparaisonIA:resultats}
@@ -88,11 +88,11 @@ Il est à noter que cet ordinateur ne dispose pas de GPU NVIDIA, ce qui aurait a
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{img/result_1fps.png}
-    \caption{Comparaison des bibliothèques ImageAI et OpenCV à 1 ips}
+    \caption{Comparaison des bibliothèques ImageAI et OpenCV à 1 IPS}
 \end{figure}
 
-Le tableau~\ref{tab_1fps} présente l'efficacité des 2 programmes suivant leurs différents paramètres à 1 ips.
-Il renseigne le nombre de fois que le vélo a été détecté sur la vidéo ayant 1 ips.
+Le tableau~\ref{tab_1fps} présente l'efficacité des 2 programmes suivant leurs différents paramètres à 1 IPS.
+Il renseigne le nombre de fois que le vélo a été détecté sur la vidéo ayant 1 IPS.
 Lorsque le vélo est détecté 2 fois sur une image, cela n'est pas pris en compte dans le nombre de détections.
 Cependant, cela apparaît dans la colonne "Détection en double".
 
@@ -112,7 +112,7 @@ Cependant, cela apparaît dans la colonne "Détection en double".
         openCV\_416                          & 9                & 0                   \\\hline
         openCV\_608                          & 8                & 1                   \\\hline
     \end{tabular}
-    \caption{Comparaison de l'efficacité des 2 programmes suivant leurs différents paramètres à 1 ips}
+    \caption{Comparaison de l'efficacité des 2 programmes suivant leurs différents paramètres à 1 IPS}
     \label{tab_1fps}
 \end{table}
 
@@ -122,11 +122,11 @@ Cependant, cela apparaît dans la colonne "Détection en double".
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{img/result_2fps.png}
-    \caption{Comparaison des bibliothèques ImageAI et OpenCV à 2 ips}
+    \caption{Comparaison des bibliothèques ImageAI et OpenCV à 2 IPS}
 \end{figure}
 
-Le tableau~\ref{tab_2fps} présente l'efficacité des 2 programmes suivant leurs différents paramètres à 2 ips.
-Il renseigne le nombre de fois que le vélo a été détecté sur la vidéo ayant 2 ips.
+Le tableau~\ref{tab_2fps} présente l'efficacité des 2 programmes suivant leurs différents paramètres à 2 IPS.
+Il renseigne le nombre de fois que le vélo a été détecté sur la vidéo ayant 2 IPS.
 Lorsque le vélo est détecté 2 fois sur une image, cela n'est pas pris en compte dans le nombre de détections.
 Cependant, cela apparaît dans la colonne "Détection en double".
 
@@ -146,7 +146,7 @@ Cependant, cela apparaît dans la colonne "Détection en double".
         openCV\_416                          & 16               & 0                   \\\hline
         openCV\_608                          & 14               & 0                   \\\hline
     \end{tabular}
-    \caption{Comparaison de l'efficacité des 2 programmes suivant leurs différents paramètres à 2 ips}
+    \caption{Comparaison de l'efficacité des 2 programmes suivant leurs différents paramètres à 2 IPS}
     \label{tab_2fps}
 \end{table}
 
@@ -156,11 +156,11 @@ Cependant, cela apparaît dans la colonne "Détection en double".
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{img/result_3fps.png}
-    \caption{Comparaison des bibliothèques ImageAI et OpenCV à 3 ips}
+    \caption{Comparaison des bibliothèques ImageAI et OpenCV à 3 IPS}
 \end{figure}
 
-Le tableau~\ref{tab_3fps} présente l'efficacité des 2 programmes suivant leurs différents paramètres à 3 ips.
-Il renseigne le nombre de fois que le vélo a été détecté sur la vidéo ayant 3 ips.
+Le tableau~\ref{tab_3fps} présente l'efficacité des 2 programmes suivant leurs différents paramètres à 3 IPS.
+Il renseigne le nombre de fois que le vélo a été détecté sur la vidéo ayant 3 IPS.
 Lorsque le vélo est détecté 2 fois sur une image, cela n'est pas pris en compte dans le nombre de détections.
 Cependant, cela apparaît dans la colonne "Détection en double".
 
@@ -180,7 +180,7 @@ Cependant, cela apparaît dans la colonne "Détection en double".
         openCV\_416                          & 22               & 0                   \\\hline
         openCV\_608                          & 22               & 0                   \\\hline
     \end{tabular}
-    \caption{Comparaison de l'efficacité des 2 programmes suivant leurs différents paramètres à 3 ips}
+    \caption{Comparaison de l'efficacité des 2 programmes suivant leurs différents paramètres à 3 IPS}
     \label{tab_3fps}
 \end{table}
 
@@ -188,8 +188,10 @@ Cependant, cela apparaît dans la colonne "Détection en double".
 \label{sec:comparaisonIA:conclusion}
 
 Les 3 tests réalisés nous montrent que c'est la bibliothèque OpenCV,
-associée à l'algorithme YOLOv3 étant entraîné aux images de taille (320px, 320px) qui est la plus rapide.
+associée à l'algorithme YOLOv3 étant entraîné aux images de taille (320 px, 320 px) qui est la plus rapide.
 Ces paramètres font également partie de ceux présentant la meilleure efficacité en termes de nombre de détections du vélo.
-Nous choisissons donc ces paramètres pour notre projet.
+Avec la vidéo de référence, c'est donc ces paramètres qui sont les mieux adaptés à une détection de cyclistes.
+Lorsque nous positionnerons notre système sur une intersection de la route réelle, 
+nous serons peut-être amenés à utiliser des paramètres de taille d'image différents.
 D'autres bibliothèques auraient pu être testées telles que GluonCV, PyTorch\dots
 Cependant, OpenCV semble être suffisant pour répondre à nos besoins.
