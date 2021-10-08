@@ -4,7 +4,7 @@
 \subsection{Objectifs}
 \label{sec:comparaisonProtocoleCommnunicationObjectifs}
 
-L'objectif de cette étude est de comparer les différents protocoles et logiciel de communication
+L'objectif de cette étude est de comparer les différents protocoles et logiciels de communication
 pouvant être utilisé dans ce projet afin de répondre au mieux aux différents besoins.\newline
 
 Les différents critères étudiés sont :
@@ -15,7 +15,7 @@ Les différents critères étudiés sont :
     \item La consommation énergétique
 \end{itemize}
 
-Les différents modes de communication et protocole étudiés seront :
+Les différents modes de communication et protocoles étudiés seront :
 
 \begin{itemize}
     \item \nameref{sec:communicationRadio} :
@@ -41,8 +41,8 @@ Les différents modes de communication et protocole étudiés seront :
 \paragraph{\glsentryname{wifi}}
 \label{sec:wifi}
 
-Il existe différente version et norme de \gls{wifi}, chacune ayant un débit et une portée différente.
-La plupart des cartes réseaux sont adapté pour la norme \textbf{802.11}, se divisant en différents standards
+Il existe différentes versions et normes de \gls{wifi}, chacune ayant un débit et une portée différente.
+La plupart des cartes réseaux sont adaptées pour la norme \textbf{802.11}, se divisant en différents standards
 \cite{wifi}. Il est possible d’utiliser n’importe quel protocole de transport basé sur \gls{ip}.\newline
 
 \begin{table}[H]
@@ -100,8 +100,8 @@ la bande passante disponible entre les différents utilisateurs. \enquote{Ces qu
 \paragraph{\glsentryname{bluetooth}}
 \label{sec:bluetooth}
 
-Le \gls{bluetooth} sert à la transmission entre divers appareils numérique, avec ou sans connexion,
-de données. Contrairement à d'autre technologie de transfert de données, il est
+Le \gls{bluetooth} sert à la transmission entre divers appareils numériques, avec ou sans connexion,
+de données. Contrairement à d'autres technologies de transfert de données, il est
 spécialisé dans pour les transferts sur des distances relativement courtes et une basse
 consommation. Toutefois, il ne permet pas d'atteindre des débits de transfert élevé.\newline
 Le \gls{bluetooth} se distingue du \gls{wifi} par une faible consommation énergétique. Il
@@ -134,11 +134,11 @@ On peut résumer les performances du \gls{bluetooth} par ce tableau \cite{debitP
 \paragraph{\glsentryname{lorawan}}
 \label{sec:lorawan}
 
-Le protocole \gls{lorawan} se veut simple, peu coûteux à implémenter et économe en énergie plutôt que permettant des débits élevés en
+Le protocole \gls{lorawan} se veut simple, peu coûteux à implémenter et économe en énergie plutôt que permettre des débits élevés en
 utilisant la technologie \gls{lora} \cite{lorawan}. Cette technologie a pour priorité la faible consommation d'énergie.\newline
 
-Tout comme le \gls{wimax}, \gls{lora} capacité à prioriser les usages de la bande passante disponible du
-réseau des nœuds et augmenté la durée de vie de la batterie.
+Tout comme le \gls{wimax}, \gls{lora} qui ont la capacités de prioriser les usages de la bande passante disponible du
+réseau des nœuds et augmenter la durée de vie de la batterie.
 
 \begin{table}[H]
     \centering
@@ -196,8 +196,8 @@ avec les compteurs \textit{Linky}. Les débits atteints sont compris entre 14 et
 \label{sec:ethernet}
 
 \Gls{ethernet} est le réseau le plus commun, les cartes réseaux les plus courantes le supporte. C'est une technologie
-orientée pour des réseaux locaux, généralement dans un même bâtiment. Il existe différent standard avec des débits et des
-types de câble différent \cite{debitEthernet}.
+orientée pour des réseaux locaux, généralement dans un même bâtiment. Il existe différent standards avec des débits et des
+types de câbles différents \cite{debitEthernet}.
 
 \begin{table}[H]
     \centering
@@ -228,18 +228,19 @@ types de câble différent \cite{debitEthernet}.
 \subsection{Conclusion}
 \label{sec:comparaisonProtocoleCommnunicationConclusion}
 
-Cette recherche sur les différents moyens de transmettre les informations au sein de \gls{sae} avait pour ambition de trouver le meilleur compromis.
+Cette recherche sur les différents moyens de transmettre les informations au sein de \gls{sae} avait pour ambition de trouver le meilleur compromis entre
+la consommation énergétique, le débit et la portée.
 Il a fallu dans un premier temps réunir les informations, les analyser et les traiter afin de pouvoir les exploiter.\newline
 
 En fonction de comment \gls{sae} sera conçu, c'est-à-dire de manière décentralisée ou centralisée (voir partie \ref{sec:centralise}), alors les
 besoins ne seront pas les mêmes.
-Il faut toutefois noté la nécessité de faire un choix entre un mode de transmission radio ou filaire.\newline
+Il faut toutefois noter la nécessité de faire un choix entre un mode de transmission radio ou filaire.\newline
 
 Dans le cas d'une transmission radio, le \gls{wimax} semble être la technologie la plus adaptée pour un système centralisé, car elle permet d'avoir
 une grande portée pouvant couvrir une bonne partie d'une ville et un débit suffisant.
 En effet, le \gls{wifi} et le \gls{bluetooth} ont une portée insuffisante, tandis que le \gls{lora} possède un débit trop faible,
 ne répondant pas à nos besoins. Toutefois, dans un contexte décentralisé, le \gls{wifi} semble être lui le plus adapté.\newline
 
-Du côté des transmissions filaire, le \gls{cpl} semble le plus adapté, en effet le débit peut être suffisant et ça porté quasiment illimitée, malgré
+Du côté des transmissions filaire, le \gls{cpl} semble le plus adapté, en effet le débit peut être suffisant et sa porté quasiment illimitée, malgré
 d'importante perte énergétique. \Gls{ethernet} est plus adapté dans un contexte décentralisé, avec un débit important et une perte énergétique
 plus faible que le \gls{cpl}.

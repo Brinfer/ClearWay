@@ -22,3 +22,6 @@ _minted-*/
 *.synctex*
 *.toc
 *.blg
+
+# Python output file
+__pycache__/
