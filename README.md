@@ -46,7 +46,11 @@ This instruction makes sure that everyone is using the same git hook.
 
 ### 4.1. Python
 
-In order to use the git hooks implementer correctly, a version of __Python 3.6__ minimum is required.
+In order to use the git hooks implementer correctly, a version of __Python 3.6__ minimum is required. In the different sub-projects, a `requirements.txt` file will list the different packages needed and their version. To install them easily use the command :
+
+```bach
+pip install -r requirements.txt
+```
 
 ### 4.2. LaTeX
 
