@@ -3,6 +3,9 @@
 
 # Latex output file
 *.aux
+*.bbl
+*.bcf
+*-blx.bib
 *.fdb_latexmk
 *.fls
 *.glg
@@ -12,7 +15,13 @@
 *.lof
 *.log
 *.lot
-*.pdf
+_minted-*/
 *.out
-*.synctex.gz
+*.pdf
+*.run.xml
+*.synctex*
 *.toc
+*.blg
+
+# Python output file
+__pycache__/

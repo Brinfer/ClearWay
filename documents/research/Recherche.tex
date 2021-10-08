@@ -11,30 +11,23 @@
 
 \usepackage[imageHeaderLeft     =   {clearWayShort.png},
             imageHeaderRight    =   {eseoShort.jpg},
-            subject             =   {{Subject of the document, here it is an exemple, displayed in the metadata of the document}},
-            keywords            =   {{Example, Pierre-Louis, GAUTIER}},
+            subject             =   {{}},
+            keywords            =   {{}},
             encoding            =   {utf8},
             language            =   {french},
-            showunnemberred     =   true
+            showunnemberred     =   false
             ]{Parameter}
 
 \usepackage[logoSchool  =   {eseoLong.jpg},
             logoCompany =   {clearWayLong.png},
             nameCompany =   {{ClearWay}},
-            nameSchool  =   {{\'{E}cole d'\'{E}lectronique de l'Ouest}},
-            version     =   {0.0.1},
-            statue      =   {{En cours}},
+            nameSchool  =   {{École d'Électronique de l'Ouest}},
+            version     =   {1.0.0},
+            status      =   {{Terminé}},
             texte       =   {{}}
             ]{FrontPage}
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% General config for header, footer and front page %%
-
-\author{Léo CHAUVIN, Damien FRISSANT, Pierre-Louis GAUTIER}
-\title{Recherche}
-\date{\normalsize\today} % Enter a custom date or let it, it's the current date
-
 %% Load the glossary from the given files %%
 
 \newignoredglossary{ignored}
@@ -42,6 +35,16 @@
 \makeglossaries
 \loadglsentries{glossary.tex}
 \loadglsentries[ignored]{glossary-ignored.tex}
+
+%% Load the bibliography from the given files %%
+
+\addbibresource{biblio.bib}
+
+%% General config for header, footer and front page %%
+
+\author{\glsentryname{leo}, \glsentryname{damien}, \glsentryname{pierreLouis}}
+\title{Recherche}
+\date{\normalsize\today} % Enter a custom date or let it, it's the current date
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -55,11 +58,27 @@
 \tableofcontents
 
 \clearpage
-\part*{Annex}
+
+\input{communicationProtocol.tex}
+\clearpage
+\input{camera.tex}
+
+\clearpage
+\input{centraliseDecentralise.tex}
+
+\clearpage
+\input{comparaisonIA.tex}
+
+\clearpage
+
+\part*{Annexes}
 \listoffigures
 \listoftables
 
 \clearpage
 \printglossary % Display the glossary, see the documentation for the options
+
+\clearpage
+\printbibliography % Display the bibliography, see the documentation for the options
 
 \end{document}

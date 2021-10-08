@@ -1,0 +1,43 @@
+%auteur : Damien Frissant
+
+\section{Serveur centralisé versus serveur décentralisé}
+\label{sec:centralise}
+
+\subsection{Objectifs}
+\label{sec:centralise_Objectifs}
+Le but de cette section est de déterminer quelle organisation est mieux adaptée au projet ClearWay entre un dispositif centralisé ou décentralisé.
+
+\subsection{Méthodologie de recherche}
+\label{sec:centralise}
+Se référer à la partie \ref{sec:centralise_Methodo}.
+
+\subsection{Résultats}
+\label{sec:centralise_Resultats}
+
+\subsubsection{Serveur centralisé}
+\label{sec:centralise_centralise}
+Un système centralisé est composé d'une machine qui centralise et traite toutes les informations.
+
+\enquote{
+    Ils sont aussi plus faciles à mettre au point, et à déboguer – quand une erreur arrive, on n’a pas à se demander d’où elle provient. \cite{centraliser}
+}
+Un serveur centralisé à l'avantage de ne pas avoir besoin d'implémenter cette technologie à chaque intersection que l'on souhaite protéger avec ClearWay.
+Néanmoins, ces systèmes sont critiques et fragiles, car un dysfonctionnement a des conséquences sur tous les dispositifs actifs.
+La capacité d'un serveur est limité, s'il y a beaucoup de données à traiter il y a des risques de saturation.
+De plus il faut une communication ayant un débit correct et une portée suffisante. Cela implique d'éventuelles infrastructures (se référer à la partie \ref{sec:comparaisonProtocoleCommnunication}).
+Un serveur centralisé permettrait d'implémenter notre solution au sein d'un poste de commandement sécurité d'une ville. De ce fait,
+le dispositif serait moins coûteux à installer pour les collectivités et profiterait à plus de personnes.
+
+\subsubsection{Serveur décentralisé}
+\label{sec:centralise_decentralise}
+Un système décentralisé peut être vu comme une fourmilière. Par exemple internet est un système décentralisé, où il n'y a des millions de machines autonomes. Il n'y a pas de machine centrale.
+Il est facile à mettre en place à des endroits qui ne sont pas relié à un poste de sécurité.
+En opposition aux serveurs centralisés, ceux qui sont décentralisés ont une résistance aux attaques, car tous les serveurs sont indépendants.
+
+\subsubsection{Résultats}
+\label{sec:centralise_resultat}
+En conclusion, il n'y a pas de bon choix entre un système centralisé et décentralisé.
+Dans un premier temps, nous allons créer un système décentralisé afin de contrôler le système entièrement. En effet, il est intéressant
+d'avoir un prototype fonctionnel dans son ensemble, où l'on peut nous même contrôler la caméra.
+
+Une fois le prototype décentralisé opérationnel, nous pourrons étudier la version centralisée permettant d'équiper des carrefours ayant des caméras à proximité.

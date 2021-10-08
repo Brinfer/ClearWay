@@ -13,3 +13,5 @@ sub makeglo2gls {
     # List of acronyms
     # system("makeindex -s '$_[0]'.ist -t '$_[0]'.alg -o '$_[0]'.acr '$_[0]'.acn");
 }
+
+$clean_ext = "glg glo gls ist synctex.gz bbl run.xml bcf"; # extension not cleaned by default by latex
