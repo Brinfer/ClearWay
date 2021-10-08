@@ -1,7 +1,7 @@
 %-----------------------------------------------------------------
 % LaTeX template for a document
 % Written By: Pierre-Louis GAUTIER
-% Date Updated: September 24, 2021 (v1.2.2)
+% Date Updated: October 01, 2021 (v1.2.3)
 %-----------------------------------------------------------------
 
 \ProvidesPackage{FrontPage}
@@ -13,7 +13,7 @@
 \DeclareStringOption[]{logoSchool}[]
 \DeclareStringOption[]{nameSchool}[]
 \DeclareStringOption[]{version}[]
-\DeclareStringOption[]{statue}[]
+\DeclareStringOption[]{status}[]
 \DeclareStringOption[]{texte}[]
 
 \ProcessKeyvalOptions*
@@ -92,9 +92,9 @@
         Version : \FrontPage@version
     \fi
 
-    \ifx\FrontPage@statue\empty
+    \ifx\FrontPage@status\empty
     \else
-        Statue : \FrontPage@statue
+        Statut : \FrontPage@status
     \fi
 
     \vspace*{2cm}

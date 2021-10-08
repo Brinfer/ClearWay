@@ -1,0 +1,260 @@
+\section{Comparaison des protocoles de communication}
+\label{sec:comparaisonProtocoleCommnunication}
+
+\subsection{Objectifs}
+\label{sec:comparaisonProtocoleCommnunicationObjectifs}
+
+L'objectif de cette étude est de comparer les différents protocoles et logiciels de communication
+pouvant être utilisé dans ce projet afin de répondre au mieux aux différents besoins.\newline
+
+Les différents critères étudiés sont :
+
+\begin{itemize}
+    \item Le mode de transmission et sa portée
+    \item Le débit de la transmission
+    \item La consommation énergétique
+\end{itemize}
+
+Les différents modes de communication et protocoles étudiés seront :
+
+\begin{itemize}
+    \item \nameref{sec:communicationRadio} :
+          \begin{itemize}
+              \item \Gls{wifi}
+              \item \Gls{wimax}
+              \item \Gls{bluetooth}
+              \item \Gls{lorawan}
+          \end{itemize}
+    \item \nameref{sec:communicationFilaire} :
+          \begin{itemize}
+              \item \Gls{cpl}
+              \item \Gls{ethernet}
+          \end{itemize}
+\end{itemize}
+
+\subsection{Méthodologie de recherche}
+\label{sec:centralise_Methodo}
+
+La méthodologie de recherche sera orientée afin de trouver des résultats pertinents concernant :
+\begin{itemize}
+    \item Nos besoins par rapport aux cyclistes
+    \item Les infrastructures déjà installés
+    \item La longueur focale appropriée à notre besoin
+    \item La distance, l'angle et la hauteur de la caméra par rapport à son environnement
+\end{itemize}
+Ces investigations seront menées grâce à internet en utilisant les filtres les plus pertinents pour chaque recherche.
+Cela permettra d'avoir des résultats cohérents et de pallier les recherches personnalisées liées aux algorithmes de Google.
+Pour ce qui est des spécifications de la caméra, nous étudierons ce qui se fait dans
+le monde de la télésurveillance municipale en étudiant les spécifications des leaders du marché mondial.
+
+\subsection{Résultats}
+\label{sec:comparaisonProtocoleCommnunicationResultats}
+
+\subsubsection{Les communications radio}
+\label{sec:communicationRadio}
+
+\paragraph{\glsentryname{wifi}}
+\label{sec:wifi}
+
+Il existe différentes versions et normes de \gls{wifi}, chacune ayant un débit et une portée différente.
+La plupart des cartes réseaux sont adaptées pour la norme \textbf{802.11}, se divisant en différents standards
+\cite{wifi}. Il est possible d’utiliser n’importe quel protocole de transport basé sur \gls{ip}.\newline
+
+\begin{table}[H]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabular}{|c|c|c|c|}
+        % Header
+        \hline
+        \rowcolor{tableColorDark} Normes & Débit de données & Portées & Fréquence d'émission   \\
+        \hline
+
+        % Data
+        \gls{wifi} 802.11a               & 30 Mbit/s        & 10 m    & 5 GHz                  \\\hline
+        \gls{wifi} 802.11b               & 6 Mbit/s         & 300 m   & 2.4 GHz                \\\hline
+        \gls{wifi} 802.11g               & 26 Mbit/s        & 70 m    & 2.4 GHz                \\\hline
+        \gls{wifi} 802.11n               & 600 Mbit/s       & 70 m    & 2.4 GHz ou 5 GHz       \\\hline
+        \gls{wifi} 802.11ac              & 7 Gbit/s         & 30 m    & 2.4 GHz et 5 GHz       \\\hline
+        \gls{wifi} 802.11ax              & 10 Gbit/s        & 700 m   & Entre 2.4 GHz et 6 GHz \\\hline
+    \end{tabular}
+    \label{tab:debitPorteeWifi}
+    \caption{Débit et portée du \glsentryname{wifi}}
+    \nocite{debitPortee}
+\end{table}
+
+\paragraph{\glsentryname{wimax}}
+\label{sec:wimax}
+
+Le \gls{wimax} est un ensemble de normes techniques basées sur le standard de transmission radio \textbf{802.16}
+permettant la transmission de données \gls{ip}.\newline
+Il a pour principales particularités de supporter un haut débit de données (jusqu’à 75 Mbit/s en théorie, mais
+excède rarement 20 Mbit/s sur quelques dizaines de kilomètres en condition réelle) sur des distances très importantes,
+comprises entre 10 et 50 kilomètres selon les obstacles rencontrés par les ondes et de prioriser les usages de
+la bande passante disponible entre les différents utilisateurs. \enquote{Ces qualités en font donc une sorte
+    de \gls{wifi} survitaminé}{\cite{wimax}}.
+
+\begin{table}[H]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabular}{|c|c|c|c|}
+        % Header
+        \hline
+        \rowcolor{tableColorDark} Normes & Débit de données & Portées & Fréquence d'émission   \\
+        \hline
+
+        % Data
+        \gls{wimax} 802.16d              & 12 Mbit/s        & 20 km   & Entre 2 GHz et 11 GHz  \\\hline
+        \gls{wimax} 802.16e              & 30 Mbit/s        & 3 km    & Entre 3.5 GHz et 6 GHz \\\hline
+    \end{tabular}
+    \label{tab:debitPorteeWimax}
+    \caption{Débit et portée du \glsentryname{wimax}}
+    \nocite{debitPortee}
+\end{table}
+
+
+\paragraph{\glsentryname{bluetooth}}
+\label{sec:bluetooth}
+
+Le \gls{bluetooth} sert à la transmission entre divers appareils numériques, avec ou sans connexion,
+de données. Contrairement à d'autres technologies de transfert de données, il est
+spécialisé dans les transferts sur des distances relativement courtes et une basse
+consommation. Toutefois, il ne permet pas d'atteindre des débits de transfert élevés.\newline
+Le \gls{bluetooth} se distingue du \gls{wifi} par une faible consommation énergétique. Il
+ne nécessite en moyenne que 3\% de l'énergie nécessaire au \gls{wifi} pour la même tâche \cite{bluetoothConsumption}.
+Le \gls{ble}, qui est une variante, permet une consommation encore plus faible.\newline
+On peut résumer les performances du \gls{bluetooth} par ce tableau \cite{debitPortee, ble}.
+
+\begin{table}[H]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabular}{|c|c|c|c|}
+        % Header
+        \hline
+        \rowcolor{tableColorDark} Normes & Débit de données & Portées & Fréquence d'émission \\
+        \hline
+
+        % Data
+        \gls{bluetooth} 1.2              & 720 Kbit/s       & 10 m    & 2,4 GHz              \\\hline
+        \gls{bluetooth} 2.0              & 2,1 Mbit/s       & 10 m    & 2,4 GHz              \\\hline
+        \gls{bluetooth} 3.0              & 2,1 Mbit/s       & 10 m    & 2,4 GHz              \\\hline
+        \gls{bluetooth} 4.x              & 3 Mbit/s         & 60 m    & 2,4 GHz              \\\hline
+        \gls{bluetooth} 5.0              & 2 Mbit/s         & 200 m   & 2,4 GHz              \\\hline
+        \gls{ble}                        & 1 Mbit/s         & 10 m    & 2,4 GHz ou 5 GHz     \\\hline
+    \end{tabular}
+    \label{tab:debitPorteeBluetooth}
+    \caption{Débit et portée du \glsentryname{bluetooth}}
+    \nocite{ble}\nocite{debitPortee}
+\end{table}
+
+\paragraph{\glsentryname{lorawan}}
+\label{sec:lorawan}
+
+Le protocole \gls{lorawan} se veut simple, peu coûteux à implémenter et économe en énergie plutôt que permettre des débits élevés en
+utilisant la technologie \gls{lora} \cite{lorawan}. Cette technologie a pour priorité la faible consommation d'énergie.\newline
+
+Tout comme le \gls{wimax}, le \gls{lorawan} a la capacité de prioriser les usages de la bande passante disponible en fonction
+des besoins de chaque appareil et augmenter la durée de vie de la batterie.
+
+\begin{table}[H]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabular}{|c|c|c|c|}
+        % Header
+        \hline
+        \rowcolor{tableColorDark} Normes & Débit de données         & Portées                        & Fréquence d'émission \\
+        \hline
+
+        % Data
+        \gls{lora}                       & 10.3 kbit/s à 100 kbit/s & de quelques km à plus de 10 km & 868 MHz en Europe    \\\hline
+    \end{tabular}
+    \label{tab:debitPorteeLora}
+    \caption{Débit et portée du \glsentryname{lora}}
+    \nocite{debitPortee}
+\end{table}
+
+\subsubsection{Les communications filaires}
+\label{sec:communicationFilaire}
+
+\paragraph{\glsentryname{cpl}}
+\label{sec:cpl}
+
+\blockquote{Le principe des \gls{cpl} consiste à superposer au courant électrique alternatif de 50 ou 60 Hz
+    un signal à plus haute fréquence et de faible énergie. Ce deuxième signal se propage sur l’installation
+    électrique et peut être reçu et décodé à distance. Ainsi le signal \gls{cpl} est reçu par tout récepteur
+    \gls{cpl} de même catégorie se trouvant sur le même réseau électrique. Cette façon de faire comporte cependant un
+    inconvénient : le réseau électrique n'est pas adapté au transport de hautes fréquences, car il n'est pas blindé.
+    En conséquence, la plus grande partie de l'énergie injectée par le modem \gls{cpl} est rayonnée sous forme
+    d'onde radio.}{\cite{cpl}}
+
+La technologie \gls{cpl} permet donc de mettre en place un réseau de communication par-dessus un réseau électrique sans
+avoir à mettre en place plus d'infrastructures. Le \gls{cpl} est déjà utilisé dans l'industrie, notamment par \textit{Enedis}
+avec les compteurs \textit{Linky}. Les débits atteints sont compris entre 14 et 1 200 Mbit/s.
+
+\begin{table}[H]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabular}{|c|c|}
+        % Header
+        \hline
+        \rowcolor{tableColorDark} Normes & Débit de données         \\
+        \hline
+
+        % Data
+        \gls{cpl}                        & 14 Mbit/s à 1 200 Mbit/s \\\hline
+    \end{tabular}
+    \label{tab:debitCPL}
+    \caption{Débit du \glsentryname{cpl}}
+    \nocite{cpl}
+\end{table}
+
+\paragraph{\glsentryname{ethernet}}
+\label{sec:ethernet}
+
+\Gls{ethernet} est le réseau le plus commun, les cartes réseaux les plus courantes le supportent. C'est une technologie
+orientée pour des réseaux locaux, généralement dans un même bâtiment. Il existe différents standards avec des débits et des
+types de câbles différents \cite{debitEthernet}.
+
+\begin{table}[H]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabular}{|c|c|c|c|}
+        % Header
+        \hline
+        \rowcolor{tableColorDark} Standard \glsentryname{ethernet} & Débit de données & Câble                                & Distance maximale \\
+        \hline
+
+        % Data
+        10Base2                                                    & 10 Mbit/s        & Câble coaxial de faible diamètre     & 185 m             \\\hline
+        10Base5                                                    & 10 Mbit/s        & Câble coaxial de gros diamètre       & 500 m             \\\hline
+        10Base-T                                                   & 10 Mbit/s        & Paire torsadée (catégorie 3)         & 100 m             \\\hline
+        100Base-TX                                                 & 100 Mbit/s       & Double paire torsadée (catégorie 5)  & 100 m             \\\hline
+        100Base-FX                                                 & 100 Mbit/s       & Fibre optique multimode              & 2 km              \\\hline
+        1000Base-T                                                 & 1000 Mbit/s      & Double paire torsadée (catégorie 5e) & 100 m             \\\hline
+        1000Base-LX                                                & 1000 Mbit/s      & Fibre optique monomode / multimode   & 500 m - 1 km      \\\hline
+        1000Base-SX                                                & 1000 Mbit/s      & Fibre optique multimode              & 500 m             \\\hline
+        10GBase-SR                                                 & 10 Gbit/s        & Fibre optique multimode              & 500 m             \\\hline
+        10GBase-LX4                                                & 10 Gbit/s        & Fibre optique multimode              & 500 m             \\\hline
+    \end{tabular}
+    \label{tab:debitEthernet}
+    \caption{Débit de l'\glsentryname{ethernet}}
+    \nocite{debitEthernet}
+\end{table}
+
+\subsection{Conclusion}
+\label{sec:comparaisonProtocoleCommnunicationConclusion}
+
+Cette recherche sur les différents moyens de transmettre les informations au sein de \gls{sae} avait pour ambition de trouver le meilleur compromis entre
+la consommation énergétique, le débit et la portée.
+Il a fallu dans un premier temps réunir les informations, les analyser et les traiter afin de pouvoir les exploiter.\newline
+
+En fonction de la manière dont \gls{sae} sera conçu, c'est-à-dire de manière décentralisée ou centralisée (voir partie \ref{sec:centralise}), alors les
+besoins ne seront pas les mêmes.
+Il faut toutefois noter la nécessité de faire un choix entre un mode de transmission radio ou filaire.\newline
+
+Dans le cas d'une transmission radio, le \gls{wimax} semble être la technologie la plus adaptée pour un système centralisé.
+En effet, le \gls{wifi} et le \gls{bluetooth} ont une portée insuffisante, tandis que le \gls{lora} possède un débit trop faible,
+ne répondant pas à nos besoins. Toutefois, dans un contexte décentralisé, le \gls{wifi} semble être lui le plus adapté.\newline
+
+Du côté des transmissions filaires, le \gls{cpl} semble le plus adapté, en effet le débit peut être suffisant et sa porté quasiment illimitée, malgré
+d'importante perte énergétique. \Gls{ethernet} est plus adapté dans un contexte décentralisé, avec un débit important et une perte énergétique
+plus faible que le \gls{cpl}.

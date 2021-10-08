@@ -2,13 +2,25 @@
 
 \begin{table}[ht]
     \centering
-    \begin{longtable}{|c|l|c|c|}
+    \begin{xltabular}{\linewidth}{| c
+        | >{\centering\arraybackslash}X
+        | >{\centering\arraybackslash}p{2.1cm}
+        | c|}
+
         \hline
-        \rowcolor{tableColorDark}  Date & \multicolumn{1}{c|}{Action} & Auteur               & Version
+        \rowcolor{tableColorDark}  Date & Action                 & Auteur               & Version
         \endfirsthead
         \hline
 
-        24 septembre 2021               & Création du document        & GAUTIER Pierre-Louis & V0.0.1  \\\hline
-    \end{longtable}
+        24 septembre 2021               & Création du document                                      & \gls{pierreLouis} & v0.0.1  \\\hline
+        24 septembre 2021               & Ajout de l'analyse caméra                                 & \gls{damien}      & v0.0.2  \\\hline
+        30 septembre 2021               & Complétion analyse caméra                                 & \gls{damien}      & v0.0.3  \\\hline
+        01 octobre 2021                 & Ajout des recherches sur les communications               & \gls{pierreLouis} & v0.0.4  \\\hline
+        01 octobre 2021                 & Relecture partie caméra                                   & \gls{damien}      & v0.0.5  \\\hline
+        01 octobre 2021                 & Ajout différence entre serveur centralisé et décentralisé & \gls{damien}      & v0.0.6  \\\hline
+        03 octobre 2021                 & Comparaison des bibliothèques d'intelligence artificielle & \gls{leo}         & v0.0.7  \\\hline
+        07 octobre 2021                 & Ajout des recherches sur les communications filaires      & \gls{pierreLouis} & v0.1.0  \\\hline
+        07 octobre 2021                 & Modification des fautes et cohérence de la partie méthodologie &\gls{damien}  & v1.0.0  \\\hline
+    \end{xltabular}
     \label{tab:versionning}
 \end{table}

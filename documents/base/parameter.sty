@@ -1,7 +1,7 @@
 %-----------------------------------------------------------------
 % LaTeX template for a document
 % Written By: Pierre-Louis GAUTIER
-% Date Updated: September 24, 2021 (v1.2.2)
+% Date Updated: October 01, 2021 (v1.2.3)
 %-----------------------------------------------------------------
 
 \ProvidesPackage{Parameter}
@@ -33,12 +33,32 @@
 \usepackage[T1]{fontenc} % Allows to load hyphenation rules for accented words
 
 \usepackage{graphicx}
-\usepackage[table]{xcolor}
 \usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
 
 \usepackage{tabularx}
-\usepackage{longtable}
+\usepackage{xltabular}
 \usepackage{multirow}
+
+\usepackage{xparse}
+
+% ---------------------------------------------------------------------------------------
+%
+% Define general variable
+%
+% ---------------------------------------------------------------------------------------
+\usepackage[table]{xcolor}
+
+\definecolor{partColor}{HTML}{000000}
+\definecolor{sectionColor}{HTML}{002e64}
+\definecolor{subSectionColor}{HTML}{004290}
+\definecolor{subSubSectionColor}{HTML}{1663bf}
+\definecolor{paragraphColor}{HTML}{000000}
+\definecolor{subparagraphColor}{HTML}{000000}
+
+\definecolor{tableColor}{rgb}{0.85,0.90,0.99} % light blue
+\definecolor{tableColorDark}{rgb}{0.63,0.77,0.97}
+\definecolor{citation}{rgb}{0.0, 0.42, 0.24}
+\definecolor{example}{HTML}{54575C}
 
 % ---------------------------------------------------------------------------------------
 %
@@ -56,6 +76,8 @@
 
 \setlength{\headheight}{33pt}
 
+\chead{\@author}
+
 \ifx\Parameter@imageHeaderLeft\empty
 \else
     \lhead{\includegraphics[height=1cm]{\Parameter@imageHeaderLeft}}
@@ -68,7 +90,6 @@
 \fi
 
 \lfoot{\@date}
-\cfoot{\@author}
 \rfoot{page \thepage / \pageref*{LastPage}}
 
 \renewcommand{\headrulewidth}{1pt} % Rule for line under header, set at 0 for hide it
@@ -88,7 +109,8 @@
     colorlinks  = true,
     linkcolor   = black,
     filecolor   = red,
-    urlcolor    = blue
+    urlcolor    = blue,
+    citecolor   = black
 }
 
 \makeatletter
@@ -101,6 +123,17 @@
     }
 }
 \makeatother
+
+% ---------------------------------------------------------------------------------------
+%
+% Bibliography personalization
+%
+% ---------------------------------------------------------------------------------------
+
+\usepackage[backend=biber,
+            style=ieee,
+            sorting=nty
+            ]{biblatex}
 
 % ---------------------------------------------------------------------------------------
 %
@@ -117,18 +150,18 @@
 
 \setglossarystyle{altlisthypergroup}
 
-\ProvideDocumentCommand{\printglossdef}{o m}{\footnote{#1: #2}}
 \GlsXtrEnableEntryUnitCounting{general}{0}{page} % Count number of occurrence by unit, by page of the group general
 
 % If it first occurence of the label
 %   then a foot note is added with the description linked to the label
-% else do nothing
-\renewcommand{\glsxtrpostlink}{%
-    \glsxtrifwasfirstuse%
-        {\printglossdef[\glsentryname{\glslabel}]{\glsentrydesc{\glslabel}}}%
-        {}%
+\defglsentryfmt{%
+    \glsgenentryfmt%
+    \ifglsused{\glslabel}%
+    {}%
+    {% First use
+        \footnote{\glsentryname{\glslabel}: \glsdesc{\glslabel}}%
+    }%
 }
-
 % If it first occurence of the label
 %   then suppress the hyperlink to the glossary
 % else
@@ -157,13 +190,6 @@
 
 % \renewcommand{\thesection}{\Roman{section}}       % Use roman number for the section
 % \renewcommand{\thesubsection}{\Alph{subsection}}  % Use letter for the subsection
-
-\definecolor{partColor}{HTML}{000000}
-\definecolor{sectionColor}{HTML}{002e64}
-\definecolor{subSectionColor}{HTML}{004290}
-\definecolor{subSubSectionColor}{HTML}{1663bf}
-\definecolor{paragraphColor}{HTML}{000000}
-\definecolor{subparagraphColor}{HTML}{000000}
 
 \setcounter{tocdepth}{5} % Allow subparagraph in table of content
 \setcounter{secnumdepth}{5} % Allow numbering the subparagraph
@@ -324,7 +350,7 @@
 %
 % ---------------------------------------------------------------------------------------
 
-\setlength{\parindent}{0pt} % Size of the indent when start a new paragraph
+% \setlength{\parindent}{0pt} % Size of the indent when start a new paragraph
 
 % ---------------------------------------------------------------------------------------
 %
@@ -334,7 +360,9 @@
 
 \usepackage{enumitem} % Control layout of itemize, enumerate, description
 
-\setlist[itemize]{label=\textcolor{black}{•}} % The label of the list is by default a bullet
+\setlist[itemize, 1]{label=\textcolor{black}{•}} % The label of the list at the first level is by default a bullet
+\setlist[itemize, 2]{label=$\circ$} % The label of the list at the second level is by default a empty circle
+\setlist[itemize, 3]{label=$\square$} % The label of the list at the third level is by default a square
 
 % ---------------------------------------------------------------------------------------
 %
@@ -358,9 +386,21 @@
 
 % ---------------------------------------------------------------------------------------
 %
-% Define general variable
+% Quote personalization
 %
 % ---------------------------------------------------------------------------------------
 
-\definecolor{tableColor}{rgb}{0.85,0.90,0.99} % light blue
-\definecolor{tableColorDark}{rgb}{0.63,0.77,0.97}
+\usepackage[autostyle=true]{csquotes}
+
+\let\oldenquote\enquote
+\let\oldblockquote\blockquote
+\renewcommand{\enquote}[1]{\textcolor{citation}{\oldenquote{\textit{#1}}}}
+\renewcommand{\blockquote}[1]{\textcolor{citation}{\oldblockquote{\textit{#1}}}}
+
+% ---------------------------------------------------------------------------------------
+%
+% Define new environnment
+%
+% ---------------------------------------------------------------------------------------
+
+\newenvironment{example}{\begin{quote}\small\color{example}}{\end{quote}}
