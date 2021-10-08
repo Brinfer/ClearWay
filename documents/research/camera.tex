@@ -38,8 +38,8 @@ Nous considérons que notre système sera installé majoritairement en ville.
 En prenant en compte un cycliste circulant entre 10 km/h (2,8 m/s) et 50 km/h (14 m/s) nous réunissons la majorité des usagers.
 En prenant le cas le plus extrême, 50 km/h, il nous faudrait soit :
 \begin{itemize}
-    \item Une distance de détection inférieure à 10 mètres, nécessitant minimum deux images par seconde.
-    \item Une distance de détection comprise entre 10 et 19 mètres et une acquisition de deux images par seconde afin
+    \item Une distance de détection inférieure à 14 mètres, nécessitant minimum deux images par seconde.
+    \item Une distance de détection comprise entre 14 et 19 mètres et une acquisition de deux images par seconde afin
           d’être sûr de voir l’usager.
     \item Une distance de détection comprise entre 20 et 30 mètres et une acquisition d’image d'une image par seconde qui permet
           de ménager les ressources de calcul de l’algorithme.
@@ -62,7 +62,7 @@ c'est-à-dire qu'il analyse en temps réel l'image reçue.
 
 
 Idéalement, il faudrait orienter la caméra afin d'avoir une période se rapprochant d'une image par seconde, tout en ayant une détection optimale.
-Ainsi nous allons nous intéresser aux cas où le champ de vision de la caméra est compris entre 10 et 30 mètres.
+Ainsi nous allons nous intéresser aux cas où le champ de vision de la caméra est compris entre 14 et 30 mètres.
 
 \subsubsection{Infrastructures déjà installées dans les villes}
 \label{sec:camera_infra}
@@ -70,7 +70,7 @@ Les caméras de surveillance sont de plus en plus présentes dans nos villes. Ce
 En effet, si nous réfléchissons \gls{sae} de façon à ce que le système de caméra se rapproche de celui des infrastructures déjà en place,
 il sera plus aisé de faire évoluer le système de façon à ce qu'il s'intègre à ces dispositifs.
 Il n'y a aucun standard concernant l'installation d'une caméra de surveillance. Néanmoins, nous pouvons exclure celles qui sont rotatives.
-Pour celles qui sont fixes, elles sont installées entre 2m40 et 3m20. Les caractéristiques de ces dernières sont décryptées dans les paragraphes qui suivent.
+Pour celles qui sont fixes, elles sont installées entre 2m40 et 3m20. Les caractéristiques de ces dernières sont détaillés dans les paragraphes qui suivent.
 
 \subsubsection{Longueur focale appropriée à notre besoin}
 \label{sec:camera_focale}
@@ -154,25 +154,11 @@ En étudiant les manuels d'installation des fabricants de caméras \cite{ganz}, 
     \label{fig:comparatifCamera}
 \end{table}
 
-% \begin{itemize}
-%     \item (1) Une caméra à une hauteur de 2,70 mètres avec un angle de 85° et une focale de 3,3 mm :
-%           Ces paramètres correspondent à la distance maximale de reconnaissance. Une voiture peut être détectée à 80 mètres grâce à cette configuration.
-%     \item (2) Une caméra à une hauteur de 3 mètres avec une focale de 4 mm et un angle de 70° :
-%           La caméra est capable de détecter un objet à plus de 20 mètres. Dans ce cas, 99\% des objets à détecter le sont.
-%     \item (3) Une caméra à une hauteur de 3 mètres avec une focale de 4 mm et un angle compris entre 0 et 10° :
-%           La distance et l'angle de détection ne sont pas optimaux. En effet, peu de symbole sont reconnus dans une image ayant cette configuration.
-%     \item (4) Une caméra à une hauteur de 25-31 mètres avec une focale de 4 mm et un angle de 60° :
-%           Ces paramètres offres un champ de vision de plus de 30 mètres, près de 99\% des symboles sont reconnus.
-%     \item (4) Une caméra à une hauteur de 10-16 mètres avec une focale de 4 mm et un angle de 0 à 10°
-%           À l'instar du car où la caméra était à trois mètres avec un angle de 0-10°, le taux de reconnaissance est nettement dégradé.
-%     \item (4) Une caméra à une hauteur de 1,50 mètre avec une focale de 2,4 mm et un angle de 90° :
-%           Cette configuration correspond à celle qui détecte le plus rapidement et avec la plus grande fiabilité les usagers de la route.
-% \end{itemize}
-Nous pouvons observer que toutes les caméras ayant un angle compris entre 0 - 10° et 80-90° ne sont pas adaptés.
+Nous pouvons observer que toutes les caméras ayant un angle compris entre 0-10° et 80-90° ne conviennent pas à nos attentes.
 Soit le champ de vison est trop large soit trop étroit. Ainsi, elles ne seront pas adaptées à notre besoin.
 Les appareils se trouvant à une distance supérieure de 10 mètres ne correspondent pas aux dispositifs fixes de surveillance présents dans les villes aujourd'hui.
 
-Cela nous permet d'éliminer cinq configurations, ils nous restent uniquement le cas 2,
+Cela nous permet d'éliminer cinq configurations, ainsi ils nous restent uniquement la deuxième configuration,
 qui correspond aux exigences spécifiées dans le paragraphe \ref{sec:camera_cycliste}.
 
 
@@ -198,7 +184,7 @@ De plus, quel que soit le coefficient multiplicateur, un tel optique aura une fo
 \subsubsection*{Hauteur}
 
 Comme décrit dans le paragraphe \ref{sec:camera_distance}, il faut que l'objectif surpasse les voitures afin de pouvoir voir derrière elles.
-Dans le cas contraire, \gls{sae} pourrait "louper" des cyclistes alors qu'ils se trouvent derrière des voitures.
+Dans le cas contraire, \gls{sae} pourrait ne pas voir des cyclistes alors qu'ils se trouvent derrière des voitures.
 Ainsi une haute comprise entre 2m50 et 3m60 semble convenir à nos besoins, de plus c'est la hauteur à laquelle se trouve la vidéosurveillance des villes.
 
 \subsubsection*{Angle de vue}
@@ -208,6 +194,6 @@ Néanmoins, d'après les conclusions précédentes, nous considérerons que l'an
 \subsubsection*{Distance de détection}
 Nous avons vu qu'un champ de vision trop grand n'aide pas à servir notre problème. Dans le cas contraire la distance est trop faible pour analyser correctement l'image.
 Les résultats des parties \ref{sec:camera_cycliste} et \ref{sec:camera_distance} sont très proches.
-La première section mentionne une distance de détection de 10 à 30 mètres. Pour la seconde, la distance de détection est de 20 mètres.
+La première section mentionne une distance de détection de 14 à 30 mètres. Pour la seconde, la distance de détection est de 20 mètres.
 Cette distance est suffisante afin d'avoir qu'une image par seconde à traiter. Néanmoins, il ne s'agit pas de jouer avec la sécurité des cyclistes.
 Si le matériel le permet, il est conseillé de doubler le nombre d'images par seconde.
