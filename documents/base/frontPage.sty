@@ -13,7 +13,7 @@
 \DeclareStringOption[]{logoSchool}[]
 \DeclareStringOption[]{nameSchool}[]
 \DeclareStringOption[]{version}[]
-\DeclareStringOption[]{statue}[]
+\DeclareStringOption[]{status}[]
 \DeclareStringOption[]{texte}[]
 
 \ProcessKeyvalOptions*
@@ -92,9 +92,9 @@
         Version : \FrontPage@version
     \fi
 
-    \ifx\FrontPage@statue\empty
+    \ifx\FrontPage@status\empty
     \else
-        Statue : \FrontPage@statue
+        Statut : \FrontPage@status
     \fi
 
     \vspace*{2cm}
