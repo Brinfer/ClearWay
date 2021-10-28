@@ -25,3 +25,6 @@ _minted-*/
 
 # Python output file
 __pycache__/
+
+# Python virtual environnemnt
+.python38Venv/
