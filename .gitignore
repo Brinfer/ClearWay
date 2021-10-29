@@ -27,4 +27,4 @@ _minted-*/
 __pycache__/
 
 # Python virtual environnemnt
-.python38Venv/
+.env/
