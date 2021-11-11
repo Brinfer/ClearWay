@@ -21,8 +21,9 @@ def __configure_logging() -> None:
     There is two mode:
         - Release mode, where the log are only print in the file, the minimum level of the lof is `INFO`.
         - Debug mode, where the log are print in the file and displayed in the console, The minimum level of the
-        lof is `DEBUG`.
+        log is `DEBUG`.
     """
+
     # TODO Update the README
     if __debug__:
         logging.basicConfig(
@@ -38,7 +39,7 @@ def __configure_logging() -> None:
             level=logging.DEBUG,
             format=__LOG_FORMAT,
             filename="ClearWay.log",
-         )
+        )
 
 
 def main():
