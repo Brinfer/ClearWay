@@ -8,7 +8,7 @@ Then it checks frame by frame if there is a bicycle in front of the camera.
 It shows the frames to the user with the bicycles framed in boxes if they are detected with a probability of a least 0,5.
 
 ## Requirements
-To be able to run this program, you need to add the files "yolov3_320.weights" and "yolov3_320.cfg" at the same level of bicycle_detector.py.
+To be able to run this program, you need to add the files "yolov2-tiny.weights" and "yolov2-tiny.cfg" at the same level of bicycle_detector.py.
 
 They are located at the following link, in the openCV_algorithm folder: https://drive.google.com/drive/folders/1FnClVPYMw08y6uTTWVsTBuglmnP5qvyR
 
