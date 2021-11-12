@@ -12,5 +12,4 @@ pep8-naming>=0.12.1
 transitions==0.8.10
 
 # To build the package
-setuptools>=56.0.0
 build>=0.7.0
