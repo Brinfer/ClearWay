@@ -1,5 +1,7 @@
 """Module allowing for ``python -m clearway ...``."""
 
-from clearway import cli
+import sys
+sys.path.append(".")
 
-cli.main()
+from clearway.cli import main  # noqa: E402 module level import not at top of file
+sys.exit(main())
