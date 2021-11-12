@@ -8,8 +8,9 @@ import imutils
 import time
 
 # Load Yolo
-yolo_weight = "yolov3_320.weights"
-yolo_config = "yolov3_320.cfg"
+yolo_weight = "yolov2-tiny.weights"
+yolo_config = "yolov2-tiny.cfg"
+
 net = cv2.dnn.readNet(yolo_weight, yolo_config)
 label = "bicycle"
 color = np.random.uniform(0, 255, size=3)
