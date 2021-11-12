@@ -44,3 +44,13 @@ flake8:
   script:
     - python -m flake8 --config setup.cfg clearway/
   allow_failure: true
+
+build:
+  stage: build
+  script:
+    - python -m build
+    - pip install dist/clearway*.tar.gz
+    - clearway --help
+  # only:
+  #   - dev
+  #   - master

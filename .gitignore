@@ -75,8 +75,11 @@ _minted*
 __pycache__/
 
 ## Python virtual environnemnt
-.env/
+venv/
 
 ## Python build
 *.egg-info/
 dist/
+
+# Generated documentation
+docs/

@@ -1,9 +1,10 @@
+"""Command-line implementation of ClearWay."""
+
 import logging
 import sys
+import argparse
 
-from gpio import stateMachinePanel
-
-# TODO Macro for GPIO or not
+from ..gpio import stateMachinePanel
 
 __LOG_FORMAT = "%(asctime)s [%(filename)s:%(lineno)d] %(levelname)s >> %(message)s"
 
@@ -23,8 +24,6 @@ def __configure_logging() -> None:
         - Debug mode, where the log are print in the file and displayed in the console, The minimum level of the
         log is `DEBUG`.
     """
-
-    # TODO Update the README
     if __debug__:
         logging.basicConfig(
             level=logging.DEBUG,
@@ -51,11 +50,22 @@ def __parse_arg() -> None:
         help="allow the program to use the GPIOs defined in the code, rather than just displaying messages",
         action="store_true",
     )
+    # l_parser.add_argument(
+    #     "-v",
+    #     "--version",
+    #     help="print the Python version number and exit",
+    #     action='version',
+    #     version='%(prog)s {version}'.format(version=__version__)
+    # )
 
     # Parse arguments
     l_args = l_parser.parse_args()
 
     stateMachinePanel.use_gpio(l_args.use_gpio)
+
+    # if l_args.version:
+    #     print(clearway.__version__)
+    #     exit(0)
 
 
 def main() -> None:
@@ -63,11 +73,17 @@ def main() -> None:
     __parse_arg()
     __configure_logging()
 
+    # TODO remove
     stateMachinePanel.new(5)
     stateMachinePanel.start(5)
-    stateMachinePanel.signal(5)
 
+    stateMachinePanel.signal(5)
     stateMachinePanel.end_signal(5)
+    stateMachinePanel.signal(5)
+    stateMachinePanel.end_signal(5)
+    stateMachinePanel.signal(5)
+    stateMachinePanel.end_signal(5)
+
     stateMachinePanel.stop(5)
     stateMachinePanel.free(5)
 
