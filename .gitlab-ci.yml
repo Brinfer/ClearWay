@@ -51,6 +51,6 @@ build:
     - python -m build
     - pip install dist/clearway*.tar.gz
     - clearway --help
-  # only:
-  #   - dev
-  #   - master
+  only:
+    - dev
+    - master
