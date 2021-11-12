@@ -24,6 +24,11 @@ time.sleep(2.0)
 
 while True:
     img = vs.read()
+
+    # get dimensions of image
+    height = img.shape[0]
+    width = img.shape[1]
+
     #orig = imutils.resize(orig, width=500)
     # Detecting objects
     #scalefactor of 1/255 to scale the pixel values to [0..1]
@@ -40,7 +45,7 @@ while True:
     for out in outs:
         for detection in out:
             #bicycle
-            confidence = detection[6]
+            confidence = detection[5]
             if confidence > 0.5:
                 # Object detected
                 center_x = int(detection[0] * width)
@@ -74,8 +79,6 @@ while True:
         break
     
     #sortie.write(img)
-
-    #To check if there are still some frames
 
 vs.stop()
 cv2.destroyAllWindows()
