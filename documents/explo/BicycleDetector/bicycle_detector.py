@@ -1,9 +1,9 @@
-# opencv object tracking
-# object detection and tracking opencv
+# OpenCV object detection using picamera
+from imutils.video import VideoStream
+from imutils.video import FPS
 import cv2
 import numpy as np
 import os
-from imutils.video import VideoStream
 import imutils
 import time
 
@@ -22,12 +22,14 @@ vs = VideoStream(usePiCamera=True).start()
 # Very important! Otherwize, vs.read() gives a NonType
 time.sleep(2.0)
 
+# Start the frames per second
+fps = FPS().start()
+
 while True:
     img = vs.read()
 
     # get dimensions of image
-    height = img.shape[0]
-    width = img.shape[1]
+    height, width, channels = img.shape
 
     #orig = imutils.resize(orig, width=500)
     # Detecting objects
@@ -78,7 +80,16 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('x'):
         break
     
+    #update the FPS counter
+    fps.update()
+    
     #sortie.write(img)
 
+# stop the timer and display FPS information
+fps.stop()
+print("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))
+print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
+
+# stop the video stream and close any open windows
 vs.stop()
 cv2.destroyAllWindows()
