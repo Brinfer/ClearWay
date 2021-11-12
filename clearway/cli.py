@@ -42,7 +42,25 @@ def __configure_logging() -> None:
         )
 
 
-def main():
+def __parse_arg() -> None:
+    l_parser = argparse.ArgumentParser()
+
+    # Add arguments
+    l_parser.add_argument(
+        "--use-gpio",
+        help="allow the program to use the GPIOs defined in the code, rather than just displaying messages",
+        action="store_true",
+    )
+
+    # Parse arguments
+    l_args = l_parser.parse_args()
+
+    stateMachinePanel.use_gpio(l_args.use_gpio)
+
+
+def main() -> None:
+    """Program input function."""
+    __parse_arg()
     __configure_logging()
 
     stateMachinePanel.new(5)
