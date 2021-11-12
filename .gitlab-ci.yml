@@ -1,0 +1,56 @@
+# Official language image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/python/tags/
+image: python:3.8.12
+
+# Change pip's cache directory to be inside the project directory since we can
+# only cache local items.
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+
+# Pip's cache doesn't store the python packages
+# https://pip.pypa.io/en/stable/reference/pip_install/#caching
+#
+# If you want to also cache the installed packages, you have to install
+# them in a virtualenv and cache it as well.
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+before_script:
+  - export https_proxy=http://192.168.4.8:3128/
+  - export http_proxy=http://192.168.4.8:3128/
+  - python -V  # Print out python version for debugging
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
+  - pip install -r requirements.txt  # Install all needed package
+
+stages:
+  - test
+  - quality
+  - build
+
+test:
+  stage: test
+  script:
+    - echo "Coming soon"
+    # TODO Coming soon
+  allow_failure: true
+
+flake8:
+  stage: quality
+  script:
+    - python -m flake8 --config setup.cfg clearway/
+  allow_failure: true
+
+
+build:
+  stage: build
+  script:
+    - python -m build
+    - pip install dist/clearway*.tar.gz
+  only:
+    - dev
+    - master
