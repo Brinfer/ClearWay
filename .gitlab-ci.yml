@@ -28,29 +28,38 @@ before_script:
   - pip install -r requirements.txt  # Install all needed package
 
 stages:
-  - test
-  - quality
+  - check
   - build
 
 test:
-  stage: test
+  stage: check
   script:
     - echo "Coming soon"
     # TODO Coming soon
-  allow_failure: true
+  only:
+    changes:
+      - clearway/*
+      - tests/*
 
-flake8:
-  stage: quality
+linter:
+  stage: check
   script:
     - python -m flake8 --config setup.cfg clearway/
   allow_failure: true
+  only:
+    changes:
+      - clearway/*
+      - tests/*
 
-build:
+build clearway:
   stage: build
   script:
     - python -m build
     - pip install dist/clearway*.tar.gz
     - clearway --help
   only:
-    - dev
-    - master
+    refs:
+      - merge_requests
+    changes:
+      - clearway/*
+      - tests/*
