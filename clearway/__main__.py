@@ -1,4 +1,4 @@
-"""Module allowing for ``python -m clearway ...``."""
+"""Module allowing for `python -m clearway ...`."""
 
 import sys
 sys.path.append(".")
