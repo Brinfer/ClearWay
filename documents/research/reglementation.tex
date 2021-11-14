@@ -1,0 +1,69 @@
+\section{Analyse de la réglementation}
+\label{sec:reglementation}
+
+\subsection{Objectifs}
+\label{sec:reglementation_Objectifs}
+
+Notre système \gls{sae} a pour but d'être majoritairement implanté dans les espaces publics. 
+De ce fait, des réglementations existent légiférant l'utilisation de caméras sur la voie publique.
+Cette partie a pour but de documenter la loi en vigueur au 13 novembre 2021 en France, concernant la captation d'image sur les voies publiques et privées. 
+
+\subsection{Méthodologie de recherche}
+\label{sec:reglementation_Methodo}
+
+Se référer à la partie \ref{sec:centralise_Methodo}.
+
+\subsection{Résultats}
+\label{sec:reglementation_resultats}
+
+L'ajout de matériel de surveillance soulève la question du respect de la vie privée. La \gls{CNIL} est en charge du respect de la vie privée en France.
+Par la suite, nous parlerons de vidéoprotection dans le cas d'une caméra se trouvant dans un lieu public 
+et de vidéosurveillance pour une caméra placée dans un lieu privé.
+
+\subsubsection{Réglementation sur les caméras dans un environnement privé}
+\label{sec:reglementation_privee}
+
+Prenons le cas d'une entreprise. Cette dernière a le droit d'installer des caméras sur les voies de circulation afin de protéger les personnes circulant.
+De plus, si l'employeur souhaite filmer des lieux accueillant du public, il doit avoir une autorisation du préfet (s'il fait appelle à une entreprise tierce, aucune autorisation n'est à demander) 
+et informer par un affichage les personnes pénétrant dans la zone filmée. Il doit également renseigner la procédure à suivre pour avoir accès aux enregistrements vidéo.
+Concernant les données personnelles, l'employeur doit informer les salariés sur les données qu'il collecte. Le temps de conservations des images de vidéosurveillance ne peut excéder un mois.
+
+
+\subsubsection{Réglementation sur les caméras dans un environnement public}
+\label{sec:reglementation_publique}
+
+\paragraph{Avertissements et motifs de la vidéoprotection}
+\label{motifs_vidéoprotection}
+
+La vidéoprotection quant à elle est plus restrictive. En effet, il s'agit de filmer en permanence des personnes n'ayant pas forcement conscience qu'elles le sont. 
+Il y a l'obligation d'informer toute personne entrant dans une zone protégée et en précisant notamment l’identité et les coordonnées du responsable du traitement et du délégué à la protection des données.
+C'est la raison pour laquelle elle doit s'inscrire dans un objectif réglementaire. Différents motifs peuvent justifier l'installation de caméras sur la voie publique, afin de prévenir:
+\begin{itemize}
+    \item Un acte terroriste
+    \item Des atteintes à la sécurité des personnes et des biens dans les lieux exposés à des risques d'agression
+    \item Des vols
+    \item Le trafic de stupéfiants
+    \item etc.
+\end{itemize}
+Voir notamment les articles L.251-2 et L.223-1 du \gls{CSI} pour plus de détails.
+
+\paragraph{Respect de la vie privée pour la vidéoprotection}
+\label{vp_vidéoprotection}
+
+Concernant le respect de la vie privée, les caméras ne doivent pas filmer l'intérieur des immeubles, ni de leurs entrées (article L.251-3 du \gls{CSI}). 
+À l'instar de la vidéosurveillance, la durée de conservation des images ne peut excéder un mois, 
+mais peut être inférieur selon le motif d'installation du système, ces durées sont détaillées dans l'article L.252-3 du \gls{CSI}.
+
+\paragraph{Qui peut filmer les lieux publics ?}
+\label{autorisation_vidéoprotection}
+Pour ce qui est des autorisations pour filmer une voie publique, seule une autorité publique est habilitée capter des images. 
+En conséquence, les entreprises et les établissements publics peuvent seulement filmer les abords immédiats de leurs bâtiments 
+et les lieux susceptibles d’être exposés à des actes de terrorisme comme le précise la \gls{CNIL}.
+
+\subsection{Conclusion}
+\label{reglementation_Conclusion}
+Après cette recherche concernant l'ajout de caméras de protection ou de surveillance, nous nous rendons compte que notre système est adapté aux deux cas.
+En effet, nous n'avons pas besoin d'enregistrer les images. Notre système vidéo se contente de capturer une image, d'analyser l'image. Ensuite une nouvelle image écrase la précédente.
+De ce fait, il n'y a pas de problème de conservation des données, car nous ne collectons aucune information. 
+\gls{sae} peut être installé aux intersections pour prévenir les accidents des cyclistes et ainsi protéger une partie de la population. 
+Au jour où est écrite cette conclusion, des démarches ont été entreprises avec la mairie d'Angers afin de faire des tests en conditions réelles.
