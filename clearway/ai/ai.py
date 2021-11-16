@@ -21,10 +21,14 @@ def bicycle_detector():
     layer_names = net.getLayerNames()
     # Find names of three output layers (['yolo_82', 'yolo_94', 'yolo_106'])
     output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+    detect = False
+    detectOld = False
 
     vs = VideoStream(usePiCamera=True).start()
     # Very important! Otherwize, vs.read() gives a NonType
     time.sleep(2.0)
+
+    print("\033[33m[AI] Caméra prête à détecter")
 
     # Start the frames per second
     fps = FPS().start()
@@ -71,32 +75,28 @@ def bicycle_detector():
 
         # Draw bounding box with text for each object
         font = cv2.FONT_HERSHEY_DUPLEX
-        for i in range(len(boxes)):
-            if i in indexes:
-                print("Vélo détecté avec une probabilité de : {:.2f} %".format(confidences[i]*100))
+        detect = len(boxes) != 0
+        # If something is newly detected (rising edge)
+        if (detect and not detectOld):
+            for i in range(len(boxes)):
+                if i in indexes:
+                    print("\033[33m[AI] Vélo détecté avec une probabilité de : {:.2f} % \033[0m".format(confidences[i]*100))            
 
-                stateMachinePanel.new(5)
-                stateMachinePanel.start(5)
+                    stateMachinePanel.signal(5)
 
-                stateMachinePanel.signal(5)
-                stateMachinePanel.end_signal(5)
-                stateMachinePanel.signal(5)
-                stateMachinePanel.end_signal(5)
-                stateMachinePanel.signal(5)
-                stateMachinePanel.end_signal(5)
-
-                stateMachinePanel.stop(5)
-                stateMachinePanel.free(5)
-
-                x, y, w, h = boxes[i]
-                confidence_label = int(confidences[i] * 100)
-                cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
-                cv2.putText(img, f'{label, confidence_label}', (x-25, y + 75), font, 2, color, 2)
-
-        cv2.imshow("Image", img)
-        # Close video window by pressing 'x'
-        if cv2.waitKey(1) & 0xFF == ord('x'):
-            break
+                    x, y, w, h = boxes[i]
+                    confidence_label = int(confidences[i] * 100)
+                    cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
+                    cv2.putText(img, f'{label, confidence_label}', (x-25, y + 75), font, 2, color, 2)
+        # Else if something is not detected but it was before (falling edge)
+        elif (detectOld and not detect):
+            stateMachinePanel.end_signal(5)
+        detectOld = detect
+        
+        # cv2.imshow("Image", img)
+        # # Close video window by pressing 'x'
+        # if cv2.waitKey(1) & 0xFF == ord('x'):
+        #     break
         
         #update the FPS counter
         fps.update()
