@@ -10,6 +10,7 @@ pep8-naming>=0.12.1
 
 # Package
 transitions==0.8.10
+RPi.GPIO==0.7.0
 
 # To build the package
 build>=0.7.0
