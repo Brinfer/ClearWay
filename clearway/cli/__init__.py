@@ -5,6 +5,7 @@ import sys
 import argparse
 
 from ..gpio import stateMachinePanel
+from ..ai import bicycle_detector
 
 __LOG_FORMAT = "%(asctime)s [%(filename)s:%(lineno)d] %(levelname)s >> %(message)s"
 
@@ -74,18 +75,19 @@ def main() -> None:
     __configure_logging()
 
     # TODO remove
-    stateMachinePanel.new(5)
-    stateMachinePanel.start(5)
+    bicycle_detector()
+    # stateMachinePanel.new(5)
+    # stateMachinePanel.start(5)
 
-    stateMachinePanel.signal(5)
-    stateMachinePanel.end_signal(5)
-    stateMachinePanel.signal(5)
-    stateMachinePanel.end_signal(5)
-    stateMachinePanel.signal(5)
-    stateMachinePanel.end_signal(5)
+    # stateMachinePanel.signal(5)
+    # stateMachinePanel.end_signal(5)
+    # stateMachinePanel.signal(5)
+    # stateMachinePanel.end_signal(5)
+    # stateMachinePanel.signal(5)
+    # stateMachinePanel.end_signal(5)
 
-    stateMachinePanel.stop(5)
-    stateMachinePanel.free(5)
+    # stateMachinePanel.stop(5)
+    # stateMachinePanel.free(5)
 
 
 if __name__ == "__main__":
