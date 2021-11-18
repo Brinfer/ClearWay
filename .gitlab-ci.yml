@@ -34,8 +34,7 @@ stages:
 test:
   stage: check
   script:
-    - echo "Coming soon"
-    # TODO Coming soon
+    - pytest -c setup.cfg
   only:
     changes:
       - clearway/*
@@ -54,11 +53,10 @@ build clearway:
   stage: build
   script:
     - python -m build
-    - pip install dist/clearway*.tar.gz
-    - clearway --help
   only:
     refs:
-      - merge_requests
+      - dev
+      - master
     changes:
       - clearway/*
       - tests/*

@@ -1,5 +1,7 @@
 """Module to control the state machines controlling the input and output of the card.
 
+All state machines are asynchronous and independent.
+
 Examples
 --------
 >>> from clearway.gpio import stateMachinePanel
@@ -55,9 +57,6 @@ class __EventEnum(Enum):
 class StateMachinePanel:
     """State machine driving an input/output of the card.
 
-    In the signaling state, the input output alternates between high and low with a frequency of
-    py:attribute::_FREQUENCY.
-
     Attributes
     ----------
     STATES : `tuple(transitions.State)`
@@ -72,6 +71,10 @@ class StateMachinePanel:
     turn_off(p_gpio: int)
         Set the GPIO to low level
 
+    Notes
+    -----
+    The state machine is based on the transitions [1] package licenced by MIT
+
 
     .. uml::
         [*] --> Off : start
@@ -79,6 +82,8 @@ class StateMachinePanel:
         Off --> [*] : stop
         Signaling --> Off : end_signal / stop_signal()
         Signaling --> [*] : stop / stop_signal()
+
+    .. [1] https://github.com/pytransitions/transitions
     """
 
     STATES = (

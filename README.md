@@ -10,9 +10,9 @@
 - [2. License](#2-license)
 - [3. About the Project](#3-about-the-project)
 - [4. Installation](#4-installation)
-  - [4.1. 4.1 From the source](#41-41-from-the-source)
+  - [4.1. From the source](#41-from-the-source)
 - [5. Usage](#5-usage)
-  - [5.1. Dependencies](#51-dependencies)
+  - [5.1. Dependencies for the developers](#51-dependencies-for-the-developers)
   - [5.2. Options](#52-options)
     - [5.2.1. Optimized](#521-optimized)
     - [5.2.2. `--no-gpio`](#522---no-gpio)
@@ -48,7 +48,7 @@ The project is intended for communities, but he will benefit to road users and c
 
 # 4. Installation
 
-## 4.1. 4.1 From the source
+## 4.1. From the source
 
 To install _ClearWay_ from the source files, just do :
 
@@ -70,7 +70,7 @@ pip install dist/clearway*.tar.gz
 
 # 5. Usage
 
-## 5.1. Dependencies
+## 5.1. Dependencies for the developers
 
 A version of __Python 3.8__ minimum is required. In the different sub-projects, a __requirements.txt__ file will list the different packages needed and their version. To install them easily use the command :
 
@@ -93,7 +93,7 @@ python -O clearway
 Tells the program that it does not want to use the GPIOs, only the logs will be displayed.
 
 ```bash
-clearway --no-gio
+clearway --no-gpio
 ```
 
 # 6. Contributing
