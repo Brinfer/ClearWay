@@ -47,8 +47,8 @@ def __parse_arg() -> None:
 
     # Add arguments
     l_parser.add_argument(
-        "--use-gpio",
-        help="allow the program to use the GPIOs defined in the code, rather than just displaying messages",
+        "--no-gpio",
+        help="tells the program that it does not want to use the GPIOs, only the logs will be displayed",
         action="store_true",
     )
     # l_parser.add_argument(
@@ -62,7 +62,7 @@ def __parse_arg() -> None:
     # Parse arguments
     l_args = l_parser.parse_args()
 
-    stateMachinePanel.use_gpio(l_args.use_gpio)
+    stateMachinePanel.use_gpio(not l_args.no_gpio)
 
     # if l_args.version:
     #     print(clearway.__version__)
