@@ -81,5 +81,9 @@ venv/
 *.egg-info/
 dist/
 
+## Coverage report
+.coverage
+coverage/
+
 # Generated documentation
 docs/
