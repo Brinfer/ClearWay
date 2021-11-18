@@ -44,14 +44,18 @@ class StateMachinePanel:
 
     Attributes
     ----------
-    __gpio : int
-        The gpio driven by the state machine.
-    __blinkThread : Thread
-        The thread handler where the signaling state drives the gpio.
     STATES : tuple(State)
         The list of states that can be taken by the state machine.
     TRANSITIONS : tuple(Transition)
         The list of transitions between states of the state machine.
+
+    Methods
+    -------
+    turn_on(p_gpio: int) -> None
+        Set the GPIO to high level
+    turn_off(p_gpio: int) -> None
+        Set the GPIO to low level
+
 
     .. uml::
         [*] --> Off : start
@@ -90,6 +94,42 @@ class StateMachinePanel:
         },
     )
 
+    @staticmethod
+    def turn_on(p_gpio: int) -> None:
+        """Set the GPIO to high level.
+
+        If the `use_gpio` argument is set to `False`, then the GPIO will not be modified
+
+        Parameters
+        ----------
+        p_gpio : int
+            The GPIO to be set high
+        """
+        global _use_gpio, _GpioModule
+
+        logging.debug("[GPIO-%s] Turn hight", p_gpio)
+
+        if _use_gpio:
+            _GpioModule.output(p_gpio, _GpioModule.HIGH)
+
+    @staticmethod
+    def turn_off(p_gpio: int) -> None:
+        """Set the GPIO to low level.
+
+        If the `use_gpio` argument is set to `False`, then the GPIO will not be modified
+
+        Parameters
+        ----------
+        p_gpio : int
+            The GPIO to be set low
+        """
+        global _use_gpio, _GpioModule
+
+        logging.debug("[GPIO-%s] Turn down", p_gpio)
+
+        if _use_gpio:
+            _GpioModule.output(p_gpio, _GpioModule.LOW)
+
     def __init__(self, p_gpio: int) -> None:
         """Create a new state machine for the given GPIO.
 
@@ -126,7 +166,7 @@ class StateMachinePanel:
         """
         logging.debug("[GPIO-%s] - Destroy the state machine", self.__gpio)
 
-        self.__turn_off()
+        StateMachinePanel.turn_off(self.__gpio)
 
     def _signal(self) -> None:
         logging.info("[GPIO-%s] - Action: start signaling", self.__gpio)
@@ -140,27 +180,11 @@ class StateMachinePanel:
         if self.__blinkThread is not None:
             self.__blinkThread.join()
 
-    def __turn_on(self) -> None:
-        global _use_gpio, _GpioModule
-
-        logging.debug("[GPIO-%s] Turn hight", self.__gpio)
-
-        if _use_gpio:
-            _GpioModule.output(self.__gpio, _GpioModule.HIGH)
-
-    def __turn_off(self) -> None:
-        global _use_gpio, _GpioModule
-
-        logging.debug("[GPIO-%s] Turn down", self.__gpio)
-
-        if _use_gpio:
-            _GpioModule.output(self.__gpio, _GpioModule.LOW)
-
     def __thread_run(self) -> None:
         while self.is_SIGNALING() is True:
-            self.__turn_on()
+            StateMachinePanel.turn_on(self.__gpio)
             time.sleep(_FREQUENCY / 2)
-            self.__turn_off()
+            StateMachinePanel.turn_off(self.__gpio)
             time.sleep(_FREQUENCY / 2)
 
 
