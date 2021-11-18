@@ -62,7 +62,9 @@ def __parse_arg() -> None:
     # Parse arguments
     l_args = l_parser.parse_args()
 
-    stateMachinePanel.use_gpio(not l_args.no_gpio)
+    # TODO remove on release
+    stateMachinePanel.use_gpio(False)
+    # stateMachinePanel.use_gpio(not l_args.no_gpio)
 
     # if l_args.version:
     #     print(clearway.__version__)
