@@ -15,7 +15,7 @@
   - [5.1. Dependencies](#51-dependencies)
   - [5.2. Options](#52-options)
     - [5.2.1. Optimized](#521-optimized)
-    - [5.2.2. `--use-gpio`](#522---use-gpio)
+    - [5.2.2. `--no-gpio`](#522---no-gpio)
 - [6. Contributing](#6-contributing)
 
 </details>
@@ -50,7 +50,23 @@ The project is intended for communities, but he will benefit to road users and c
 
 ## 4.1. 4.1 From the source
 
-Coming soon
+To install _ClearWay_ from the source files, just do :
+
+```bash
+python -m build
+```
+
+Then you just have to place the __dist__ folder in the desired environment and do
+
+```bash
+pip install dist/clearway*.whl
+```
+
+or
+
+```bash
+pip install dist/clearway*.tar.gz
+```
 
 # 5. Usage
 
@@ -72,12 +88,12 @@ Remove assert statements and any code conditional on the value of `__debug__`. T
 python -O clearway
 ```
 
-### 5.2.2. `--use-gpio`
+### 5.2.2. `--no-gpio`
 
-Allow the program to use the GPIOs defined in the code, rather than just displaying messages
+Tells the program that it does not want to use the GPIOs, only the logs will be displayed.
 
 ```bash
-python -m clearway --use-gio
+clearway --no-gio
 ```
 
 # 6. Contributing
