@@ -36,7 +36,7 @@ See [`LICENCE.md`](./LICENCE.md).
 
 ClearWay is a school project made by 3 engineer students in 2021-2022.
 
-The main purpose of the project is to avoid incidents and crashes between cyclists and motorists. Because this project is a Proof Of Concept, the operating range luminosity have to be higher than 700 lux (between sunrise and cloudy day).
+The main purpose of the project is to avoid incidents and crashes between cyclists and car. Because this project is a Proof Of Concept, the operating range luminosity have to be higher than 700 lux (between sunrise and cloudy day).
 
 There are two systems for this project:
 
