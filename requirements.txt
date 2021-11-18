@@ -10,6 +10,7 @@ pep8-naming>=0.12.1
 
 # Package
 transitions==0.8.10
+# RPi.GPIO==0.7.0 # Not available for the GitLabRunner
 imutils==0.5.4
 numpy==1.21.4
 opencv-python==4.5.3.56

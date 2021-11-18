@@ -1,4 +1,20 @@
-"""Module to control the state machines controlling the input and output of the card."""
+"""Module to control the state machines controlling the input and output of the card.
+
+Examples
+--------
+>>> from clearway.gpio import stateMachinePanel
+>>> from time import sleep
+>>> GPIO = 5
+>>> stateMachinePanel.new(GPIO)
+>>> stateMachinePanel.start(GPIO)
+>>> for _ in range(5):
+...     stateMachinePanel.signal(GPIO)
+...     sleep(5)
+...     stateMachinePanel.end_signal(GPIO)
+...     sleep(5)
+>>> stateMachinePanel.stop(GPIO)
+>>> stateMachinePanel.free(GPIO)
+"""
 
 from threading import Thread
 import time
@@ -44,16 +60,16 @@ class StateMachinePanel:
 
     Attributes
     ----------
-    STATES : tuple(State)
+    STATES : `tuple(transitions.State)`
         The list of states that can be taken by the state machine.
-    TRANSITIONS : tuple(Transition)
+    TRANSITIONS : `tuple(transitions.Transition)`
         The list of transitions between states of the state machine.
 
     Methods
     -------
-    turn_on(p_gpio: int) -> None
+    turn_on(p_gpio: int)
         Set the GPIO to high level
-    turn_off(p_gpio: int) -> None
+    turn_off(p_gpio: int)
         Set the GPIO to low level
 
 
@@ -102,7 +118,7 @@ class StateMachinePanel:
 
         Parameters
         ----------
-        p_gpio : int
+        p_gpio : `int`
             The GPIO to be set high
         """
         global _use_gpio, _GpioModule
@@ -120,7 +136,7 @@ class StateMachinePanel:
 
         Parameters
         ----------
-        p_gpio : int
+        p_gpio : `int`
             The GPIO to be set low
         """
         global _use_gpio, _GpioModule
@@ -135,7 +151,7 @@ class StateMachinePanel:
 
         Parameters
         ----------
-        p_gpio : int
+        p_gpio : `int`
             The GPIO to be driven.
         """
         global _use_gpio, _GpioModule
@@ -196,7 +212,7 @@ def use_gpio(p_value: bool) -> None:
 
     Parameters
     ----------
-    p_value : bool
+    p_value : `bool`
         `True` if you want to use GPIOs, `False` otherwise.
     """
     global _use_gpio, _GpioModule
@@ -213,7 +229,7 @@ def new(p_gpio: int) -> None:
 
     Parameters
     ----------
-    p_gpio : int
+    p_gpio : `int`
         The port that will be controlled by the state machine.
     """
     global __state_machines
@@ -238,7 +254,7 @@ def start(p_gpio: int) -> None:
 
     Parameters
     ----------
-    p_gpio : int
+    p_gpio : `int`
         The port controlled by the state machine
 
     Raises
@@ -260,7 +276,7 @@ def stop(p_gpio: int) -> None:
 
     Parameters
     ----------
-    p_gpio : int
+    p_gpio : `int`
         The port that will be controlled by the state machine.
 
     Raises
@@ -280,7 +296,7 @@ def free(p_gpio: int) -> None:
 
     Parameters
     ----------
-    p_gpio : int
+    p_gpio : `int`
         The port that will be controlled by the state machine.
 
     Raises
@@ -300,7 +316,7 @@ def signal(p_gpio: int) -> None:
 
     Parameters
     ----------
-    p_gpio : int
+    p_gpio : `int`
         The port that will be controlled by the state machine.
 
     Raises
@@ -319,7 +335,7 @@ def end_signal(p_gpio: int) -> None:
 
     Parameters
     ----------
-    p_gpio : int
+    p_gpio : `int`
         The port that will be controlled by the state machine.
 
     Raises

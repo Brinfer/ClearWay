@@ -59,11 +59,12 @@ def __parse_arg() -> None:
     #     version='%(prog)s {version}'.format(version=__version__)
     # )
 
-    # Parse arguments
-    l_args = l_parser.parse_args()
-
     # TODO remove on release
     stateMachinePanel.use_gpio(False)
+
+    # TODO Uncomment on release
+    # Parse arguments
+    # l_args = l_parser.parse_args()
     # stateMachinePanel.use_gpio(not l_args.no_gpio)
 
     # if l_args.version:
