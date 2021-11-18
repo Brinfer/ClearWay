@@ -27,6 +27,7 @@ all:
 .PHONY: clean
 
 clean:
+	rm -f ClearWay.log
 
 upload:
 ifeq ($(TARGET), raspberry)
