@@ -1,0 +1,92 @@
+\section{Temps de traitement par Intelligence Artificielle}
+\label{sec:hwInference}
+
+\subsection{Objectifs}
+\label{sec:hwInference_Objectifs}
+
+\textit{Cette partie est écrite à la suite des explorations techniques de l'analyse d'images pour \gls{IA}}
+
+Le traitement d'image par \gls{IA} nécessite beaucoup de ressources de calcul. 
+Appliqué à un système embarqué ayant pour but de diminuer les accidents entre les cyclistes et les automobilistes aux intersections, 
+une latence minimale est primordiale.
+Cette dernière peut être réduite en ayant un meilleur micro contrôleur, avec plus de \gls{RAM}, un processeur plus puissance ou une carte graphique. 
+Néanmoins, le monde de l'embarqué est très restrictif et nous souhaitons améliorer les performances de traitement sans changer le matériel qui est à notre disposition.
+De ce fait, nous ne pouvons diminuer la latence en agissant sur les algorithmes utilisés et sur les périphériques de notre système.
+
+\subsection{Méthodologie de recherche}
+\label{sec:hwInference_Methodo}
+
+Se référer à la partie \ref{sec:centralise_Methodo}.
+
+\subsection{Résultats}
+\label{sec:hwInference_resultats}
+
+\subsubsection{Comparatif des algorithmes}
+\label{sec:hwInference_comp_algo}
+
+À la suite des explorations techniques, il s'est avéré que la reconnaissance d'image est relativement lente. Dans la partie \ref{sec:comparaisonIA} nous utilisons l'algorithme YOLO v3.
+Nous avons consacré notre étude sur trois algorithmes : YOLO v3, Tiny YOLO v3 et Tiny YOLO v2. Ci-dessous, le tableau comparatif en implémentant les algorithmes avec la capture d'images sur deux minutes :
+
+\begin{table}[ht!]
+    \centering
+    \begin{tabular}{|l|l|l|}
+    \hline
+                 & IPS  & Précision \\ \hline
+    YOLO v3      & 0,13 & 90\%      \\ \hline
+    Tiny YOLO v3 & 1,49 & 56\%      \\ \hline
+    Tiny Yolo v2 & 1,49 & 76\%      \\ \hline
+    \end{tabular}
+    \caption{Comparatif des différents algorithmes avec capture caméra}
+    \label{fig:comparatifAlgoAvecCam}
+    \end{table}
+
+Les résultats ci-dessus nous permettent d'éliminer l'utilisation de YOLO v3 pour le Raspberry Pi 4. 
+En effet, malgré la haute précision de détection, on obtenait 0,13 Image Par Seconde (IPS). 
+Cela n'est pas suffisant, pour rappel, la partie \ref{sec:camera_resultats} recommande 2 IPS.
+En utilisant Tiny YOLO, nous atteignons 1.49 IPS, ce qui est nécessaire pour notre projet, mais pas suffisant pour la sécurité des usagés.
+Pour la suite du projet, nous allons utiliser l'algorithme Tiny YOLO. 
+En nous appuyant sur les données du tableau, nous utiliserons la version 2 de cet algorithme qui a une meilleure fiabilité de détection que la version 3.
+
+\subsubsection{Utilisation d'un hardware d'\glsentryname{inference}}
+\label{sec:hwInference_hwinf}
+L'utilisation d'un hardware d'\gls{inference} permettrait de gagner en performance en réduisant le temps d'\gls{inference}.
+Pour notre projet, nous avons besoin de diminuer l'\gls{inference} pour satisfaire le cahier des charges du projet.
+
+Les hardwares d'\gls{inference} sont conçus pour accélérer les applications d'\gls{IA}.
+Il existe différents types d'hardware d'\gls{inference}: \gls{GPU}, \gls{FPGA} et \gls{VPU}. 
+Chacune de ces technologies présente des avantages et des limites.
+
+\paragraph{\glsentryname{GPU}}
+\label{sec:GPU_hwInf}
+Le \gls{GPU} a une architecture parallèle adaptée pour accélérer l'\gls{inference}. 
+Il a une consommation énergétique importante, ce qui n'est pas souhaitable pour un système embarqué. 
+De plus, cette technologie est coûteuse d'un point de vue matériel.
+
+\paragraph{\glsentryname{FPGA}}
+\label{sec:FPGA_hwInf}
+
+Le \gls{FPGA} est largement déployé dans les applications de vision industrielle et constitue la base de nombreuses caméras de vision industrielle et cartes d'acquisition d'images. 
+C'est un bon compromis entre la flexibilité et la programmabilité d'un logiciel exécuté sur un processeur à usage général et la vitesse et l'efficacité d'une application conçue sur mesure. 
+Cette technologie est très coûteuse d'un point de vue des compétences et matériel, ce qui est dommageable pour notre projet.
+Une limitation à l'utilisation du \gls{FPGA} dans la vision industrielle est que la programmation \gls{FPGA}, cette dernière nécessite une compétence hautement spécialisée.
+
+\paragraph{\glsentryname{VPU}}
+\label{sec:VPU_hwInf}
+
+Une technologie plus récente, le \gls{VPU} est un type de système sur puce conçu pour l'acquisition et l'interprétation d'informations visuelles. 
+Le \gls{VPU} cible les applications mobiles et est optimisé pour une petite taille et une efficacité énergétique avantageuse. 
+Cette faible consommation d'énergie est propice aux applications embarquées. 
+Le processeur \gls{VPU} Movidius Myriad d'Intel \cite{Movidius} par exemple, peut s'interfacer avec un capteur d'image, 
+pré-traiter les données d'image capturées, transmettre les images résultantes via un réseau de neurones pré-entraîné et produire un résultat. 
+Cela est possible grâce à la combinaison des cœurs de processeur traditionnels et des cœurs de traitement vectoriels pour accélérer la logique hautement ramifiée typique des réseaux de neurones profonds.
+
+Ces accélérateurs fonctionnent en assistant l'unité de traitement informatique du périphérique en prenant en charge la charge mathématique nécessaire à l'exécution de modèles d'apprentissage en profondeur. 
+La dernière génération de \gls{VPU} d'Intel comprend 16 cœurs de traitement (appelés cœurs SHAVE) et un accélérateur matériel de réseau neuronal profond dédié pour les applications de vision et d'\gls{inference} d'\gls{IA} hautes performances.
+De plus, le \gls{VPU} consomme peu d'énergie et est portable, ces points sont des avantages pour les systèmes embarqués.
+
+\subsection{Conclusion}
+\label{hwInference_Conclusion}
+Au vu des résultats obtenus lors de nos tests, il faudrait utiliser l'algorithme Tiny YOLO v2. En cumulant la puissance du Raspberry Pi 4 ayant 4 Go de \gls{RAM} avec cet algorithme, 
+nous obtenons 1,49 IPS, ce qui est acceptable, mais pas suffisant pour garantir la fiabilité du système.
+Coupler les technologies précédentes avec un hardware d'\gls{inference} de type \gls{VPU} pourrait permettre de diminuer drastiquement le temps d'\gls{inference}.
+L'Intel® Neural Compute Stick 2 \cite{Movidius} ayant le processeur Movidius™ Myriad™ X pourrait être un choix judicieux, car largement documenté, puissant et abordable.
