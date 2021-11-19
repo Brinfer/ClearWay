@@ -39,7 +39,6 @@ test:
     changes:
       - clearway/*
       - tests/*
-      - .gitlab-ci.yml
 
 linter:
   stage: check
@@ -57,6 +56,6 @@ build clearway:
   only:
     refs:
       - master
-    changes:
-      - clearway/*
-      - tests/*
+  artifacts:
+    paths:
+      - dist/*
