@@ -33,6 +33,7 @@ clean:
 	rm -rf report/
 	find ./clearway -type d -name __pycache__ -exec rm -rf {} \;
 	find ./explo -type d -name __pycache__ -exec rm -rf {} \;
+	find ./tests -type d -name __pycache__ -exec rm -rf {} \;
 
 build:
 	python -m build
