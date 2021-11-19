@@ -8,6 +8,7 @@ from ..gpio import stateMachinePanel
 from ..ai import ai
 
 __LOG_FORMAT = "%(asctime)s [%(filename)s:%(lineno)d] %(levelname)s >> %(message)s"
+__gpio_led = 5
 
 
 def __configure_logging() -> None:
@@ -74,14 +75,16 @@ def main() -> None:
     __parse_arg()
     __configure_logging()
 
-    # TODO remove
-    stateMachinePanel.new(5)
-    stateMachinePanel.start(5)
+    stateMachinePanel.new(__gpio_led)
+    stateMachinePanel.start(__gpio_led)
 
-    ai.bicycle_detector()
+    # Give the path to the input video to process it
+    # Otherwise it will use the Raspberry Pi camera
+    ai.init()
+    ai.bicycle_detector(__gpio_led)
 
-    stateMachinePanel.stop(5)
-    stateMachinePanel.free(5)
+    stateMachinePanel.stop(__gpio_led)
+    stateMachinePanel.free(__gpio_led)
 
 
 if __name__ == "__main__":
