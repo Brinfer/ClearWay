@@ -21,19 +21,27 @@ export PROG = clearway
 #
 
 # Compilation.
-all: 
+all:
 
 # Cleaning-up.
 .PHONY: clean
 
 clean:
-	rm -f ClearWay.log
+	rm -f *.log
+	rm -rf dist/
+	rm -rf clearway.egg-info/
+	rm -rf report/
+	find ./clearway -type d -name __pycache__ -exec rm -rf {} \;
+	find ./explo -type d -name __pycache__ -exec rm -rf {} \;
+
+build:
+	python -m build
 
 upload:
 ifeq ($(TARGET), raspberry)
 	sshpass -p '$(RASPBERRY_PASSWORD)' scp -r $(PROG) $(RASPBERRY_LOGIN)@$(RASPBERRY_ADDRESS):$(PROG)
 endif
- 
+
 # Open a terminal on the Raspberry.
 term:
 ifeq ($(TARGET), raspberry)

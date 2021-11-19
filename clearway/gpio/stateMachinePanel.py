@@ -41,17 +41,17 @@ _FREQUENCY = 2
 
 @unique
 class _StateEnum(Enum):
-    INIT = (0,)
-    OFF = (auto(),)
-    SIGNALING = (auto(),)
+    INIT = 0
+    OFF = auto()
+    SIGNALING = auto()
     STOP = auto()
 
 
 @unique
 class __EventEnum(Enum):
-    STOP = (0,)
-    SIGNAL = (auto(),)
-    STOP_SIGNAL = (auto(),)
+    STOP = 0
+    SIGNAL = auto()
+    STOP_SIGNAL = auto()
 
 
 class StateMachinePanel:
@@ -225,8 +225,9 @@ def use_gpio(p_value: bool) -> None:
     _use_gpio = p_value
 
     if _use_gpio is True:
-        import RPi.GPIO as _GpioModule
         # Import RPi.GPIO and save it in a protected variable
+        import RPi.GPIO as _GpioModule
+
 
 
 def new(p_gpio: int) -> None:

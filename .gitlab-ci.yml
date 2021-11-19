@@ -50,7 +50,7 @@ linter:
       - clearway/*
       - tests/*
 
-build clearway:
+build_clearway:
   stage: build
   script:
     - python -m build
