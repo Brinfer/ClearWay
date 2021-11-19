@@ -3,6 +3,17 @@
 <h1 align="center"><b>ClearWay</b></h1>
 </p>
 
+<p align=center>
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg"/>
+    <img src="https://img.shields.io/static/v1?style=flat&message=Python&logo=python&labelColor=FFD43B&color=306998&logoColor=3776AB&label=%20"/>
+    <img src="https://img.shields.io/static/v1?style=flat&message=Raspberry&logo=Raspberry Pi&labelColor=white&color=A22846&logoColor=A22846&label=%20"/>
+</p>
+
+<p align=center>
+    <img src="https://172.24.0.69/i3-fise/pfe/clearway/badges/master/coverage.svg"/>
+    <img src="https://172.24.0.69/i3-fise/pfe/clearway/badges/master/pipeline.svg?job=test"
+</p>
+
 <details>
   <summary>Table of Contents</summary>
 
