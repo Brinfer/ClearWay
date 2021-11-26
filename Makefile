@@ -49,4 +49,4 @@ install: upload_package
 
 # Open a terminal on the Raspberry.
 term:
-	$(TERM) $(TERMOPTIONS) ssh -t $(RASPBERRY_LOGIN)@$(RASPBERRY_ADDRESS)
+	ssh -t $(RASPBERRY_LOGIN)@$(RASPBERRY_ADDRESS)
