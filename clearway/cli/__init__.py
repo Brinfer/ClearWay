@@ -66,7 +66,7 @@ def __parse_arg() -> None:
         # Parse arguments
         stateMachinePanel.use_gpio(not l_args.no_gpio)
     else:
-    stateMachinePanel.use_gpio(False)
+        stateMachinePanel.use_gpio(False)
 
     # if l_args.version:
     #     print(clearway.__version__)
@@ -78,7 +78,6 @@ def main() -> None:
     __parse_arg()
     __configure_logging()
 
-    # TODO remove
     stateMachinePanel.new(5)
     stateMachinePanel.start(5)
 
