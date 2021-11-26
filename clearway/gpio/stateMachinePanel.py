@@ -166,6 +166,7 @@ class StateMachinePanel:
             initial=_StateEnum.OFF,
             transitions=StateMachinePanel.TRANSITIONS,
             queued=True,
+            ignore_invalid_triggers=True
         )
         self.__gpio = p_gpio  # type: int
         self.__blinkThread = None  # type: Thread
