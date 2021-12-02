@@ -11,7 +11,7 @@
 
 <p align=center>
     <img src="https://172.24.0.69/i3-fise/pfe/clearway/badges/master/coverage.svg"/>
-    <img src="https://172.24.0.69/i3-fise/pfe/clearway/badges/master/pipeline.svg?job=test"
+    <img src="https://172.24.0.69/i3-fise/pfe/clearway/badges/master/pipeline.svg?job=test"/>
 </p>
 
 <details>

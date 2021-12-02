@@ -71,8 +71,9 @@ _minted*
 
 # Python
 
-## Python output file
+## Python cache file
 __pycache__/
+.pytest_cache/
 
 ## Python virtual environnemnt
 venv/
