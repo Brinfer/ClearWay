@@ -1,4 +1,22 @@
-"""Module to control the state machines controlling the input and output of the card."""
+"""Module to control the state machines controlling the input and output of the card.
+
+All state machines are asynchronous and independent.
+
+Examples
+--------
+>>> from clearway.gpio import stateMachinePanel
+>>> from time import sleep
+>>> GPIO = 5
+>>> stateMachinePanel.new(GPIO)
+>>> stateMachinePanel.start(GPIO)
+>>> for _ in range(5):
+...     stateMachinePanel.signal(GPIO)
+...     sleep(5)
+...     stateMachinePanel.end_signal(GPIO)
+...     sleep(5)
+>>> stateMachinePanel.stop(GPIO)
+>>> stateMachinePanel.free(GPIO)
+"""
 
 from threading import Thread
 import time
@@ -16,42 +34,51 @@ __state_machines = {}
 __LOOP_KEY = "loop"
 __QUEUE_KEY = "queue"
 
-_use_gpio = False
 _GpioModule = None
 _FREQUENCY = 2
 
 
 @unique
 class _StateEnum(Enum):
-    INIT = (0,)
-    OFF = (auto(),)
-    SIGNALING = (auto(),)
+    INIT = 0
+    OFF = auto()
+    SIGNALING = auto()
     STOP = auto()
 
 
 @unique
 class __EventEnum(Enum):
-    STOP = (0,)
-    SIGNAL = (auto(),)
-    STOP_SIGNAL = (auto(),)
+    STOP = 0
+    SIGNAL = auto()
+    STOP_SIGNAL = auto()
 
 
 class StateMachinePanel:
     """State machine driving an input/output of the card.
 
-    In the signaling state, the input output alternates between high and low with a frequency of
-    py:attribute::_FREQUENCY.
-
     Attributes
     ----------
-    __gpio : int
-        The gpio driven by the state machine.
-    __blinkThread : Thread
-        The thread handler where the signaling state drives the gpio.
-    STATES : tuple(State)
+    STATES : `tuple(transitions.State)`
         The list of states that can be taken by the state machine.
-    TRANSITIONS : tuple(Transition)
+    TRANSITIONS : `tuple(transitions.Transition)`
         The list of transitions between states of the state machine.
+
+    Parameters
+    ----------
+    p_gpio : `int`
+        The GPIO to be driven.
+
+    Methods
+    -------
+    turn_on(p_gpio: int)
+        Set the GPIO to high level
+    turn_off(p_gpio: int)
+        Set the GPIO to low level
+
+    Notes
+    -----
+    The state machine is based on the transitions [1] package licenced by MIT
+
 
     .. uml::
         [*] --> Off : start
@@ -59,6 +86,8 @@ class StateMachinePanel:
         Off --> [*] : stop
         Signaling --> Off : end_signal / stop_signal()
         Signaling --> [*] : stop / stop_signal()
+
+    .. [1] https://github.com/pytransitions/transitions
     """
 
     STATES = (
@@ -90,15 +119,44 @@ class StateMachinePanel:
         },
     )
 
-    def __init__(self, p_gpio: int) -> None:
-        """Create a new state machine for the given GPIO.
+    @staticmethod
+    def turn_on(p_gpio: int) -> None:
+        """Set the GPIO to high level.
+
+        If the `use_gpio` function not called with the argument at `True`, then the GPIO will not be modified
 
         Parameters
         ----------
-        p_gpio : int
-            The GPIO to be driven.
+        p_gpio : `int`
+            The GPIO to be set high
         """
-        global _use_gpio, _GpioModule
+        global _GpioModule
+
+        logging.debug("[GPIO-%s] Turn hight", p_gpio)
+
+        if _GpioModule is not None:
+            _GpioModule.output(p_gpio, _GpioModule.HIGH)
+
+    @staticmethod
+    def turn_off(p_gpio: int) -> None:
+        """Set the GPIO to low level.
+
+        If the `use_gpio` function not called with the argument at `True`, then the GPIO will not be modified
+
+        Parameters
+        ----------
+        p_gpio : `int`
+            The GPIO to be set low
+        """
+        global _GpioModule
+
+        logging.debug("[GPIO-%s] Turn down", p_gpio)
+
+        if _GpioModule is not None:
+            _GpioModule.output(p_gpio, _GpioModule.LOW)
+
+    def __init__(self, p_gpio: int) -> None:
+        global _GpioModule
 
         logging.debug("[GPIO-%s] - Create the state machine", p_gpio)
 
@@ -108,16 +166,17 @@ class StateMachinePanel:
             initial=_StateEnum.OFF,
             transitions=StateMachinePanel.TRANSITIONS,
             queued=True,
+            ignore_invalid_triggers=True,
         )
-        self.__gpio = p_gpio
-        self.__blinkThread = None
+        self.__gpio = p_gpio  # type: int
+        self.__blinkThread = None  # type: Thread
 
-        if _use_gpio is True:
+        if _GpioModule is not None:
             _GpioModule.setmode(_GpioModule.BOARD)
             _GpioModule.setwarnings(False)  # Disable warning messages
             _GpioModule.setup(self.__gpio, _GpioModule.OUT)
 
-            self.__turn_off()  # Force at low level
+        StateMachinePanel.turn_off(self.__gpio)  # Force at low level
 
     def __del__(self) -> None:
         """Destroys the state machine.
@@ -126,41 +185,29 @@ class StateMachinePanel:
         """
         logging.debug("[GPIO-%s] - Destroy the state machine", self.__gpio)
 
-        self.__turn_off()
+        StateMachinePanel.turn_off(self.__gpio)
 
     def _signal(self) -> None:
-        logging.info("[GPIO-%s] - Action: start signaling", self.__gpio)
-
-        self.__blinkThread = Thread(target=self.__thread_run)
-        self.__blinkThread.start()
+        if self.__blinkThread is None:
+            logging.info("[GPIO-%s] - Action: start signaling", self.__gpio)
+            self.__blinkThread = Thread(target=self.__thread_run)
+            self.__blinkThread.start()
+        else:
+            logging.warning("[GPIO-%s] - Action: already signaling", self.__gpio)
 
     def _stop_signal(self) -> None:
-        logging.info("[GPIO-%s] - Action: stop signaling", self.__gpio)
-
-        if self.__blinkThread is not None:
+        if self.__blinkThread is not None and self.__blinkThread.is_alive():
+            logging.info("[GPIO-%s] - Action: stop signaling", self.__gpio)
             self.__blinkThread.join()
-
-    def __turn_on(self) -> None:
-        global _use_gpio, _GpioModule
-
-        logging.debug("[GPIO-%s] Turn hight", self.__gpio)
-
-        if _use_gpio:
-            _GpioModule.output(self.__gpio, _GpioModule.HIGH)
-
-    def __turn_off(self) -> None:
-        global _use_gpio, _GpioModule
-
-        logging.debug("[GPIO-%s] Turn down", self.__gpio)
-
-        if _use_gpio:
-            _GpioModule.output(self.__gpio, _GpioModule.LOW)
+            self.__blinkThread = None
+        else:
+            logging.warning("[GPIO-%s] - Action: is not signaling", self.__gpio)
 
     def __thread_run(self) -> None:
-        while self.is_SIGNALING() is True:
-            self.__turn_on()
+        while self.is_SIGNALING() is True:  # Test the actual state of the state machine
+            StateMachinePanel.turn_on(self.__gpio)
             time.sleep(_FREQUENCY / 2)
-            self.__turn_off()
+            StateMachinePanel.turn_off(self.__gpio)
             time.sleep(_FREQUENCY / 2)
 
 
@@ -172,25 +219,30 @@ def use_gpio(p_value: bool) -> None:
 
     Parameters
     ----------
-    p_value : bool
+    p_value : `bool`
         `True` if you want to use GPIOs, `False` otherwise.
     """
-    global _use_gpio, _GpioModule
+    global _GpioModule
 
-    _use_gpio = p_value
-
-    if _use_gpio is True:
-        import RPi.GPIO as _GpioModule
+    if p_value is True:
         # Import RPi.GPIO and save it in a protected variable
+        import RPi.GPIO as _GpioModule
+    else:
+        _GpioModule = None
 
 
-def new(p_gpio: int) -> None:
+def new(p_gpio: int) -> StateMachinePanel:
     """Create a new state machine for the given port.
 
     Parameters
     ----------
-    p_gpio : int
+    p_gpio : `int`
         The port that will be controlled by the state machine.
+
+    Returns
+    -------
+    StateMachinePanel
+        The new state machine created
     """
     global __state_machines
 
@@ -208,13 +260,15 @@ def new(p_gpio: int) -> None:
         __QUEUE_KEY: queue,
     }
 
+    return state_machine
+
 
 def start(p_gpio: int) -> None:
     """Start the state machine for the given port.
 
     Parameters
     ----------
-    p_gpio : int
+    p_gpio : `int`
         The port controlled by the state machine
 
     Raises
@@ -236,7 +290,7 @@ def stop(p_gpio: int) -> None:
 
     Parameters
     ----------
-    p_gpio : int
+    p_gpio : `int`
         The port that will be controlled by the state machine.
 
     Raises
@@ -256,7 +310,7 @@ def free(p_gpio: int) -> None:
 
     Parameters
     ----------
-    p_gpio : int
+    p_gpio : `int`
         The port that will be controlled by the state machine.
 
     Raises
@@ -276,7 +330,7 @@ def signal(p_gpio: int) -> None:
 
     Parameters
     ----------
-    p_gpio : int
+    p_gpio : `int`
         The port that will be controlled by the state machine.
 
     Raises
@@ -295,7 +349,7 @@ def end_signal(p_gpio: int) -> None:
 
     Parameters
     ----------
-    p_gpio : int
+    p_gpio : `int`
         The port that will be controlled by the state machine.
 
     Raises
@@ -312,10 +366,12 @@ def end_signal(p_gpio: int) -> None:
 def __run(p_queue: Queue, p_state_machine: StateMachinePanel) -> None:
     l_last_event = None
 
-    while l_last_event != __EventEnum.STOP:
+    while l_last_event is not __EventEnum.STOP:
         l_last_event = p_queue.get()
 
         if l_last_event is __EventEnum.SIGNAL:
             p_state_machine.startSignal()
         elif l_last_event is __EventEnum.STOP_SIGNAL:
             p_state_machine.stopSignal()
+        elif l_last_event is __EventEnum.STOP:
+            p_state_machine.stopStateMachine()
