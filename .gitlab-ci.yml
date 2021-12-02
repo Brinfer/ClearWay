@@ -42,7 +42,7 @@ test:
 linter:
   stage: check
   script:
-    - python -m flake8 --config setup.cfg clearway/
+    - python -m flake8 --config setup.cfg
   allow_failure: true
   only:
     - clearway/*
