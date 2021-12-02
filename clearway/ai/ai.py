@@ -7,8 +7,7 @@ import os
 from imutils.video import VideoStream
 from imutils.video import FPS
 import cv2
-
-from ..gpio import stateMachinePanel
+from clearway.gpio import stateMachinePanel
 
 
 @unique
@@ -58,19 +57,19 @@ def init(path_to_input_video=None) -> None:
     layer_names = __network.getLayerNames()
     __output_layers = [layer_names[i[0] - 1] for i in __network.getUnconnectedOutLayers()]
 
-    if(path_to_input_video is None):
+    if path_to_input_video is None:
         __video_stream = VideoStream(usePiCamera=True).start()
-        # Very important! Otherwize, video_stream.read() gives a NonType
+        # Very important! Otherwise, video_stream.read() gives a NonType
         time.sleep(2.0)
-        logging.debug("\033[33m[AI] Caméra prête à détecter \033[0m")
+        logging.debug("[AI] Camera ready to detect")
     else:
         __path_to_input_video = path_to_input_video
         __video_stream = cv2.VideoCapture(path_to_input_video)
         execution_path = os.getcwd()
-        path_to_output_video = os.path.join(execution_path, path_to_input_video[:-4]+"_processed.mp4")
+        path_to_output_video = os.path.join(execution_path, path_to_input_video[:-4] + "_processed.mp4")
         x_shape = int(__video_stream.get(cv2.CAP_PROP_FRAME_WIDTH))
         y_shape = int(__video_stream.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        four_cc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
+        four_cc = cv2.VideoWriter_fourcc("m", "p", "4", "v")
         __output_video = cv2.VideoWriter(path_to_output_video, four_cc, fps=1, frameSize=(x_shape, y_shape))
 
 
@@ -83,7 +82,7 @@ def bicycle_detector(gpio_led) -> None:
     # Start the frames per second
     fps = FPS().start()
 
-    if(__path_to_input_video is None):
+    if __path_to_input_video is None:
         read_ok = True
         img = __video_stream.read()
     else:
@@ -127,7 +126,7 @@ def bicycle_detector(gpio_led) -> None:
         # Update the FPS counter
         fps.update()
 
-        if(__path_to_input_video is None):
+        if __path_to_input_video is None:
             img = __video_stream.read()
         else:
             __output_video.write(img)
@@ -135,10 +134,10 @@ def bicycle_detector(gpio_led) -> None:
 
     # Stop the timer and display FPS information
     fps.stop()
-    logging.debug("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))
-    logging.debug("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
+    logging.debug("[IA] elapsed time: {:.2f}".format(fps.elapsed()))
+    logging.debug("[IA] approx. FPS: {:.2f}".format(fps.fps()))
 
-    if(__path_to_input_video is None):
+    if __path_to_input_video is None:
         __video_stream.stop()
 
 
@@ -163,10 +162,10 @@ def dram_boxes_and_call_state_machine(indexes, boxes, confidences, img, gpio_led
     if __detect and not __detect_old:
         for i in range(len(boxes)):
             if i in indexes:
-                logging.debug(
-                    "\033[33m[AI] " + __object_detection_id.name
-                    + " detected with a probability of: {:.2f} % \033[0m"
-                    .format(confidences[i] * 100)
+                logging.info(
+                    "[AI] {} detected with a probability of: {:.2f} %".format(
+                        __object_detection_id.name, confidences[i] * 100
+                    )
                 )
 
                 stateMachinePanel.signal(gpio_led)
@@ -174,8 +173,9 @@ def dram_boxes_and_call_state_machine(indexes, boxes, confidences, img, gpio_led
                 x, y, w, h = boxes[i]
                 confidence_label = int(confidences[i] * 100)
                 cv2.rectangle(img, (x, y), (x + w, y + h), __output_color, 2)
-                cv2.putText(img, f"{__object_detection_id.name, confidence_label}",
-                            (x - 25, y + 75), font, 2, __output_color, 2)
+                cv2.putText(
+                    img, f"{__object_detection_id.name, confidence_label}", (x - 25, y + 75), font, 2, __output_color, 2
+                )
     # Else if something is not detected but it was before (falling edge)
     elif __detect_old and not __detect:
         stateMachinePanel.end_signal(gpio_led)

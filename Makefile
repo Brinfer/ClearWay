@@ -41,7 +41,7 @@ build:
 upload:
 	scp -r $(PROG_PACKAGE_FOLDER) $(RASPBERRY_LOGIN)@$(RASPBERRY_ADDRESS):/home/$(RASPBERRY_LOGIN)/PROG_FOLDER
 
-upload_package:
+upload_package: build
 	scp -r $(PROG_PACKAGE_FOLDER) $(RASPBERRY_LOGIN)@$(RASPBERRY_ADDRESS):/home/$(RASPBERRY_LOGIN)
 
 install: upload_package
