@@ -65,6 +65,7 @@ def test_state_machine_nominal(
     assert spy_action_stop_signal.call_count == action_stop_signal_counter
     assert spy_action_signal.call_count == 0
 
+    # Pass to SIGNAL state
     stateMachinePanel.signal(GPIO)
     sleep(DELAY)
     action_signal_counter += 1
@@ -72,6 +73,7 @@ def test_state_machine_nominal(
     assert spy_action_stop_signal.call_count == action_stop_signal_counter
     assert spy_action_signal.call_count == action_signal_counter
 
+    # Pass to OFF state
     stateMachinePanel.end_signal(GPIO)
     sleep(DELAY)
     action_stop_signal_counter += 1
@@ -79,6 +81,7 @@ def test_state_machine_nominal(
     assert spy_action_stop_signal.call_count == action_stop_signal_counter
     assert spy_action_signal.call_count == action_signal_counter
 
+    # Pass to SIGNAL state
     stateMachinePanel.signal(GPIO)
     sleep(DELAY)
     action_signal_counter += 1
@@ -86,7 +89,16 @@ def test_state_machine_nominal(
     assert spy_action_stop_signal.call_count == action_stop_signal_counter
     assert spy_action_signal.call_count == action_signal_counter
 
+    # Pass to OFF state
     stateMachinePanel.end_signal(GPIO)
+    sleep(DELAY)
+    action_stop_signal_counter += 1
+
+    assert spy_action_stop_signal.call_count == action_stop_signal_counter
+    assert spy_action_signal.call_count == action_signal_counter
+
+    # Pass to STOP state
+    stateMachinePanel.stop(GPIO)
     sleep(DELAY)
     action_stop_signal_counter += 1
 
@@ -142,6 +154,29 @@ def test_repeat_same_command(mocker: MockerFixture, state_machine_tested: stateM
 
     # Should not execute the action stop_signal
     stateMachinePanel.end_signal(GPIO)
+    sleep(DELAY)
+
+    assert spy_action_stop_signal.call_count == action_stop_signal_counter
+    assert spy_action_signal.call_count == action_signal_counter
+
+    # Change to STOP state
+
+    stateMachinePanel.stop(GPIO)
+    sleep(DELAY)
+    action_stop_signal_counter += 1
+
+    assert spy_action_stop_signal.call_count == action_stop_signal_counter
+    assert spy_action_signal.call_count == action_signal_counter
+
+    # Should not execute the action stop_signal
+    stateMachinePanel.end_signal(GPIO)
+    sleep(DELAY)
+
+    assert spy_action_stop_signal.call_count == action_stop_signal_counter
+    assert spy_action_signal.call_count == action_signal_counter
+
+    # Should not execute the action signal
+    stateMachinePanel.signal(GPIO)
     sleep(DELAY)
 
     assert spy_action_stop_signal.call_count == action_stop_signal_counter
