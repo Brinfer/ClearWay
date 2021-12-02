@@ -42,7 +42,9 @@ def state_machine_tested() -> None:
     stateMachinePanel.free(GPIO)
 
 
-def test_state_machine_nominal(mocker: MockerFixture, state_machine_tested: stateMachinePanel.StateMachinePanel) -> None:
+def test_state_machine_nominal(
+    mocker: MockerFixture, state_machine_tested: stateMachinePanel.StateMachinePanel
+) -> None:
     """Checks that the state machine works in a nominal scenario.
 
     The `signal` and `end_signal` will be sent successively, the good change of the pins state will be checked
