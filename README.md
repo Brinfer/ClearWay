@@ -24,9 +24,7 @@
   - [4.1. 4.1 From the source](#41-41-from-the-source)
 - [5. Usage](#5-usage)
   - [5.1. Dependencies](#51-dependencies)
-  - [5.2. Options](#52-options)
-    - [5.2.1. Optimized](#521-optimized)
-    - [5.2.2. `--no-gpio`](#522---no-gpio)
+  - [5.2. Optional Arguments](#52-optional-arguments)
 - [6. Contributing](#6-contributing)
 
 </details>
@@ -89,22 +87,19 @@ A version of __Python 3.8__ minimum is required. In the different sub-projects, 
 pip install -r requirements.txt
 ```
 
-## 5.2. Options
-
-### 5.2.1. Optimized
-
-Remove assert statements and any code conditional on the value of `__debug__`. The consequence of this is that the logs are displayed only in the log file.
+## 5.2. Optional Arguments
 
 ```bash
-python -O clearway
-```
+clearway [-h] [--gpio GPIO] [--no-gpio] [--path PATH] [-v {WARNING,INFO,DEBUG}] [-V]
 
-### 5.2.2. `--no-gpio`
-
-Tells the program that it does not want to use the GPIOs, only the logs will be displayed.
-
-```bash
-clearway --no-gio
+optional arguments:
+  -h, --help            show this help message and exit
+  --gpio GPIO           tells the program which gpio to use, the default is 5
+  --no-gpio             tells the program that it does not want to use the GPIOs, only the logs will be displayed
+  --path PATH           the path to the video to be analyzed rather than using the video stream from the camera
+  -v {WARNING,INFO,DEBUG}, --verbosity {WARNING,INFO,DEBUG}
+                        indicates the level of verbosity, default is INFO
+  -V, --version         print the ClearWay version and exit
 ```
 
 # 6. Contributing
