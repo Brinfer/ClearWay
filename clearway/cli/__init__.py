@@ -24,7 +24,7 @@ __verbosity_level = None
 
 # Angle of the camera
 _camera_angle = 75
-_servo_PIN = 12
+_servo_pin = 12
 
 
 def __is_positive(p_value):
@@ -187,7 +187,7 @@ def main() -> None:
     if __gpio_led is None:
         __gpio_led = __DEFAULT_GPIO
 
-    servo.servo_init(_camera_angle, _servo_PIN)
+    servo.servo_init(_camera_angle, _servo_pin)
 
     stateMachinePanel.new(__gpio_led)
     stateMachinePanel.start(__gpio_led)
