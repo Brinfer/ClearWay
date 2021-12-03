@@ -15,7 +15,8 @@ __DEFAULT_VERBOSITY_LEVEL = logging.INFO
 __LOG_PATH = "ClearWay.log"
 
 __gpio_led = None
-__video_path = None
+__input_video_path = None
+__output_video_path = None
 __verbosity_level = None
 
 
@@ -68,7 +69,7 @@ def __parse_arg() -> None:
         -V, --version
             print the project version and exit
     """
-    global __gpio_led, __video_path, __verbosity_level, __DEFAULT_GPIO
+    global __gpio_led, __input_video_path, __output_video_path, __verbosity_level, __DEFAULT_GPIO
 
     l_parser = argparse.ArgumentParser()
 
@@ -89,8 +90,15 @@ def __parse_arg() -> None:
     )
 
     l_parser.add_argument(
-        "--path",
-        help="the path to the video to be analyzed rather than using the video stream from the camera",
+        "--input-path",
+        help="the path to the input video to be analyzed rather than using the video stream from the camera",
+        action="store",
+        default=None,
+    )
+
+    l_parser.add_argument(
+        "--output-path",
+        help="the path to the folder that will contain the output video with boxes around detected bicycles",
         action="store",
         default=None,
     )
@@ -120,7 +128,8 @@ def __parse_arg() -> None:
 
     gpio.use_gpio(not l_args.no_gpio)
     __gpio_led = l_args.gpio
-    __video_path = l_args.path
+    __input_video_path = l_args.input_path
+    __output_video_path = l_args.ouput_path
 
     if l_args.verbosity == logging.getLevelName(logging.WARNING):
         __verbosity_level = logging.WARNING
@@ -145,7 +154,7 @@ def main() -> None:
 
     # Give the path to the input video to process it
     # Otherwise it will use the Raspberry Pi camera
-    ai.init(path_to_input_video=__video_path)
+    ai.init(path_to_input_video=__input_video_path, path_to_output_video=__output_video_path)
     ai.bicycle_detector(__gpio_led)
 
     stateMachinePanel.stop(__gpio_led)
