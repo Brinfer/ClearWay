@@ -22,6 +22,7 @@ def use_gpio(p_value: bool) -> None:
     if p_value is True:
         # Import RPi.GPIO and save it in a global variable
         import RPi.GPIO as GPIO  # noqa: N814: camelcase 'RPi.GPIO' imported as constant 'GPIO'
+
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)  # Disable warning messages
     else:
