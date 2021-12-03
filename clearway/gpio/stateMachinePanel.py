@@ -26,6 +26,7 @@ from queue import Queue
 
 from transitions import State
 from transitions.core import Machine
+from clearway.gpio import GPIO
 
 # Only accept message equals or upper to WARNING from transitions packages
 logging.getLogger("transitions").setLevel(logging.WARNING)
@@ -34,7 +35,6 @@ __state_machines = {}
 __LOOP_KEY = "loop"
 __QUEUE_KEY = "queue"
 
-_GpioModule = None
 _FREQUENCY = 2
 
 
@@ -130,12 +130,10 @@ class StateMachinePanel:
         p_gpio : `int`
             The GPIO to be set high
         """
-        global _GpioModule
-
         logging.debug("[GPIO-%s] Turn hight", p_gpio)
 
-        if _GpioModule is not None:
-            _GpioModule.output(p_gpio, _GpioModule.HIGH)
+        if GPIO is not None:
+            GPIO.output(p_gpio, GPIO.HIGH)
 
     @staticmethod
     def turn_off(p_gpio: int) -> None:
@@ -148,16 +146,12 @@ class StateMachinePanel:
         p_gpio : `int`
             The GPIO to be set low
         """
-        global _GpioModule
-
         logging.debug("[GPIO-%s] Turn down", p_gpio)
 
-        if _GpioModule is not None:
-            _GpioModule.output(p_gpio, _GpioModule.LOW)
+        if GPIO is not None:
+            GPIO.output(p_gpio, GPIO.LOW)
 
     def __init__(self, p_gpio: int) -> None:
-        global _GpioModule
-
         logging.debug("[GPIO-%s] - Create the state machine", p_gpio)
 
         Machine(
@@ -209,26 +203,6 @@ class StateMachinePanel:
             time.sleep(_FREQUENCY / 2)
             StateMachinePanel.turn_off(self.__gpio)
             time.sleep(_FREQUENCY / 2)
-
-
-def use_gpio(p_value: bool) -> None:
-    """Tells all state machines if they can modify the GPIO level.
-
-    If the passed parameter is `True`, then the module `RPi.GPIO` is imported.
-    This function must be called at the beginning of the program.
-
-    Parameters
-    ----------
-    p_value : `bool`
-        `True` if you want to use GPIOs, `False` otherwise.
-    """
-    global _GpioModule
-
-    if p_value is True:
-        # Import RPi.GPIO and save it in a protected variable
-        import RPi.GPIO as _GpioModule
-    else:
-        _GpioModule = None
 
 
 def new(p_gpio: int) -> StateMachinePanel:
