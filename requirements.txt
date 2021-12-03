@@ -10,11 +10,11 @@ flake8-pytest-style>=1.5.0
 pep8-naming>=0.12.1
 
 # Package
-transitions==0.8.10
-# RPi.GPIO==0.7.0 # Not available for the GitLabRunner
-imutils==0.5.4
-numpy==1.21.4
-opencv-python==4.5.4.60
+transitions>=0.8.10
+# RPi.GPIO>=0.7.0 # Not available for the GitLabRunner
+imutils>=0.5.4
+numpy>=1.21.4
+opencv-python>=4.5.4.60
 
 # Tests
 pytest>=6.2.5
