@@ -172,7 +172,7 @@ class StateMachinePanel:
         self.__blinkThread = None  # type: Thread
 
         if _GpioModule is not None:
-            _GpioModule.setmode(_GpioModule.BOARD)
+            _GpioModule.setmode(_GpioModule.BCM)
             _GpioModule.setwarnings(False)  # Disable warning messages
             _GpioModule.setup(self.__gpio, _GpioModule.OUT)
 
