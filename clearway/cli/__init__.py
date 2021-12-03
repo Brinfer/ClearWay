@@ -5,6 +5,7 @@ import sys
 import argparse
 
 import clearway
+import clearway.gpio as gpio
 from clearway.gpio import stateMachinePanel
 from clearway.ai import ai
 
@@ -117,7 +118,7 @@ def __parse_arg() -> None:
 
     l_args = l_parser.parse_args()
 
-    stateMachinePanel.use_gpio(not l_args.no_gpio)
+    gpio.use_gpio(not l_args.no_gpio)
     __gpio_led = l_args.gpio
     __video_path = l_args.path
 
