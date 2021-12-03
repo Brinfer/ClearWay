@@ -129,9 +129,9 @@ class StateMachinePanel:
         Parameters
         ----------
         p_gpio : `int`
-            The  to be set high
+            The GPIO to be set high
         """
-        logging.debug("[-%s] Turn hight", p_gpio)
+        logging.debug("[GPIO-%s] Turn hight", p_gpio)
 
         if gpio.GPIO is not None:
             gpio.GPIO.output(p_gpio, gpio.GPIO.HIGH)
