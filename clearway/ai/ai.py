@@ -27,7 +27,7 @@ class __IdYoloOutputLayer(IntEnum):
     BICYCLE = auto()
 
 
-__object_detection_id = __IdYoloOutputLayer.PERSON
+__object_detection_id = __IdYoloOutputLayer.BICYCLE
 __network = None
 __output_layers = []
 __video_stream = None
@@ -64,6 +64,7 @@ def init(yolo_weights, yolo_cfg, path_to_input_video=None, path_to_output_video=
     else:
         __path_to_input_video = path_to_input_video
         __video_stream = cv2.VideoCapture(path_to_input_video)
+        # __video_stream = cv2.VideoCapture("/dev/video0")
 
     if path_to_output_video is not None:
         # execution_path = os.getcwd()
@@ -123,7 +124,7 @@ def bicycle_detector(gpio_led) -> None:
         # To remove multiple boxes that refer to the same object and keep one by Non Maximum Supression
         indexes = cv2.dnn.NMSBoxes(boxes, confidences, score_threshold=0.5, nms_threshold=0.4)
 
-        img = dram_boxes_and_call_state_machine(indexes, boxes, confidences, img, gpio_led)
+        img_processed = dram_boxes_and_call_state_machine(indexes, boxes, confidences, img, gpio_led)
 
         # Update the FPS counter
         fps.update()
@@ -134,7 +135,7 @@ def bicycle_detector(gpio_led) -> None:
             read_ok, img = __video_stream.read()
 
         if __path_to_output_video is not None:
-            __output_video.write(img)
+            __output_video.write(img_processed)
 
     # Stop the timer and display FPS information
     fps.stop()
@@ -174,12 +175,14 @@ def dram_boxes_and_call_state_machine(indexes, boxes, confidences, img, gpio_led
 
                 stateMachinePanel.signal(gpio_led)
 
-                x, y, w, h = boxes[i]
-                confidence_label = int(confidences[i] * 100)
-                cv2.rectangle(img, (x, y), (x + w, y + h), __output_color, 2)
-                cv2.putText(
-                    img, f"{__object_detection_id.name, confidence_label}", (x - 25, y + 75), font, 2, __output_color, 2
-                )
+                if __path_to_output_video is not None:
+                    x, y, w, h = boxes[i]
+                    confidence_label = int(confidences[i] * 100)
+                    cv2.rectangle(img, (x, y), (x + w, y + h), __output_color, 2)
+                    cv2.putText(
+                        img, f"{__object_detection_id.name, confidence_label}", (x - 25, y + 75), font, 2,
+                        __output_color, 2
+                    )
     # Else if something is not detected but it was before (falling edge)
     elif __detect_old and not __detect:
         stateMachinePanel.end_signal(gpio_led)
