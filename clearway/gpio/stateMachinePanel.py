@@ -165,10 +165,10 @@ class StateMachinePanel:
         self.__gpio = p_gpio  # type: int
         self.__blinkThread = None  # type: Thread
 
-        if GPIO is not None:
-            GPIO.setmode(GPIO.BOARD)
-            GPIO.setwarnings(False)  # Disable warning messages
-            GPIO.setup(self.__gpio, GPIO.OUT)
+        if _GpioModule is not None:
+            _GpioModule.setmode(_GpioModule.BCM)
+            _GpioModule.setwarnings(False)  # Disable warning messages
+            _GpioModule.setup(self.__gpio, _GpioModule.OUT)
 
         StateMachinePanel.turn_off(self.__gpio)  # Force at low level
 
