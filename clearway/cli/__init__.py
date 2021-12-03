@@ -7,6 +7,7 @@ import argparse
 import clearway
 import clearway.gpio as gpio
 from clearway.gpio import stateMachinePanel
+from clearway.gpio import servo
 from clearway.ai import ai
 
 __LOG_FORMAT = "%(asctime)s [%(filename)s:%(lineno)d] %(levelname)s >> %(message)s"
@@ -18,6 +19,8 @@ __gpio_led = None
 __video_path = None
 __verbosity_level = None
 
+#Angle of the camera
+_camera_angle = 75
 
 def __is_positive(p_value):
     l_int_value = int(p_value)
@@ -139,9 +142,12 @@ def main() -> None:
 
     if __gpio_led is None:
         __gpio_led = __DEFAULT_GPIO
+    
+    servo.servo_init(_camera_angle)
 
     stateMachinePanel.new(__gpio_led)
     stateMachinePanel.start(__gpio_led)
+
 
     # Give the path to the input video to process it
     # Otherwise it will use the Raspberry Pi camera
