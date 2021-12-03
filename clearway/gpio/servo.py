@@ -1,11 +1,18 @@
+""" Module to control the camera angle using a servo motor."""
 import time
-#from clearway.gpio import GPIO
-
 import clearway.gpio as gpio
 
 
-def servo_init(angle:int) -> None:
-    servoPIN = 12
+def servo_init(angle: int, servoPIN: int) -> None:
+    """Initialize the servo motor to fit with the given parameter.
+
+    Parameters
+    ----------
+    angle : int
+        The angle of the camera between 0° to 180°.
+    servoPIN : int
+        The GPIO pin of the raspberry Pi
+    """
     print(gpio.GPIO)
     if gpio.GPIO is not None:
         gpio.GPIO.setmode(gpio.GPIO.BCM)
@@ -15,7 +22,7 @@ def servo_init(angle:int) -> None:
         p.start(2)  # Initialization
         time.sleep(0.5)
         try:
-            newposition = 1./18.*(angle % 180)+2  # % to have the module for the angle between 0 and 180°
+            newposition = 1.0 / 18.0 * (angle % 180) + 2  # % to have the module for the angle between 0 and 180°
             p.ChangeDutyCycle(newposition)
             time.sleep(0.5)
             p.ChangeDutyCycle(0)  # Stop the servo shaking
