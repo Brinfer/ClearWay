@@ -1,4 +1,5 @@
-""" Module to control the camera angle using a servo motor."""
+"""Module to control the camera angle using a servo motor."""
+
 import time
 
 import clearway.gpio as gpio
