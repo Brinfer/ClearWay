@@ -166,7 +166,7 @@ class StateMachinePanel:
         self.__blinkThread = None  # type: Thread
 
         if GPIO is not None:
-            GPIO.setmode(GPIO.BOARD)
+            GPIO.setmode(GPIO.BCM)
             GPIO.setwarnings(False)  # Disable warning messages
             GPIO.setup(self.__gpio, GPIO.OUT)
 
