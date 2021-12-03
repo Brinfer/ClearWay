@@ -15,7 +15,6 @@ def servo_init(angle: int, servo_pin: int) -> None:
     servo_pin : int
         The GPIO pin of the raspberry Pi
     """
-    print(gpio.GPIO)
     if gpio.GPIO is not None:
         gpio.GPIO.setmode(gpio.GPIO.BCM)
         gpio.GPIO.setup(servo_pin, gpio.GPIO.OUT)
