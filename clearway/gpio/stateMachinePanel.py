@@ -26,7 +26,8 @@ from queue import Queue
 
 from transitions import State
 from transitions.core import Machine
-from clearway.gpio import GPIO
+import clearway.gpio as gpio
+
 
 # Only accept message equals or upper to WARNING from transitions packages
 logging.getLogger("transitions").setLevel(logging.WARNING)
@@ -128,12 +129,12 @@ class StateMachinePanel:
         Parameters
         ----------
         p_gpio : `int`
-            The GPIO to be set high
+            The  to be set high
         """
-        logging.debug("[GPIO-%s] Turn hight", p_gpio)
+        logging.debug("[-%s] Turn hight", p_gpio)
 
-        if GPIO is not None:
-            GPIO.output(p_gpio, GPIO.HIGH)
+        if gpio.GPIO is not None:
+            gpio.GPIO.output(p_gpio, gpio.GPIO.HIGH)
 
     @staticmethod
     def turn_off(p_gpio: int) -> None:
@@ -148,8 +149,8 @@ class StateMachinePanel:
         """
         logging.debug("[GPIO-%s] Turn down", p_gpio)
 
-        if GPIO is not None:
-            GPIO.output(p_gpio, GPIO.LOW)
+        if gpio.GPIO is not None:
+            gpio.GPIO.output(p_gpio, gpio.GPIO.LOW)
 
     def __init__(self, p_gpio: int) -> None:
         logging.debug("[GPIO-%s] - Create the state machine", p_gpio)
@@ -165,10 +166,8 @@ class StateMachinePanel:
         self.__gpio = p_gpio  # type: int
         self.__blinkThread = None  # type: Thread
 
-        if GPIO is not None:
-            GPIO.setmode(GPIO.BOARD)
-            GPIO.setwarnings(False)  # Disable warning messages
-            GPIO.setup(self.__gpio, GPIO.OUT)
+        if gpio.GPIO is not None:
+            gpio.GPIO.setup(self.__gpio, gpio.GPIO.OUT)
 
         StateMachinePanel.turn_off(self.__gpio)  # Force at low level
 
