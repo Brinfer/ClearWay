@@ -137,7 +137,7 @@ def __parse_arg() -> None:
         version="{} {}".format(clearway.__project__, clearway.__version__),
     )
 
-    required_arguments = l_parser.add_argument_group('required arguments')
+    required_arguments = l_parser.add_argument_group("required arguments")
 
     required_arguments.add_argument(
         "--yolo-weights",
