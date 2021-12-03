@@ -36,7 +36,7 @@ clean:
 	find ./tests -type d -name __pycache__ -exec rm -rf {} \;
 
 build:
-	python -m build
+	python3 -m build
 
 upload:
 	scp -r $(PROG_PACKAGE_FOLDER) $(RASPBERRY_LOGIN)@$(RASPBERRY_ADDRESS):/home/$(RASPBERRY_LOGIN)/PROG_FOLDER
@@ -46,6 +46,9 @@ upload_package: build
 
 install: upload_package
 	ssh -t $(RASPBERRY_LOGIN)@$(RASPBERRY_ADDRESS) 'pip uninstall -y clearway && pip install -U $(PROG_PACKAGE) && rm $(PROG_PACKAGE)'
+
+launch:
+	python3 -m clearway --no-gpio -i ../test/OpenCV/Tests_IA/bicycle_1fps.mp4 --yolo-weights ../test/OpenCV/Tests_IA/yolov2-tiny.weights --yolo-cfg ../test/OpenCV/Tests_IA/yolov2-tiny.cfg
 
 # Open a terminal on the Raspberry.
 term:
