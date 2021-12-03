@@ -96,7 +96,8 @@ optional arguments:
   -h, --help            show this help message and exit
   --gpio GPIO           tells the program which gpio to use, the default is 5
   --no-gpio             tells the program that it does not want to use the GPIOs, only the logs will be displayed
-  --path PATH           the path to the video to be analyzed rather than using the video stream from the camera
+  --input-path PATH     the path to the video to be analyzed rather than using the video stream from the camera
+  --output-path PATH    the path to the folder that will contain the output video with boxes around detected bicycles
   -v {WARNING,INFO,DEBUG}, --verbosity {WARNING,INFO,DEBUG}
                         indicates the level of verbosity, default is INFO
   -V, --version         print the ClearWay version and exit
