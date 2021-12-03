@@ -9,4 +9,14 @@ build-backend = "setuptools.build_meta"
 # Black is the uncompromising Python code formatter, see https://github.com/psf/black
 [tool.black]
 line-length = 120
-extend-exclude = ["**/__pycache/*"]
+extend-exclude = '''
+/(
+    \__pycache__
+    | \documents
+    | \explo
+    | \.git
+    | \.githooks
+    | \reports
+    | \venv
+)
+'''
