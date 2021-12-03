@@ -28,12 +28,11 @@ class __IdYoloOutputLayer(IntEnum):
 
 
 __object_detection_id = __IdYoloOutputLayer.PERSON
-yolo_weight = "yolov2-tiny.weights"
-yolo_config = "yolov2-tiny.cfg"
 __network = None
 __output_layers = []
 __video_stream = None
 __path_to_input_video = None
+__path_to_output_video = None
 __output_video = None
 __output_color = (0, 0, 255)  # Blue
 __prob_threshold = 0.5
@@ -41,7 +40,7 @@ __detect = False
 __detect_old = False
 
 
-def init(path_to_input_video=None) -> None:
+def init(yolo_weights, yolo_cfg, path_to_input_video=None, path_to_output_video=None) -> None:
     """Get the three output layers of YOLO and start the video stream.
 
     Parameters
@@ -49,10 +48,10 @@ def init(path_to_input_video=None) -> None:
     path_to_input_video : string, optional
         The path to the input video that is going to be processed, by default None.
     """
-    global __network, __output_layers, __path_to_input_video, __video_stream, __output_video
+    global __network, __output_layers, __path_to_input_video, __path_to_output_video, __video_stream, __output_video
 
     # Read the deep learning network Yolo
-    __network = cv2.dnn.readNet(yolo_weight, yolo_config)
+    __network = cv2.dnn.readNet(yolo_weights, yolo_cfg)
     # Find names of all layers of the YOLO model architecture
     layer_names = __network.getLayerNames()
     __output_layers = [layer_names[i[0] - 1] for i in __network.getUnconnectedOutLayers()]
@@ -61,16 +60,19 @@ def init(path_to_input_video=None) -> None:
         __video_stream = VideoStream(usePiCamera=True).start()
         # Very important! Otherwise, video_stream.read() gives a NonType
         time.sleep(2.0)
-        logging.debug("[AI] Camera ready to detect")
+        logging.info("[AI] Camera ready to detect")
     else:
         __path_to_input_video = path_to_input_video
         __video_stream = cv2.VideoCapture(path_to_input_video)
-        execution_path = os.getcwd()
-        path_to_output_video = os.path.join(execution_path, path_to_input_video[:-4] + "_processed.mp4")
+
+    if path_to_output_video is not None:
+        # execution_path = os.getcwd()
+        __path_to_output_video = path_to_output_video
+        output_video_file = os.path.join(path_to_output_video, "video_processed.mp4")
         x_shape = int(__video_stream.get(cv2.CAP_PROP_FRAME_WIDTH))
         y_shape = int(__video_stream.get(cv2.CAP_PROP_FRAME_HEIGHT))
         four_cc = cv2.VideoWriter_fourcc("m", "p", "4", "v")
-        __output_video = cv2.VideoWriter(path_to_output_video, four_cc, fps=1, frameSize=(x_shape, y_shape))
+        __output_video = cv2.VideoWriter(output_video_file, four_cc, fps=1, frameSize=(x_shape, y_shape))
 
 
 def bicycle_detector(gpio_led) -> None:
@@ -129,8 +131,10 @@ def bicycle_detector(gpio_led) -> None:
         if __path_to_input_video is None:
             img = __video_stream.read()
         else:
-            __output_video.write(img)
             read_ok, img = __video_stream.read()
+
+        if __path_to_output_video is not None:
+            __output_video.write(img)
 
     # Stop the timer and display FPS information
     fps.stop()
@@ -146,9 +150,9 @@ def dram_boxes_and_call_state_machine(indexes, boxes, confidences, img, gpio_led
 
     Parameters
     ----------
-    indexes : int[int[]]
+    indexes : [[int]]
         List of object indexes used to remove multiple boxes that refer to the same object.
-    boxes : int[int[]]
+    boxes : [[int]]
         List of boxes with their information (center_x, center_y, width, height).
     confidences : int[]
         List of detection confidences concerning objects on the image being processed.

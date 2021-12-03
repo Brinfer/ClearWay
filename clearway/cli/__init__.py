@@ -15,7 +15,10 @@ __DEFAULT_VERBOSITY_LEVEL = logging.INFO
 __LOG_PATH = "ClearWay.log"
 
 __gpio_led = None
-__video_path = None
+__input_video_path = None
+__output_video_path = None
+__yolo_cfg = ""
+__yolo_weights = ""
 __verbosity_level = None
 
 
@@ -57,18 +60,27 @@ def __parse_arg() -> None:
     """Parse the arguments passed in parameter at the launching of the program.
 
     The available optional arguments are:
+        --gpio GPIO
+            tells the program which gpio to use, the default is __DEFAULT_GPIO
         --no-gpio
             tells the program that it does not want to use the GPIOs, only the logs will be displayed
-        --gpio GPIO
-            tells the program which gpio to use, the default value is __DEFAULT_GPIO
-        --path PATH
-            the path to the video to be analyzed rather than using the video stream from the camera
+        -i INPUT_PATH, --input-path INPUT_PATH
+            the path to the input video to be analyzed rather than using the video stream from the camera
+        -o OUTPUT_PATH, --output-path OUTPUT_PATH
+            the path to the folder that will contain the output video with boxes around detected bicycles
         -v {WARNING,INFO,DEBUG}, --verbosity {WARNING,INFO,DEBUG}
             indicates the level of verbosity, default is __DEFAULT_VERBOSITY_LEVEL
         -V, --version
-            print the project version and exit
+            print the ClearWay version and exit
+
+    The required arguments are:
+        --yolo-weights YOLO_WEIGHTS
+            the path to the weights file of yolo
+        --yolo-cfg YOLO_CFG
+            the path to the configuration file of yolo
     """
-    global __gpio_led, __video_path, __verbosity_level, __DEFAULT_GPIO
+    global __gpio_led, __input_video_path, __output_video_path, __yolo_cfg, __yolo_weights
+    global __verbosity_level, __DEFAULT_GPIO
 
     l_parser = argparse.ArgumentParser()
 
@@ -89,8 +101,17 @@ def __parse_arg() -> None:
     )
 
     l_parser.add_argument(
-        "--path",
-        help="the path to the video to be analyzed rather than using the video stream from the camera",
+        "-i",
+        "--input-path",
+        help="the path to the input video to be analyzed rather than using the video stream from the camera",
+        action="store",
+        default=None,
+    )
+
+    l_parser.add_argument(
+        "-o",
+        "--output-path",
+        help="the path to the folder that will contain the output video with boxes around detected bicycles",
         action="store",
         default=None,
     )
@@ -116,11 +137,32 @@ def __parse_arg() -> None:
         version="{} {}".format(clearway.__project__, clearway.__version__),
     )
 
+    required_arguments = l_parser.add_argument_group('required arguments')
+
+    required_arguments.add_argument(
+        "--yolo-weights",
+        help="the path to the weights file of yolo",
+        action="store",
+        default=None,
+        required=True,
+    )
+
+    required_arguments.add_argument(
+        "--yolo-cfg",
+        help="the path to the configuration file of yolo",
+        action="store",
+        default=None,
+        required=True,
+    )
+
     l_args = l_parser.parse_args()
 
     gpio.use_gpio(not l_args.no_gpio)
     __gpio_led = l_args.gpio
-    __video_path = l_args.path
+    __input_video_path = l_args.input_path
+    __output_video_path = l_args.output_path
+    __yolo_cfg = l_args.yolo_cfg
+    __yolo_weights = l_args.yolo_weights
 
     if l_args.verbosity == logging.getLevelName(logging.WARNING):
         __verbosity_level = logging.WARNING
@@ -145,7 +187,7 @@ def main() -> None:
 
     # Give the path to the input video to process it
     # Otherwise it will use the Raspberry Pi camera
-    ai.init(path_to_input_video=__video_path)
+    ai.init(__yolo_weights, __yolo_cfg, __input_video_path, __output_video_path)
     ai.bicycle_detector(__gpio_led)
 
     stateMachinePanel.stop(__gpio_led)

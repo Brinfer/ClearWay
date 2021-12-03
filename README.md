@@ -90,16 +90,24 @@ pip install -r requirements.txt
 ## 5.2. Optional Arguments
 
 ```bash
-clearway [-h] [--gpio GPIO] [--no-gpio] [--path PATH] [-v {WARNING,INFO,DEBUG}] [-V]
+clearway [-h] [--gpio GPIO] [--no-gpio] [-i INPUT_PATH] [-o OUTPUT_PATH] [-v {WARNING,INFO,DEBUG}] [-V] --yolo-weights YOLO_WEIGHTS --yolo-cfg YOLO_CFG
 
 optional arguments:
   -h, --help            show this help message and exit
   --gpio GPIO           tells the program which gpio to use, the default is 5
   --no-gpio             tells the program that it does not want to use the GPIOs, only the logs will be displayed
-  --path PATH           the path to the video to be analyzed rather than using the video stream from the camera
+  -i INPUT_PATH, --input-path INPUT_PATH
+                        the path to the input video to be analyzed rather than using the video stream from the camera
+  -o OUTPUT_PATH, --output-path OUTPUT_PATH
+                        the path to the folder that will contain the output video with boxes around detected bicycles
   -v {WARNING,INFO,DEBUG}, --verbosity {WARNING,INFO,DEBUG}
                         indicates the level of verbosity, default is INFO
   -V, --version         print the ClearWay version and exit
+
+required arguments:
+  --yolo-weights YOLO_WEIGHTS
+                        the path to the weights file of yolo
+  --yolo-cfg YOLO_CFG   the path to the configuration file of yolo
 ```
 
 # 6. Contributing
