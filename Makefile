@@ -30,10 +30,12 @@ clean:
 	rm -f *.log
 	rm -rf dist/
 	rm -rf clearway.egg-info/
-	rm -rf report/
+	rm -rf reports/
+	rm -rf .coverage
 	find ./clearway -type d -name __pycache__ -exec rm -rf {} \;
 	find ./explo -type d -name __pycache__ -exec rm -rf {} \;
 	find ./tests -type d -name __pycache__ -exec rm -rf {} \;
+	cd documents/research && rm -rf _minted* && latexmk -C && cd ../..
 
 build:
 	python -m build
