@@ -9,6 +9,7 @@ Yields
 from time import sleep
 
 import pytest
+import clearway.gpio as gpio
 from pytest_mock.plugin import MockerFixture
 from clearway.gpio import stateMachinePanel
 
@@ -17,6 +18,14 @@ GPIO = 5
 
 """The time allowed for the triggers to run before continuing the tests."""
 DELAY = 0.7
+
+
+def setup() -> None:
+    """Set up the test.
+
+    The function is called before every test.
+    """
+    gpio.use_gpio(False)
 
 
 @pytest.fixture()
@@ -31,8 +40,6 @@ def state_machine_tested() -> None:
     `stateMachinePanel.StateMachinePanel`
         A state machine, using gpio number 5.
     """
-    stateMachinePanel.use_gpio(False)
-
     state_machine = stateMachinePanel.new(5)
     stateMachinePanel.start(GPIO)
 
