@@ -33,6 +33,7 @@ import clearway.gpio as gpio
 logging.getLogger("transitions").setLevel(logging.WARNING)
 
 __state_machines = {}
+gpios_signals = {}
 __LOOP_KEY = "loop"
 __QUEUE_KEY = "queue"
 
@@ -78,10 +79,11 @@ class StateMachinePanel:
 
     Notes
     -----
-    The state machine is based on the transitions [1] package licenced by MIT
+    The state machine is based on the transitions [1]_ package licenced by MIT
 
 
     .. uml::
+
         [*] --> Off : start
         Off --> Signaling : signal / signal()
         Off --> [*] : stop
@@ -131,7 +133,7 @@ class StateMachinePanel:
         p_gpio : `int`
             The GPIO to be set high
         """
-        logging.debug("[GPIO-%s] Turn hight", p_gpio)
+        logging.debug("[PANEL-%s] Turn hight", p_gpio)
 
         if gpio.GPIO is not None:
             gpio.GPIO.output(p_gpio, gpio.GPIO.HIGH)
@@ -147,13 +149,13 @@ class StateMachinePanel:
         p_gpio : `int`
             The GPIO to be set low
         """
-        logging.debug("[GPIO-%s] Turn down", p_gpio)
+        logging.debug("[PANEL-%s] Turn down", p_gpio)
 
         if gpio.GPIO is not None:
             gpio.GPIO.output(p_gpio, gpio.GPIO.LOW)
 
     def __init__(self, p_gpio: int) -> None:
-        logging.debug("[GPIO-%s] - Create the state machine", p_gpio)
+        logging.debug("[PANEL-%s] - Create the state machine", p_gpio)
 
         Machine(
             model=self,
@@ -178,25 +180,28 @@ class StateMachinePanel:
 
         Set the gpio to low level.
         """
-        logging.debug("[GPIO-%s] - Destroy the state machine", self.__gpio)
+        logging.debug("[PANEL-%s] - Destroy the state machine", self.__gpio)
 
         StateMachinePanel.turn_off(self.__gpio)
 
     def _signal(self) -> None:
         if self.__blinkThread is None:
-            logging.info("[GPIO-%s] - Action: start signaling", self.__gpio)
-            self.__blinkThread = Thread(target=self.__thread_run)
+            logging.info("[PANEL-%s] - Action: start signaling", self.__gpio)
+            self.__blinkThread = Thread(
+                target=self.__thread_run,
+                name="[PANEL-{}-SIGNALING]".format(str(self.__gpio)),
+            )
             self.__blinkThread.start()
         else:
-            logging.warning("[GPIO-%s] - Action: already signaling", self.__gpio)
+            logging.warning("[PANEL-%s] - Action: already signaling", self.__gpio)
 
     def _stop_signal(self) -> None:
         if self.__blinkThread is not None and self.__blinkThread.is_alive():
-            logging.info("[GPIO-%s] - Action: stop signaling", self.__gpio)
+            logging.info("[PANEL-%s] - Action: stop signaling", self.__gpio)
             self.__blinkThread.join()
             self.__blinkThread = None
         else:
-            logging.warning("[GPIO-%s] - Action: is not signaling", self.__gpio)
+            logging.warning("[PANEL-%s] - Action: is not signaling", self.__gpio)
 
     def __thread_run(self) -> None:
         while self.is_SIGNALING() is True:  # Test the actual state of the state machine
@@ -221,7 +226,7 @@ def new(p_gpio: int) -> StateMachinePanel:
     """
     global __state_machines
 
-    logging.info("[GPIO-%s] - Event: create new state machine", p_gpio)
+    logging.info("[PANEL-%s] - Event: create new state machine", p_gpio)
 
     queue = Queue()
     state_machine = StateMachinePanel(p_gpio)
@@ -229,13 +234,19 @@ def new(p_gpio: int) -> StateMachinePanel:
     __state_machines[str(p_gpio)] = {
         __LOOP_KEY: Thread(
             target=__run,
-            name="[GPIO-{}]".format(str(p_gpio)),
+            name="[PANEL-{}]".format(str(p_gpio)),
             args=(queue, state_machine),
         ),
         __QUEUE_KEY: queue,
     }
 
     return state_machine
+
+
+def config(p_gpios: tuple) -> None:
+    global gpios_signals
+
+    gpios_signals = p_gpios
 
 
 def start(p_gpio: int) -> None:
@@ -253,7 +264,7 @@ def start(p_gpio: int) -> None:
     """
     global __state_machines
 
-    logging.info("[GPIO-%s] - Event: start the state machine", p_gpio)
+    logging.info("[PANEL-%s] - Event: start the state machine", p_gpio)
 
     __state_machines[str(p_gpio)][__LOOP_KEY].start()
 
@@ -275,7 +286,7 @@ def stop(p_gpio: int) -> None:
     """
     global __state_machines
 
-    logging.info("[GPIO-%s] - Event: stop the state machine", p_gpio)
+    logging.info("[PANEL-%s] - Event: stop the state machine", p_gpio)
     __state_machines[str(p_gpio)][__QUEUE_KEY].put(__EventEnum.STOP)
     __state_machines[str(p_gpio)][__LOOP_KEY].join()
 
@@ -295,7 +306,7 @@ def free(p_gpio: int) -> None:
     """
     global __state_machines
 
-    logging.info("[GPIO-%s] - Event: destroy the state machine", p_gpio)
+    logging.info("[PANEL-%s] - Event: destroy the state machine", p_gpio)
 
     del __state_machines[str(p_gpio)]
 
@@ -315,7 +326,7 @@ def signal(p_gpio: int) -> None:
     """
     global __state_machines
 
-    logging.info("[GPIO-%s] - Event: make blinking the state machine", p_gpio)
+    logging.info("[PANEL-%s] - Event: make blinking the state machine", p_gpio)
     __state_machines[str(p_gpio)][__QUEUE_KEY].put(__EventEnum.SIGNAL)
 
 
@@ -334,10 +345,10 @@ def end_signal(p_gpio: int) -> None:
     """
     global __state_machines
 
-    logging.info("[GPIO-%s] - Event: stop blinking the state machine", p_gpio)
+    logging.info("[PANEL-%s] - Event: stop blinking the state machine", p_gpio)
     __state_machines[str(p_gpio)][__QUEUE_KEY].put(__EventEnum.STOP_SIGNAL)
 
-
+# TODO share the thread beetween all the GPIO
 def __run(p_queue: Queue, p_state_machine: StateMachinePanel) -> None:
     l_last_event = None
 

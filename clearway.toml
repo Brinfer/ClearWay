@@ -1,0 +1,12 @@
+[clearway]
+use_gpio = false
+panel_gpios = [5]
+input_path = "input/"
+output_path = "output/"
+yolo_cfg_path = "yolo_cfg"
+yolo_weights_path = "yolo_weights"
+verbosity_level = "DEBUG"
+camera_angle = 75
+servo_gpio = 12
+# log_format = "log_format"
+# log_path = "log_path"
