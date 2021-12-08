@@ -1,108 +1,75 @@
 """Command-line implementation of ClearWay."""
 
 import logging
-import sys
 import argparse
+import sys
+from time import sleep
 
 import clearway
 import clearway.gpio as gpio
+import clearway.config as config
 from clearway.gpio import stateMachinePanel
 from clearway.gpio import servo
 from clearway.ai import ai
 
-__LOG_FORMAT = "%(asctime)s [%(filename)s:%(lineno)d] %(levelname)s >> %(message)s"
-__DEFAULT_GPIO = 5
-__DEFAULT_VERBOSITY_LEVEL = logging.INFO
-__LOG_PATH = "ClearWay.log"
-
-__gpio_led = None
-__input_video_path = None
-__output_video_path = None
-__yolo_cfg = ""
-__yolo_weights = ""
-__verbosity_level = None
-
-# Angle of the camera
-_camera_angle = 75
-_servo_pin = 12
-
-
-def __is_positive(p_value):
-    l_int_value = int(p_value)
-    if l_int_value <= 0:
-        raise argparse.ArgumentTypeError("%s is an invalid value, should be a positive integer" % p_value)
-    return l_int_value
-
-
-def __configure_logging() -> None:
-    """Configure the app's logger.
-
-    The log file is stored in `ClearWay.log` and every time the program
-    restart, the file is cleared.
-    Is format is:
-        `Date Time FileName:FunctionName Level >> Message`
-        example:
-            `2021-10-28 18:20:19,018 foo.py:10 [INFO] >> Foo`
-
-    There is two mode:
-        - Release mode, where the log are only print in the file, the minimum level of the lof is `INFO`.
-        - Debug mode, where the log are print in the file and displayed in the console, The minimum level of the
-        log is `DEBUG`.
-    """
-    global __verbosity_level, __DEFAULT_VERBOSITY_LEVEL, __LOG_FORMAT
-
-    logging.basicConfig(
-        level=__verbosity_level if __verbosity_level is not None else __DEFAULT_VERBOSITY_LEVEL,
-        format=__LOG_FORMAT,
-        handlers=[
-            logging.FileHandler(__LOG_PATH),
-            logging.StreamHandler(sys.stdout),
-        ],
-    )
-
-
+# TODO UPdate docstring
 def __parse_arg() -> None:
     """Parse the arguments passed in parameter at the launching of the program.
 
+    After parsing all the options, they are saved for the different modules.
+
     The available optional arguments are:
-        --gpio GPIO
+        * --gpio GPIO
             tells the program which gpio to use, the default is __DEFAULT_GPIO
-        --no-gpio
+        * --no-gpio
             tells the program that it does not want to use the GPIOs, only the logs will be displayed
-        -i INPUT_PATH, --input-path INPUT_PATH
+        * -i INPUT_PATH, --input-path INPUT_PATH
             the path to the input video to be analyzed rather than using the video stream from the camera
-        -o OUTPUT_PATH, --output-path OUTPUT_PATH
+        * -o OUTPUT_PATH, --output-path OUTPUT_PATH
             the path to the folder that will contain the output video with boxes around detected bicycles
-        -v {WARNING,INFO,DEBUG}, --verbosity {WARNING,INFO,DEBUG}
+        * -v {WARNING,INFO,DEBUG}, --verbosity {WARNING,INFO,DEBUG}
             indicates the level of verbosity, default is __DEFAULT_VERBOSITY_LEVEL
-        -V, --version
+        * -V, --version
             print the ClearWay version and exit
 
     The required arguments are:
-        --yolo-weights YOLO_WEIGHTS
+        * --yolo-weights YOLO_WEIGHTS
             the path to the weights file of yolo
-        --yolo-cfg YOLO_CFG
+        * --yolo-cfg YOLO_CFG
             the path to the configuration file of yolo
     """
-    global __gpio_led, __input_video_path, __output_video_path, __yolo_cfg, __yolo_weights
-    global __verbosity_level, __DEFAULT_GPIO
+
+    def arguments_is_given(*p_args: str) -> bool:
+        return len(set(p_args) & set(sys.argv)) > 0
 
     l_parser = argparse.ArgumentParser()
 
-    # Add arguments
+    # Optionals arguments
+
+    # TODO accept a list of gpio
     l_parser.add_argument(
         "--gpio",
-        help="tells the program which gpio to use, the default is {}".format(__DEFAULT_GPIO),
+        help="tells the program which gpio to use, the default is {}".format(
+            ", ".join([str(i) for i in config.DEFAULT_PANEL_GPIOS])
+        ),
         action="store",
-        type=__is_positive,
-        default=__DEFAULT_GPIO,
+        type=int,
+        default=None,
     )
 
-    l_parser.add_argument(
+    l_group_gpio = l_parser.add_mutually_exclusive_group()
+    l_group_gpio.add_argument(
         "--no-gpio",
-        help="tells the program that it does not want to use the GPIOs, only the logs will be displayed",
+        help="tells the program to not use the GPIOs, only the logs will be displayed",
+        dest="use_gpio",
+        action="store_false",
+        default=None,
+    )
+    l_group_gpio.add_argument(
+        "--use-gpio",
+        help="tells the program to use the GPIOs",
         action="store_true",
-        default=False,
+        default=None,
     )
 
     l_parser.add_argument(
@@ -110,6 +77,7 @@ def __parse_arg() -> None:
         "--input-path",
         help="the path to the input video to be analyzed rather than using the video stream from the camera",
         action="store",
+        type=str,
         default=None,
     )
 
@@ -118,20 +86,23 @@ def __parse_arg() -> None:
         "--output-path",
         help="the path to the folder that will contain the output video with boxes around detected bicycles",
         action="store",
+        type=str,
         default=None,
     )
 
     l_parser.add_argument(
         "-v",
         "--verbosity",
-        type=str,
         choices=[
             logging.getLevelName(logging.WARNING),
             logging.getLevelName(logging.INFO),
             logging.getLevelName(logging.DEBUG),
         ],
-        help="indicates the level of verbosity, default is {}".format(logging.getLevelName(__DEFAULT_VERBOSITY_LEVEL)),
-        default=__DEFAULT_VERBOSITY_LEVEL,
+        help="indicates the level of verbosity, default is {}".format(
+            logging.getLevelName(logging.getLevelName(config.DEFAULT_VERBOSITY_LEVEL))
+        ),
+        type=str,
+        default=None,
     )
 
     l_parser.add_argument(
@@ -142,63 +113,91 @@ def __parse_arg() -> None:
         version="{} {}".format(clearway.__project__, clearway.__version__),
     )
 
-    required_arguments = l_parser.add_argument_group("required arguments")
+    # Required arguments
 
-    required_arguments.add_argument(
+    l_group_argument = l_parser.add_argument_group("required arguments")
+
+    l_group_argument.add_argument(
         "--yolo-weights",
-        help="the path to the weights file of yolo",
+        help="the path to the weights file of yolo, required if the --config argument is not provided",
         action="store",
         default=None,
-        required=True,
+        type=str,
+        required=not arguments_is_given("--config", "-c"),
     )
 
-    required_arguments.add_argument(
+    l_group_argument.add_argument(
         "--yolo-cfg",
-        help="the path to the configuration file of yolo",
+        help="the path to the configuration file of yolo, required if the argument --config is not provided",
         action="store",
+        type=str,
         default=None,
-        required=True,
+        required=not arguments_is_given("--config", "-c"),
     )
 
+    l_group_argument.add_argument(
+        "-c",
+        "--config",
+        help="""
+            the path to the config file, required if the arguments --yolo-cfg and --yolo-weights are not provided.
+            All parameters contained in the configuration file can be overloaded with optional arguments.
+            """,
+        action="store",
+        type=str,
+        default=None,
+        required=not (arguments_is_given("--yolo-cfg") and arguments_is_given("--yolo-weights")),
+    )
+
+    # Parse the arguments
     l_args = l_parser.parse_args()
 
-    gpio.use_gpio(not l_args.no_gpio)
-    __gpio_led = l_args.gpio
-    __input_video_path = l_args.input_path
-    __output_video_path = l_args.output_path
-    __yolo_cfg = l_args.yolo_cfg
-    __yolo_weights = l_args.yolo_weights
+    # Configure the modules
 
-    if l_args.verbosity == logging.getLevelName(logging.WARNING):
-        __verbosity_level = logging.WARNING
-    elif l_args.verbosity == logging.getLevelName(logging.INFO):
-        __verbosity_level = logging.INFO
-    elif l_args.verbosity == logging.getLevelName(logging.DEBUG):
-        __verbosity_level = logging.DEBUG
+    # Load config file
+    if l_args.config is not None:
+        config.config_from_file(l_args.config)
+
+    # Overload config file with argument
+
+    # Save GPIO config module
+    config.save_config_gpio(p_use_gpio=l_args.use_gpio, p_gpios=l_args.gpio)
+
+    # Save AI config module
+    config.save_config_ai(
+        p_input_video_path=l_args.input_path,
+        p_output_video_path=l_args.output_path,
+        p_yolo_cfg_path=l_args.yolo_cfg,
+        p_yolo_weights_path=l_args.yolo_weights,
+    )
+
+    # Save logging config module
+    config.save_config_logging(p_verbosity_level=l_args.verbosity)
 
 
 def main() -> None:
     """Program input function."""
-    global __gpio_led, __DEFAULT_GPIO
-
     __parse_arg()
-    __configure_logging()
 
-    if __gpio_led is None:
-        __gpio_led = __DEFAULT_GPIO
+    config.configure_all()
 
-    servo.servo_init(_camera_angle, _servo_pin)
+    for l_gpio in stateMachinePanel.gpios_signals:
+        stateMachinePanel.new(l_gpio)
+        stateMachinePanel.start(l_gpio)
 
-    stateMachinePanel.new(__gpio_led)
-    stateMachinePanel.start(__gpio_led)
+    for i in range(5):
+        for l_gpio in stateMachinePanel.gpios_signals:
+            stateMachinePanel.signal(l_gpio)
+            sleep(3)
+            stateMachinePanel.end_signal(l_gpio)
+            sleep(3)
 
-    # Give the path to the input video to process it
-    # Otherwise it will use the Raspberry Pi camera
-    ai.init(__yolo_weights, __yolo_cfg, __input_video_path, __output_video_path)
-    ai.bicycle_detector(__gpio_led)
+    # # Give the path to the input video to process it
+    # # Otherwise it will use the Raspberry Pi camera
+    # ai.bicycle_detector(__gpio_led)
 
-    stateMachinePanel.stop(__gpio_led)
-    stateMachinePanel.free(__gpio_led)
+    for l_gpio in stateMachinePanel.gpios_signals:
+        stateMachinePanel.stop(l_gpio)
+        stateMachinePanel.free(l_gpio)
 
 
 if __name__ == "__main__":

@@ -40,7 +40,7 @@ __detect = False
 __detect_old = False
 
 
-def init(yolo_weights, yolo_cfg, path_to_input_video=None, path_to_output_video=None) -> None:
+def config(yolo_weights, yolo_cfg, path_to_input_video=None, path_to_output_video=None) -> None:
     """Get the three output layers of YOLO and start the video stream.
 
     Parameters

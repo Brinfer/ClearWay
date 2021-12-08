@@ -1,6 +1,10 @@
 """Module to control the inputs and outputs of the card."""
 
 """Variable linking to the package RPi.GPIO."""
+from logging import log
+import logging
+
+
 GPIO = None
 
 
@@ -16,6 +20,8 @@ def use_gpio(p_value: bool) -> None:
         `True` if you want to use GPIOs, `False` otherwise.
     """
     global GPIO
+
+    logging.info("[GPIO] GPIO will be %s", "used" if p_value else "not used")
 
     if p_value is True:
         # Import RPi.GPIO and save it in a global variable
