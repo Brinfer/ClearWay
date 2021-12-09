@@ -243,7 +243,16 @@ def new(p_gpio: int) -> StateMachinePanel:
     return state_machine
 
 
-def config(p_gpios: tuple) -> None:
+def config(p_gpios: set(int)) -> None:
+    """Modify the GPIOs to be used to signal.
+
+    Pass an empty set to not use GPIO.
+
+    Parameters
+    ----------
+    p_gpios : `set`
+        The GPIO to use.
+    """
     global gpios_signals
 
     gpios_signals = p_gpios
@@ -347,6 +356,7 @@ def end_signal(p_gpio: int) -> None:
 
     logging.info("[PANEL-%s] - Event: stop blinking the state machine", p_gpio)
     __state_machines[str(p_gpio)][__QUEUE_KEY].put(__EventEnum.STOP_SIGNAL)
+
 
 # TODO share the thread beetween all the GPIO
 def __run(p_queue: Queue, p_state_machine: StateMachinePanel) -> None:

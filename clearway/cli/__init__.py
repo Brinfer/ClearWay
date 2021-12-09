@@ -3,14 +3,12 @@
 import logging
 import argparse
 import sys
-from time import sleep
 
 import clearway
-import clearway.gpio as gpio
 import clearway.config as config
 from clearway.gpio import stateMachinePanel
-from clearway.gpio import servo
 from clearway.ai import ai
+
 
 # TODO UPdate docstring
 def __parse_arg() -> None:
@@ -19,36 +17,45 @@ def __parse_arg() -> None:
     After parsing all the options, they are saved for the different modules.
 
     The available optional arguments are:
-        * --gpio GPIO
+        - --gpios GPIO
             tells the program which gpio to use, the default is __DEFAULT_GPIO
-        * --no-gpio
+        - --no-gpio
             tells the program that it does not want to use the GPIOs, only the logs will be displayed
-        * -i INPUT_PATH, --input-path INPUT_PATH
+        - -i INPUT_PATH, --input-path INPUT_PATH
             the path to the input video to be analyzed rather than using the video stream from the camera
-        * -o OUTPUT_PATH, --output-path OUTPUT_PATH
+        - -o OUTPUT_PATH, --output-path OUTPUT_PATH
             the path to the folder that will contain the output video with boxes around detected bicycles
-        * -v {WARNING,INFO,DEBUG}, --verbosity {WARNING,INFO,DEBUG}
+        - -v {WARNING,INFO,DEBUG}, --verbosity {WARNING,INFO,DEBUG}
             indicates the level of verbosity, default is __DEFAULT_VERBOSITY_LEVEL
-        * -V, --version
+        - -V, --version
             print the ClearWay version and exit
 
     The required arguments are:
-        * --yolo-weights YOLO_WEIGHTS
+        - --yolo-weights YOLO_WEIGHTS
             the path to the weights file of yolo
-        * --yolo-cfg YOLO_CFG
+        - --yolo-cfg YOLO_CFG
             the path to the configuration file of yolo
     """
 
     def arguments_is_given(*p_args: str) -> bool:
+        """Test if the arguments are passed at program startup.
+
+        It is possible to pass one or more character strings.
+
+        Returns
+        -------
+        bool
+            `True` if one the arguments are present, `False` false if none is present.
+        """
         return len(set(p_args) & set(sys.argv)) > 0
 
     l_parser = argparse.ArgumentParser()
 
     # Optionals arguments
 
-    # TODO accept a list of gpio
+    # TODO accept a list of gpios
     l_parser.add_argument(
-        "--gpio",
+        "--gpios",
         help="tells the program which gpio to use, the default is {}".format(
             ", ".join([str(i) for i in config.DEFAULT_PANEL_GPIOS])
         ),
@@ -155,7 +162,7 @@ def __parse_arg() -> None:
 
     # Load config file
     if l_args.config is not None:
-        config.config_from_file(l_args.config)
+        config.save_config_from_file(l_args.config)
 
     # Overload config file with argument
 
@@ -178,26 +185,19 @@ def main() -> None:
     """Program input function."""
     __parse_arg()
 
-    config.configure_all()
+    config.apply_config_all()
 
-    for l_gpio in stateMachinePanel.gpios_signals:
-        stateMachinePanel.new(l_gpio)
-        stateMachinePanel.start(l_gpio)
+    # TODO use the good GPIOs
 
-    for i in range(5):
-        for l_gpio in stateMachinePanel.gpios_signals:
-            stateMachinePanel.signal(l_gpio)
-            sleep(3)
-            stateMachinePanel.end_signal(l_gpio)
-            sleep(3)
+    stateMachinePanel.new(5)
+    stateMachinePanel.start(5)
 
-    # # Give the path to the input video to process it
-    # # Otherwise it will use the Raspberry Pi camera
-    # ai.bicycle_detector(__gpio_led)
+    # Give the path to the input video to process it
+    # Otherwise it will use the Raspberry Pi camera
+    ai.bicycle_detector(5)
 
-    for l_gpio in stateMachinePanel.gpios_signals:
-        stateMachinePanel.stop(l_gpio)
-        stateMachinePanel.free(l_gpio)
+    stateMachinePanel.stop(5)
+    stateMachinePanel.free(5)
 
 
 if __name__ == "__main__":

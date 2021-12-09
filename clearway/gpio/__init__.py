@@ -1,10 +1,9 @@
 """Module to control the inputs and outputs of the card."""
 
-"""Variable linking to the package RPi.GPIO."""
-from logging import log
 import logging
 
 
+"""Variable linking to the package RPi.GPIO."""
 GPIO = None
 
 
@@ -31,3 +30,5 @@ def use_gpio(p_value: bool) -> None:
         GPIO.setwarnings(False)  # Disable warning messages
     else:
         GPIO = None
+
+# TODO Move all GPIO calls here => easier to control, easier to use for other modules
