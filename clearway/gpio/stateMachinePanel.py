@@ -135,8 +135,7 @@ class StateMachinePanel:
         """
         logging.debug("[PANEL-%s] Turn hight", p_gpio)
 
-        if gpio.GPIO is not None:
-            gpio.GPIO.output(p_gpio, gpio.GPIO.HIGH)
+        gpio.GPIO.output(p_gpio, gpio.GPIO.HIGH)
 
     @staticmethod
     def turn_off(p_gpio: int) -> None:
@@ -151,8 +150,7 @@ class StateMachinePanel:
         """
         logging.debug("[PANEL-%s] Turn down", p_gpio)
 
-        if gpio.GPIO is not None:
-            gpio.GPIO.output(p_gpio, gpio.GPIO.LOW)
+        gpio.GPIO.output(p_gpio, gpio.GPIO.LOW)
 
     def __init__(self, p_gpio: int) -> None:
         logging.debug("[PANEL-%s] - Create the state machine", p_gpio)
@@ -168,10 +166,7 @@ class StateMachinePanel:
         self.__gpio = p_gpio  # type: int
         self.__blinkThread = None  # type: Thread
 
-        if gpio.GPIO is not None:
-            gpio.GPIO.setmode(gpio.GPIO.BCM)
-            gpio.GPIO.setwarnings(False)  # Disable warning messages
-            gpio.GPIO.setup(self.__gpio, gpio.GPIO.OUT)
+        gpio.GPIO.setup(self.__gpio, gpio.GPIO.OUT)
 
         StateMachinePanel.turn_off(self.__gpio)  # Force at low level
 
