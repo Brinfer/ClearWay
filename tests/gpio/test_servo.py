@@ -1,8 +1,8 @@
 """Test the servo motor function.
 
- See Also
-    --------
-    clearway.gpio.servo: File Under Test
+See Also
+--------
+clearway.gpio.servo: File Under Test
 """
 
 from clearway.gpio import servo
