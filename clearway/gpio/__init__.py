@@ -29,6 +29,5 @@ def use_gpio(p_value: bool) -> None:
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)  # Disable warning messages
     else:
-        GPIO = None
-
-# TODO Move all GPIO calls here => easier to control, easier to use for other modules
+        # Import Mock.GPIO and save it in a global variable
+        import Mock.GPIO as GPIO  # noqa: N814: camelcase 'RPi.GPIO' imported as constant 'GPIO'
