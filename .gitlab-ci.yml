@@ -54,7 +54,7 @@ flake8:
 black:
   stage: quality
   script:
-    - python -m black --check --config pyproject.toml .
+    - python -m black --check --config pyproject.toml ./clearway
   allow_failure: true
   only:
     changes:
