@@ -1,8 +1,10 @@
 """OpenCV object detection using picamera."""
 import time
+from threading import Event # Needed for the  wait() method
 import logging
 from enum import IntEnum, auto, unique
 import os
+
 
 from imutils.video import VideoStream
 from imutils.video import FPS
@@ -182,6 +184,8 @@ def dram_boxes_and_call_state_machine(indexes, boxes, confidences, img, gpio_led
                 )
     # Else if something is not detected but it was before (falling edge)
     elif __detect_old and not __detect:
+        # TODO wait 5 seconds to send the end signal
+        Event().wait(5.0)
         stateMachinePanel.end_signal(gpio_led)
     __detect_old = __detect
 
