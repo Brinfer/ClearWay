@@ -60,7 +60,6 @@ class Ai:
 
         self.__path_to_input_video = path_to_input_video
         self.__path_to_output_video = path_to_output_video
-        self.__detect_old = False
 
         if self.__path_to_input_video is None:
             self.__video_stream = VideoStream(usePiCamera=True).start()
@@ -185,10 +184,9 @@ class Ai:
         gpio_led : int
             The gpio number where we send our signals.
         """
-        detect = len(boxes) != 0
-        # If something is newly detected (rising edge)
-        if detect and not self.__detect_old:
-            self._detect_old = True
+        # If something is detected
+        if len(boxes) != 0:
+            self.__detect_old = True
             for i in range(len(boxes)):
                 if i in indexes:
                     Ai.__object_detection_counter += 1
@@ -213,9 +211,8 @@ class Ai:
                             Ai.__output_color,
                             2,
                         )
-        # Else if something is not detected but it was before (falling edge)
-        elif self.__detect_old and not detect:
-            self.__detect_old = False
+        # Else if nothing is detected
+        else:
             stateMachinePanel.end_signal(gpio_led)
 
         return img
