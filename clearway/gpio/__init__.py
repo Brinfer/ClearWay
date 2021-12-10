@@ -1,10 +1,11 @@
 """Module to control the inputs and outputs of the card."""
 
 import logging
+from typing import Any
 
 
+GPIO: Any = None
 """Variable linking to the package RPi.GPIO."""
-GPIO = None
 
 
 def use_gpio(p_value: bool) -> None:

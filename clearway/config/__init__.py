@@ -12,10 +12,12 @@ Notes
 
 import logging
 import sys
+from typing import Any, Dict, Iterable, Optional
 
 import toml
 import clearway.gpio as gpio
 from clearway.ai import ai
+from clearway.gpio import stateMachinePanel, servo
 
 # TODO Change argument name to correspond with dict key
 
@@ -42,7 +44,7 @@ DEFAULT_LOG_VERBOSITY_LEVEL = logging.getLevelName(logging.INFO)
 DEFAULT_LOG_PATH = "ClearWay.log"
 DEFAULT_LOG_FORMAT = "%(asctime)s [%(filename)s:%(lineno)d] %(levelname)s >> %(message)s"
 
-__config_dict = {
+__config_dict: Dict[str, Any] = {
     USE_GPIO: True,
     PANEL_GPIOS: DEFAULT_PANEL_GPIOS,
     INPUT_PATH: "",
@@ -76,20 +78,35 @@ def save_config_from_file(p_path: str) -> None:
         - log_format
         - log_path
 
-    Keys that do not match are simply unused.
+    If one of the keys does not match, then a `KeyError` exception is raised.
 
     Parameters
     ----------
     p_path : `str`
         The path to the config file.
+
+    Raises
+    ------
+    KeyError
+        At least one of the keys is not valid
     """
     global __config_dict
+
+    logging.info("[CONFIG] Load config from the file %s", p_path)
 
     l_config_file = toml.load(p_path)
 
     if PROJECT_KEY_CONFIG in l_config_file:
-        for l_key in l_config_file[PROJECT_KEY_CONFIG].keys():
-            __config_dict[l_key] = l_config_file[l_key]
+        l_clearway_config = l_config_file[PROJECT_KEY_CONFIG]
+        del l_config_file  # No more needed
+
+        for l_key in l_clearway_config.keys():
+            if l_key in __config_dict:
+                __config_dict[l_key] = l_clearway_config[l_key]
+            else:
+                raise KeyError(
+                    "The {} key is not valid.\nValid keys are: {}".format(l_key, ", ".join(__config_dict.keys()))
+                )
 
 
 #
@@ -97,7 +114,7 @@ def save_config_from_file(p_path: str) -> None:
 #
 
 
-def save_config_logging(p_verbosity_level: str = None):
+def save_config_logging(p_verbosity_level: str = None) -> None:
     """Save the configuration for `logging` module.
 
     If the argument is set to `None` then it will not be saved.
@@ -110,6 +127,7 @@ def save_config_logging(p_verbosity_level: str = None):
     global __config_dict
 
     if p_verbosity_level is not None:
+        logging.debug("[CONFIG] Save a new verbosity level: %s", p_verbosity_level)
         __config_dict[LOG_VERBOSITY_LEVEL] = p_verbosity_level
 
 
@@ -135,10 +153,12 @@ def apply_config_logging() -> None:
     """
     global __config_dict
 
+    logging.info("[CONFIG] Apply configuration for logging module")
+
     l_verbosity_level = logging.INFO
 
     if __config_dict[LOG_VERBOSITY_LEVEL] == logging.getLevelName(logging.ERROR):
-        l_verbosity_level = logging.CRITICAL
+        l_verbosity_level = logging.ERROR
     elif __config_dict[LOG_VERBOSITY_LEVEL] == logging.getLevelName(logging.CRITICAL):
         l_verbosity_level = logging.CRITICAL
     elif __config_dict[LOG_VERBOSITY_LEVEL] == logging.getLevelName(logging.WARNING):
@@ -163,7 +183,7 @@ def apply_config_logging() -> None:
 #
 
 
-def save_config_gpio(p_use_gpio: bool = None, p_gpios: int = None) -> None:
+def save_config_gpio(p_use_gpio: Optional[bool] = None, p_gpios: Optional[Iterable[int]] = None) -> None:
     """Save the configuration for `clearway.gpio` module.
 
     If the argument is set to `None` then it will not be saved.
@@ -172,15 +192,18 @@ def save_config_gpio(p_use_gpio: bool = None, p_gpios: int = None) -> None:
     ----------
     p_use_gpio : `bool`, optional
         `True` if you want to use GPIOs, `False` otherwise, by default None
-    p_gpios : `int`, optional
+    p_gpios : `Iterable[int]`, optional
         GPIOs to use, by default None
     """
     global __config_dict
 
     if p_use_gpio is not None:
+        logging.debug("[CONFIG] Save new instruction for the use of the GPIOs: %b", p_use_gpio)
         __config_dict[USE_GPIO] = p_use_gpio
 
     if p_gpios is not None:
+        # TODO uncomment when support list
+        logging.debug("[CONFIG] Save new GPIOs to use: %s", ", ".join([str(i) for i in p_gpios]))
         __config_dict[PANEL_GPIOS] = p_gpios
 
 
@@ -194,12 +217,14 @@ def apply_config_gpio() -> None:
 
     All these values are the ones provided when using `save_config_gpio`, otherwise the default values will be used
     """
+    logging.info("[CONFIG] Apply configuration for gpio module")
+
     # gpio
     gpio.use_gpio(__config_dict[USE_GPIO])
     # gpio.stateMachinePanel
-    gpio.stateMachinePanel.config(__config_dict[PANEL_GPIOS])
+    stateMachinePanel.config(__config_dict[PANEL_GPIOS])
     # gpio.servo
-    gpio.servo.config(__config_dict[CAMERA_ANGLE], __config_dict[SERVO_GPIO])
+    servo.config(__config_dict[CAMERA_ANGLE], __config_dict[SERVO_GPIO])
 
 
 #
@@ -255,7 +280,9 @@ def apply_config_ai() -> None:
     All these values are the ones provided when using `save_config_ai`,
     otherwise the default values provided by the module will be used
     """
-    ai.ai
+    logging.info("[CONFIG] Apply configuration for ai module")
+
+    # ai.ai
     ai.config(
         __config_dict[YOLO_WEIGHTS_PATH],
         __config_dict[YOLO_CFG_PATH],
