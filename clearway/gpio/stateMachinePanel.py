@@ -23,6 +23,7 @@ import time
 import logging
 from enum import auto, unique, Enum
 from queue import Queue
+from typing import Any, Dict, Iterable, Optional, Set
 
 from transitions import State
 from transitions.core import Machine
@@ -32,8 +33,8 @@ import clearway.gpio as gpio
 # Only accept message equals or upper to WARNING from transitions packages
 logging.getLogger("transitions").setLevel(logging.WARNING)
 
-__state_machines = {}
-gpios_signals = {}
+__state_machines: Dict[str, Any] = {}
+gpios_signals: Set[int] = set()
 __LOOP_KEY = "loop"
 __QUEUE_KEY = "queue"
 
@@ -163,8 +164,8 @@ class StateMachinePanel:
             queued=True,
             ignore_invalid_triggers=True,
         )
-        self.__gpio = p_gpio  # type: int
-        self.__blinkThread = None  # type: Thread
+        self.__gpio: int = p_gpio
+        self.__blinkThread: Optional[Thread] = None
 
         gpio.GPIO.setup(self.__gpio, gpio.GPIO.OUT)
 
@@ -199,13 +200,15 @@ class StateMachinePanel:
             logging.warning("[PANEL-%s] - Action: is not signaling", self.__gpio)
 
     def __thread_run(self) -> None:
-        while self.is_SIGNALING() is True:  # Test the actual state of the state machine
+        while self.is_SIGNALING() is True:  # type: ignore
+            # The current state is signaling
             StateMachinePanel.turn_on(self.__gpio)
             time.sleep(_FREQUENCY / 2)
             StateMachinePanel.turn_off(self.__gpio)
             time.sleep(_FREQUENCY / 2)
 
 
+# TODO Usefull with config ?, Update to use set or nomething else
 def new(p_gpio: int) -> StateMachinePanel:
     """Create a new state machine for the given port.
 
@@ -223,7 +226,7 @@ def new(p_gpio: int) -> StateMachinePanel:
 
     logging.info("[PANEL-%s] - Event: create new state machine", p_gpio)
 
-    queue = Queue()
+    queue: Queue = Queue()
     state_machine = StateMachinePanel(p_gpio)
 
     __state_machines[str(p_gpio)] = {
@@ -238,21 +241,22 @@ def new(p_gpio: int) -> StateMachinePanel:
     return state_machine
 
 
-def config(p_gpios: set(int)) -> None:
+def config(p_gpios: Iterable[int]) -> None:
     """Modify the GPIOs to be used to signal.
 
     Pass an empty set to not use GPIO.
 
     Parameters
     ----------
-    p_gpios : `set`
+    p_gpios : `Iterable[int]`
         The GPIO to use.
     """
     global gpios_signals
 
-    gpios_signals = p_gpios
+    gpios_signals = set(p_gpios)
 
 
+# TODO Update to use set or something else
 def start(p_gpio: int) -> None:
     """Start the state machine for the given port.
 
@@ -273,6 +277,7 @@ def start(p_gpio: int) -> None:
     __state_machines[str(p_gpio)][__LOOP_KEY].start()
 
 
+# TODO Update to use set or something else
 def stop(p_gpio: int) -> None:
     """Stop the state machine for the given port.
 
@@ -295,6 +300,7 @@ def stop(p_gpio: int) -> None:
     __state_machines[str(p_gpio)][__LOOP_KEY].join()
 
 
+# TODO Update to use set or something else
 def free(p_gpio: int) -> None:
     """Destroy the state machine for the given port.
 
@@ -315,6 +321,7 @@ def free(p_gpio: int) -> None:
     del __state_machines[str(p_gpio)]
 
 
+# TODO Update to use set or something else
 def signal(p_gpio: int) -> None:
     """Signal to the state machine of the given port to emit the signal.
 
@@ -361,8 +368,8 @@ def __run(p_queue: Queue, p_state_machine: StateMachinePanel) -> None:
         l_last_event = p_queue.get()
 
         if l_last_event is __EventEnum.SIGNAL:
-            p_state_machine.startSignal()
+            p_state_machine.startSignal()  # type: ignore[attr-defined]
         elif l_last_event is __EventEnum.STOP_SIGNAL:
-            p_state_machine.stopSignal()
+            p_state_machine.stopSignal()  # type: ignore[attr-defined]
         elif l_last_event is __EventEnum.STOP:
-            p_state_machine.stopStateMachine()
+            p_state_machine.stopStateMachine()  # type: ignore[attr-defined]
