@@ -21,7 +21,8 @@ cache:
 before_script:
   - export https_proxy=http://192.168.4.8:3128/
   - export http_proxy=http://192.168.4.8:3128/
-  - apt-get install python3.7 python3-pip libgl-dev -y
+  - apt update
+  - apt install python3.7 python3-pip libgl-dev -y
   - python -V  # Print out python version for debugging
   - pip install virtualenv
   - virtualenv venv
