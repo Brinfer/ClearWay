@@ -137,7 +137,7 @@ class Ai:
             # To remove multiple boxes that refer to the same object and keep one by Non Maximum Supression
             indexes = cv2.dnn.NMSBoxes(boxes, confidences, score_threshold=0.5, nms_threshold=0.4)
 
-            img = Ai.dram_boxes_and_call_state_machine(self, indexes, boxes, confidences, img, gpio_led)
+            img = Ai.draw_boxes_and_call_state_machine(self, indexes, boxes, confidences, img, gpio_led)
 
             # Update the FPS counter
             fps.update()
