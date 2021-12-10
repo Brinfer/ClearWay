@@ -22,7 +22,7 @@ before_script:
   - export https_proxy=http://192.168.4.8:3128/
   - export http_proxy=http://192.168.4.8:3128/
   - apt update
-  - apt install libgl-dev -y
+  - apt install libgl-dev -y  # Install libgl for imutils python package
   - python -V  # Print out python version for debugging
   - pip install virtualenv
   - virtualenv venv

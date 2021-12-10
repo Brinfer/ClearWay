@@ -17,12 +17,12 @@ imutils>=0.5.4
 numpy>=1.21.4
 opencv-python>=4.5.4.60
 toml>=0.10.2
+Mock.GPIO>=0.1.8
 
 # Tests
 pytest>=6.2.5
 pytest-cov>=3.0.0
 pytest-mock>=3.6.1
-Mock.GPIO>=0.1.8
 
 # To build the package
 build>=0.7.0
