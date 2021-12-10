@@ -3,11 +3,10 @@ import time
 import logging
 from enum import IntEnum, auto, unique
 import os
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 import numpy
-from imutils.video import VideoStream
-from imutils.video import FPS
+import imutils.video as video
 import cv2
 from clearway.gpio import stateMachinePanel
 
@@ -32,7 +31,7 @@ class __IdYoloOutputLayer(IntEnum):
 __object_detection_id: __IdYoloOutputLayer = __IdYoloOutputLayer.PERSON
 __network: cv2.dnn_Net
 __output_layers: List[str]
-__video_stream: cv2.VideoCapture
+__video_stream: Union[cv2.VideoCapture, video.VideoStream]
 __path_to_input_video: Optional[str] = None
 __path_to_output_video: Optional[str] = None
 __output_video: cv2.VideoWriter
@@ -65,7 +64,7 @@ def config(
     __output_layers = [layer_names[i[0] - 1] for i in __network.getUnconnectedOutLayers()]
 
     if path_to_input_video is None:
-        __video_stream = VideoStream(usePiCamera=True).start()
+        __video_stream = video.VideoStream(usePiCamera=True).start()
         # Very important! Otherwise, video_stream.read() gives a NonType
         time.sleep(2.0)
         logging.info("[AI] Camera ready to detect")
@@ -92,7 +91,7 @@ def bicycle_detector(gpio_led: int) -> None:
     global __path_to_input_video, __path_to_output_video, __video_stream, __network, __output_video, __output_layers
 
     # Start the frames per second
-    fps = FPS().start()
+    fps = video.FPS().start()
 
     if __path_to_input_video is None:
         read_ok = True
