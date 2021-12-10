@@ -161,11 +161,11 @@ def dram_boxes_and_call_state_machine(
 
     Parameters
     ----------
-    indexes : [[int]]
+    indexes : List[int]
         List of object indexes used to remove multiple boxes that refer to the same object.
-    boxes : [[int]]
+    boxes : List[List[int]]
         List of boxes with their information (center_x, center_y, width, height).
-    confidences : int[]
+    confidences : List[float]
         List of detection confidences concerning objects on the image being processed.
     img : numpy.ndarray
         The image being processed.

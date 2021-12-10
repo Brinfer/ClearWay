@@ -2,11 +2,6 @@
 
 import logging
 from typing import Any, Dict
-import sys
-from unittest.mock import Mock
-
-# Mock the import of imutils.video as unavailable for pipelines
-sys.modules["imutils.video"] = Mock()
 
 import pytest  # noqa: E402 module level import not at top of file
 from pytest_mock.plugin import MockerFixture  # noqa: E402 module level import not at top of file
@@ -17,7 +12,7 @@ import clearway.config as config  # noqa: E402 module level import not at top of
 
 default_config: Dict[str, Any] = dict()
 
-VALUE_NOMINAL = {
+VALUE_NOMINAL: Dict[str, Any] = {
     config.USE_GPIO: False,
     config.PANEL_GPIOS: [5, 6],
     config.INPUT_PATH: "input/video1.mp4",
