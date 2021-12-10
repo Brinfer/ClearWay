@@ -1,0 +1,20 @@
+[section_A]
+keyA_1 = 1
+keyA_2 = [2, 3]
+keyA_3 = "4"
+
+[clearway]
+use_gpio = false
+panel_gpios = [5, 6]
+input_path = "input/video1.mp4"
+output_path = "output/video1.mp4"
+yolo_cfg = "yolo_cfg"
+yolo_weights = "yolo_weights"
+verbosity = "DEBUG"
+camera_angle = 75
+servo_gpio = 12
+
+[section_B]
+keyB_1 = 5
+keyB_2 = [6, 7]
+keyB_3 = "8"

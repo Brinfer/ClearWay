@@ -106,7 +106,7 @@ def __parse_arg() -> None:
             logging.getLevelName(logging.DEBUG),
         ],
         help="indicates the level of verbosity, default is {}".format(
-            logging.getLevelName(logging.getLevelName(config.DEFAULT_VERBOSITY_LEVEL))
+            logging.getLevelName(logging.getLevelName(config.DEFAULT_LOG_VERBOSITY_LEVEL))
         ),
         type=str,
         default=None,
@@ -167,7 +167,7 @@ def __parse_arg() -> None:
     # Overload config file with argument
 
     # Save GPIO config module
-    config.save_config_gpio(p_use_gpio=l_args.use_gpio, p_gpios=l_args.gpio)
+    config.save_config_gpio(p_use_gpio=l_args.use_gpio, p_gpios=[l_args.gpios])
 
     # Save AI config module
     config.save_config_ai(

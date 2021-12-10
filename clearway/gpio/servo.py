@@ -30,7 +30,7 @@ def config(angle: int, servo_gpio: int) -> None:
     time.sleep(0.5)
     try:
         # % to have the module for the angle between 0 and 180°
-        newposition = servo_angle_calculator(angle)
+        newposition = angle_calculator(angle)
         p.ChangeDutyCycle(newposition)
         time.sleep(0.5)
         # Stop the servo shaking
@@ -39,7 +39,7 @@ def config(angle: int, servo_gpio: int) -> None:
         p.stop()
 
 
-def servo_angle_calculator(angle: int):
+def angle_calculator(angle: int) -> float:
     """Calculate the duty cycle of the servo motor from an angle.
 
     Parameters
@@ -50,7 +50,7 @@ def servo_angle_calculator(angle: int):
 
     Returns
     -------
-    [int]
+    `float`
         The Duty cycle for the servo motor
     """
     return 1.0 / 18.0 * (angle % 180) + 2
