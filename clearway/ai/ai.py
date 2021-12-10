@@ -107,7 +107,7 @@ class Ai:
             # Convert image to Blob
             # Scalefactor of 1/255 to scale the pixel values to [0..1]
             blob = cv2.dnn.blobFromImage(
-                img, scalefactor=1 / 255, size=(320, 320), mean=(0, 0, 0), swapRB=True, crop=False
+                img, scalefactor=1 / 255, size=(416, 416), mean=(0, 0, 0), swapRB=True, crop=False
             )
             # Set input for YOLO object detection
             self.__network.setInput(blob)
@@ -161,12 +161,13 @@ class Ai:
         fps.stop()
         program_time = time.time() - start_time
         logging.debug("--- {:.2f} seconds ---".format(program_time))
-        logging.debug("[IA] elapsed time: {:.2f}".format(fps.elapsed()))
-        logging.debug("[IA] approx. FPS: {:.2f}".format(fps.fps()))
-        logging.debug("[IA] Nb of object detected: " + str(Ai.__object_detection_counter))
+        logging.debug("[AI] elapsed time: {:.2f}".format(fps.elapsed()))
+        logging.debug("[AI] approx. FPS: {:.2f}".format(fps.fps()))
+        logging.debug("[AI] Nb of object detected: " + str(Ai.__object_detection_counter))
 
         if self.__path_to_input_video is None:
             self.__video_stream.stop()
+        cv2.destroyAllWindows()
 
     def dram_boxes_and_call_state_machine(self, indexes, boxes, confidences, img, gpio_led):
         """Draw boxes around object detected and inform the gpio stateMachinePanel if a cyclist is detected or not.
