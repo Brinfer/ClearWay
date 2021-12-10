@@ -142,10 +142,10 @@ class Ai:
             # Update the FPS counter
             fps.update()
 
-            cv2.imshow("Image", img)
-            # Close video window by pressing 'x'
-            if cv2.waitKey(1) & 0xFF == ord("x"):
-                break
+            # cv2.imshow("Image", img)
+            # # Close video window by pressing 'x'
+            # if cv2.waitKey(1) & 0xFF == ord("x"):
+            #     break
 
             # Write the image to the output video
             if self.__path_to_output_video is not None:
@@ -169,7 +169,7 @@ class Ai:
             self.__video_stream.stop()
         cv2.destroyAllWindows()
 
-    def dram_boxes_and_call_state_machine(self, indexes, boxes, confidences, img, gpio_led):
+    def draw_boxes_and_call_state_machine(self, indexes, boxes, confidences, img, gpio_led):
         """Draw boxes around object detected and inform the gpio stateMachinePanel if a cyclist is detected or not.
 
         Parameters
@@ -188,7 +188,7 @@ class Ai:
         detect = len(boxes) != 0
         # If something is newly detected (rising edge)
         if detect and not self.__detect_old:
-            Ai._detect_old = True
+            self._detect_old = True
             for i in range(len(boxes)):
                 if i in indexes:
                     Ai.__object_detection_counter += 1
