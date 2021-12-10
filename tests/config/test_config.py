@@ -88,7 +88,7 @@ def test_nominal(p_file: str, mocker: MockerFixture) -> None:
     )
 
     # logging
-    assert logging.basicConfig.call_args.kwargs["level"] == logging.DEBUG
+    assert logging.basicConfig.call_args[1]["level"] == logging.DEBUG
 
 
 @pytest.mark.parametrize("p_file", ["tests/config/toml_files/empty.toml", "tests/config/toml_files/no_section.toml"])
