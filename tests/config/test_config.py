@@ -2,13 +2,18 @@
 
 import logging
 from typing import Any, Dict
+import sys
+from unittest.mock import Mock
 
-import pytest
-from pytest_mock.plugin import MockerFixture
-import clearway.gpio as gpio
-from clearway.gpio import servo, stateMachinePanel
-from clearway.ai import ai
-import clearway.config as config
+# Mock the import of imutils.video as unavailable for pipelines
+sys.modules["imutils.video"] = Mock()
+
+import pytest  # noqa: E402 module level import not at top of file
+from pytest_mock.plugin import MockerFixture  # noqa: E402 module level import not at top of file
+import clearway.gpio as gpio  # noqa: E402 module level import not at top of file
+from clearway.gpio import servo, stateMachinePanel  # noqa: E402 module level import not at top of file
+from clearway.ai import ai  # noqa: E402 module level import not at top of file
+import clearway.config as config  # noqa: E402 module level import not at top of file
 
 default_config: Dict[str, Any] = dict()
 
