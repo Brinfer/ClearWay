@@ -1,4 +1,4 @@
-"""Allows you to test the module clearway.gpio.stateMachinePanel.
+"""Allows you to test the module `clearway.gpio.stateMachinePanel`.
 
 Yields
 ------
@@ -13,11 +13,11 @@ import clearway.gpio as gpio
 from pytest_mock.plugin import MockerFixture
 from clearway.gpio import stateMachinePanel
 
+GPIO: int = 5
 """The number of the GPIO driven by the state machine."""
-GPIO = 5
 
+DELAY: float = 0.7
 """The time allowed for the triggers to run before continuing the tests."""
-DELAY = 0.7
 
 
 def setup() -> None:
@@ -40,7 +40,7 @@ def state_machine_tested() -> None:
     `stateMachinePanel.StateMachinePanel`
         A state machine, using gpio number 5.
     """
-    state_machine = stateMachinePanel.new(5)
+    state_machine = stateMachinePanel.new(GPIO)
     stateMachinePanel.start(GPIO)
 
     yield state_machine
@@ -58,9 +58,9 @@ def test_state_machine_nominal(
 
     Parameters
     ----------
-    mocker : MockerFixture
+    mocker : `MockerFixture`
         The interface for the mock module functions
-    state_machine_tested : stateMachinePanel.StateMachinePanel
+    state_machine_tested : `stateMachinePanel.StateMachinePanel`
         The state machine on which the tests are executed, this one must be in the initial state.
     """
     spy_action_signal = mocker.spy(state_machine_tested, "_signal")
@@ -120,9 +120,9 @@ def test_repeat_same_command(mocker: MockerFixture, state_machine_tested: stateM
 
     Parameters
     ----------
-    mocker : MockerFixture
+    mocker : `MockerFixture`
         The interface for the mock module functions
-    state_machine_tested : stateMachinePanel.StateMachinePanel
+    state_machine_tested : `stateMachinePanel.StateMachinePanel`
         The state machine on which the tests are executed, this one must be in the initial state.
     """
     spy_action_signal = mocker.spy(state_machine_tested, "_signal")

@@ -6,4 +6,4 @@ sys.path.append(".")
 
 from clearway.cli import main  # noqa: E402 module level import not at top of file
 
-sys.exit(main())
+sys.exit(main())  # type: ignore[func-returns-value]

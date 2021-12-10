@@ -3,7 +3,9 @@ import time
 import logging
 from enum import IntEnum, auto, unique
 import os
+from typing import List, Optional, Tuple
 
+import numpy
 from imutils.video import VideoStream
 from imutils.video import FPS
 import cv2
@@ -27,20 +29,25 @@ class __IdYoloOutputLayer(IntEnum):
     BICYCLE = auto()
 
 
-__object_detection_id = __IdYoloOutputLayer.PERSON
-__network = None
-__output_layers = []
-__video_stream = None
-__path_to_input_video = None
-__path_to_output_video = None
-__output_video = None
-__output_color = (0, 0, 255)  # Blue
-__prob_threshold = 0.5
-__detect = False
-__detect_old = False
+__object_detection_id: __IdYoloOutputLayer = __IdYoloOutputLayer.PERSON
+__network: cv2.dnn_Net
+__output_layers: List[str]
+__video_stream: cv2.VideoCapture
+__path_to_input_video: Optional[str] = None
+__path_to_output_video: Optional[str] = None
+__output_video: cv2.VideoWriter
+__output_color: Tuple[int, int, int] = (0, 0, 255)  # Blue
+__prob_threshold: float = 0.5
+__detect: bool = False
+__detect_old: bool = False
 
 
-def config(yolo_weights, yolo_cfg, path_to_input_video=None, path_to_output_video=None) -> None:
+def config(
+    yolo_weights: str,
+    yolo_cfg: str,
+    path_to_input_video: Optional[str] = None,
+    path_to_output_video: Optional[str] = None,
+) -> None:
     """Get the three output layers of YOLO and start the video stream.
 
     Parameters
@@ -52,6 +59,7 @@ def config(yolo_weights, yolo_cfg, path_to_input_video=None, path_to_output_vide
 
     # Read the deep learning network Yolo
     __network = cv2.dnn.readNet(yolo_weights, yolo_cfg)
+
     # Find names of all layers of the YOLO model architecture
     layer_names = __network.getLayerNames()
     __output_layers = [layer_names[i[0] - 1] for i in __network.getUnconnectedOutLayers()]
@@ -75,12 +83,14 @@ def config(yolo_weights, yolo_cfg, path_to_input_video=None, path_to_output_vide
         __output_video = cv2.VideoWriter(output_video_file, four_cc, fps=1, frameSize=(x_shape, y_shape))
 
 
-def bicycle_detector(gpio_led) -> None:
+def bicycle_detector(gpio_led: int) -> None:
     """Detect cyclists on a video stream frame by frame.
 
     Get the video stream from the Raspberry Pi camera.
     Process the stream to detect cyclists using a YOLO algorithm and the openCV library.
     """
+    global __path_to_input_video, __path_to_output_video, __video_stream, __network, __output_video, __output_layers
+
     # Start the frames per second
     fps = FPS().start()
 
@@ -145,7 +155,9 @@ def bicycle_detector(gpio_led) -> None:
         __video_stream.stop()
 
 
-def dram_boxes_and_call_state_machine(indexes, boxes, confidences, img, gpio_led):
+def dram_boxes_and_call_state_machine(
+    indexes: List[int], boxes: List[List[int]], confidences: List[float], img: numpy.ndarray, gpio_led: int
+) -> numpy.ndarray:
     """Draw boxes around object detected and inform the gpio stateMachinePanel if a cyclist is detected or not.
 
     Parameters
