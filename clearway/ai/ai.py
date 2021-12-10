@@ -1,8 +1,10 @@
 """OpenCV object detection using picamera."""
 import time
+from threading import Event # Needed for the  wait() method
 import logging
 from enum import IntEnum, auto, unique
 import os
+
 
 from imutils.video import VideoStream
 from imutils.video import FPS
@@ -31,7 +33,7 @@ class Ai:
     """Artificial intelligence management."""
 
     # Class variables shared by all instances
-    __object_detection_id = _IdYoloOutputLayer.BICYCLE
+    __object_detection_id = _IdYoloOutputLayer.PERSON
     __output_color = (0, 0, 255)  # Blue
     __prob_threshold = 0.5
     __object_detection_counter = 0
@@ -211,6 +213,7 @@ class Ai:
                     )
         # Else if nothing is detected
         else:
+            Event().wait(5000)
             stateMachinePanel.end_signal(gpio_led)
 
         return img
