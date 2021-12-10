@@ -194,8 +194,8 @@ def main() -> None:
 
     # Give the path to the input video to process it
     # Otherwise it will use the Raspberry Pi camera
-    ai.init(__yolo_weights, __yolo_cfg, __input_video_path, __output_video_path)
-    ai.bicycle_detector(__gpio_led)
+    ai_instance = ai.Ai(__yolo_weights, __yolo_cfg, __input_video_path, __output_video_path)
+    ai.Ai.bicycle_detector(ai_instance, __gpio_led)
 
     stateMachinePanel.stop(__gpio_led)
     stateMachinePanel.free(__gpio_led)
