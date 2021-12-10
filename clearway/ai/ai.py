@@ -28,13 +28,7 @@ class _IdYoloOutputLayer(IntEnum):
 
 
 class Ai:
-    """[summary].
-
-    Returns
-    -------
-    [type]
-        [description]
-    """
+    """Artificial intelligence management."""
 
     # Class variables shared by all instances
     __object_detection_id = _IdYoloOutputLayer.BICYCLE
@@ -48,8 +42,15 @@ class Ai:
 
         Parameters
         ----------
+        yolo_weights : string
+            The path to the weights file of YOLO
+        yolo_cfg : string
+            The path to the config file of YOLO
         path_to_input_video : string, optional
             The path to the input video that is going to be processed, by default None.
+        path_to_output_video : string, optional
+            the path to the folder that will contain the output video with boxes around detected bicycles,
+            by default None
         """
         # Read the deep learning network Yolo
         self.__network = cv2.dnn.readNet(yolo_weights, yolo_cfg)
@@ -82,6 +83,11 @@ class Ai:
 
         Get the video stream from the Raspberry Pi camera.
         Process the stream to detect cyclists using a YOLO algorithm and the openCV library.
+
+        Parameters
+        ----------
+        gpio_led : int
+            The gpio number where we send our signals.
         """
         start_time = time.time()
 
@@ -171,10 +177,12 @@ class Ai:
             List of object indexes used to remove multiple boxes that refer to the same object.
         boxes : [[int]]
             List of boxes with their information (center_x, center_y, width, height).
-        confidences : int[]
+        confidences : [int]
             List of detection confidences concerning objects on the image being processed.
         img : numpy.ndarray
             The image being processed.
+        gpio_led : int
+            The gpio number where we send our signals.
         """
         detect = len(boxes) != 0
         # If something is newly detected (rising edge)
