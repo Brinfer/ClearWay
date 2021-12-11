@@ -186,7 +186,6 @@ class Ai:
         """
         # If something is detected
         if len(boxes) != 0:
-            self.__detect_old = True
             for i in range(len(boxes)):
                 if i in indexes:
                     Ai.__object_detection_counter += 1
@@ -198,19 +197,18 @@ class Ai:
 
                     stateMachinePanel.signal(gpio_led)
 
-                    if self.__path_to_output_video is not None:
-                        x, y, w, h = boxes[i]
-                        confidence_label = int(confidences[i] * 100)
-                        cv2.rectangle(img, (x, y), (x + w, y + h), Ai.__output_color, 2)
-                        cv2.putText(
-                            img,
-                            f"{Ai.__object_detection_id.name, confidence_label}",
-                            (x - 25, y + 75),
-                            Ai.__font,
-                            2,
-                            Ai.__output_color,
-                            2,
-                        )
+                    x, y, w, h = boxes[i]
+                    confidence_label = int(confidences[i] * 100)
+                    cv2.rectangle(img, (x, y), (x + w, y + h), Ai.__output_color, 2)
+                    cv2.putText(
+                        img,
+                        f"{Ai.__object_detection_id.name, confidence_label}",
+                        (x - 25, y + 75),
+                        Ai.__font,
+                        2,
+                        Ai.__output_color,
+                        2,
+                    )
         # Else if nothing is detected
         else:
             stateMachinePanel.end_signal(gpio_led)
