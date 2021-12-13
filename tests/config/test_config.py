@@ -131,7 +131,7 @@ def test_no_section(p_file: str, mocker: MockerFixture) -> None:
     )
 
     # logging
-    assert logging.basicConfig.call_args.kwargs["level"] == logging.INFO
+    assert logging.basicConfig.call_args[1]["level"] == logging.DEBUG
 
 
 def test_wrong_key() -> None:
