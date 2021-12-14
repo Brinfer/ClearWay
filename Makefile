@@ -52,7 +52,7 @@ install: upload_package
 launch:
 	python3 -m clearway --no-gpio -i ../test/OpenCV/Tests_IA/bicycle_1fps.mp4 --yolo-weights ./resources/yolov2-tiny.weights --yolo-cfg ./resources/yolov2-tiny.cfg
 
-check:
+check_quality:
 	python -m flake8 --config setup.cfg
 	python -m black --check --config pyproject.toml clearway/
 	python -m mypy --config-file setup.cfg clearway/
