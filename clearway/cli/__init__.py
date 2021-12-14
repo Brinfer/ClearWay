@@ -10,6 +10,24 @@ from clearway.gpio import stateMachinePanel
 from clearway.ai import ai
 
 
+VERSION_MESAGE: str = """
+   ________               _       __
+  / ____/ /__  ____ _____| |     / /___ ___  __
+ / /   / / _ \\/ __ `/ ___/ | /| / / __ `/ / / /
+/ /___/ /  __/ /_/ / /   | |/ |/ / /_/ / /_/ /
+\\____/_/\\___/\\__,_/_/    |__/|__/\\__,_/\\__, /
+                                      /____/
+
+ClearWay v{}
+Copyright (C) 2021-2022 {}
+
+This program may be freely redistributed under the terms of the {} licence.
+""".format(
+    clearway.__version__, clearway.__author__, clearway.__license__
+)
+"""The message displayed when using the `clearway --version` command."""
+
+
 # TODO UPdate docstring
 def __parse_arg() -> None:
     """Parse the arguments passed in parameter at the launching of the program.
@@ -49,7 +67,10 @@ def __parse_arg() -> None:
         """
         return len(set(p_args) & set(sys.argv)) > 0
 
-    l_parser = argparse.ArgumentParser()
+    l_parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawTextHelpFormatter,
+        usage="clearway [OPTIONS] --yolo-cfg YOLO_CFG --yolo-weights YOLO_WEIGHTS --config CONFIG",
+    )
 
     # Optionals arguments
 
@@ -117,7 +138,7 @@ def __parse_arg() -> None:
         "--version",
         help="print the {} version and exit".format(clearway.__project__),
         action="version",
-        version="{} {}".format(clearway.__project__, clearway.__version__),
+        version=VERSION_MESAGE,
     )
 
     # Required arguments
@@ -133,6 +154,7 @@ def __parse_arg() -> None:
         required=not arguments_is_given("--config", "-c"),
     )
 
+    # TODO better help message => must have yolo-* path in config file or use the command line
     l_group_argument.add_argument(
         "--yolo-cfg",
         help="the path to the configuration file of yolo, required if the argument --config is not provided",
