@@ -15,16 +15,16 @@ default_config: Dict[str, Any] = dict()
 
 VALUE_NOMINAL: Dict[str, Any] = {
     config.SUBSECTION_AI: {
-    config.INPUT_PATH: "input/video1.mp4",
-    config.OUTPUT_PATH: "output/video1.mp4",
-    config.YOLO_CFG_PATH: "yolo_cfg",
-    config.YOLO_WEIGHTS_PATH: "yolo_weights",
+        config.INPUT_PATH: "input/video1.mp4",
+        config.OUTPUT_PATH: "output/video1.mp4",
+        config.YOLO_CFG_PATH: "yolo_cfg",
+        config.YOLO_WEIGHTS_PATH: "yolo_weights",
     },
     config.SUBSECTION_GPIO: {
         config.USE_GPIO: False,
         config.PANEL_GPIOS: [5, 6],
-    config.CAMERA_ANGLE: 75,
-    config.SERVO_GPIO: 12,
+        config.CAMERA_ANGLE: 75,
+        config.SERVO_GPIO: 12,
     },
     config.SUBSECTION_LOG: {
         config.LOG_VERBOSITY_LEVEL: logging.DEBUG,
@@ -161,7 +161,7 @@ def test_wrong_key(mocker: MockerFixture) -> None:
     mocker.patch("clearway.ai.ai.config")
     mocker.patch("logging.basicConfig")
 
-        config.save_config_from_file(l_file)
+    config.save_config_from_file(l_file)
     config.apply_config_all()
 
     # gpio
@@ -184,3 +184,16 @@ def test_wrong_key(mocker: MockerFixture) -> None:
     assert logging.basicConfig.call_args[1]["level"] == default_config[config.SUBSECTION_LOG][config.LOG_VERBOSITY_LEVEL]
 
 
+@pytest.mark.parametrize(
+    ("p_file, p_error_type"),
+    [
+        ("tests/config/toml_files/wrong_value_gpio_A.toml", TypeError),
+        ("tests/config/toml_files/wrong_value_gpio_B.toml", TypeError),
+        ("tests/config/toml_files/wrong_value_gpio_C.toml", toml.TomlDecodeError),
+        ("tests/config/toml_files/wrong_value_gpio_D.toml", TypeError),
+        ("tests/config/toml_files/wrong_value_gpio_E.toml", TypeError)
+    ],
+)
+def test_wrong_value_gpio(p_file: str, p_error_type: Exception, mocker: MockerFixture) -> None:
+    with pytest.raises((p_error_type)):
+        config.save_config_from_file(p_file)
