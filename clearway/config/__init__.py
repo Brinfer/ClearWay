@@ -23,22 +23,50 @@ from clearway.gpio import stateMachinePanel, servo
 
 
 USE_GPIO = "use_gpio"
+"""The dictionary key to indicate if you want to use GPIOs or not."""
+
 PANEL_GPIOS = "panel_gpios"
+"""The dictionary key to indicate the set of GPIOs to use for signaling."""
+
 INPUT_PATH = "input_path"
+"""The dictionary key to indicate the path to the input video."""
+
 OUTPUT_PATH = "output_path"
+"""The dictionary key to indicate the path to the output video."""
+
 YOLO_CFG_PATH = "yolo_cfg"
+"""The dictionary key to indicate the path to the YOLO configuration file."""
+
 YOLO_WEIGHTS_PATH = "yolo_weights"
-LOG_VERBOSITY_LEVEL = "verbosity"
+"""The dictionary key to indicate the path to the YOLO weights file."""
+
 CAMERA_ANGLE = "camera_angle"
+"""The dictionary key to indicate the angle of the camera to be used."""
+
 SERVO_GPIO = "servo_gpio"
+"""The dictionary key to indicate the GPIO to use for the servo-motor."""
+
+LOG_VERBOSITY_LEVEL = "verbosity"
+"""The dictionary key to indicate the verbosity level for the `logging` module."""
+
 LOG_FORMAT = "log_format"
+"""The dictionary key to indicate the format for the `logging` module."""
+
 LOG_PATH = "log_path"
+"""The dictionary key to indicate the path to the log file for the `logging` module."""
 
 
 MAIN_SECTION = "clearway"
+"""The main section searched in a toml file."""
+
 SUBSECTION_GPIO = "gpio"
+"""The subsection for the `gpio` module searched in the toml file."""
+
 SUBSECTION_AI = "ai"
+"""The subsection for the `ai` module searched in the toml file."""
+
 SUBSECTION_LOG = "log"
+"""The subsection for the `logging` module searched in the toml file."""
 
 __config_dict: Dict[str, Dict[str, Any]] = {
     SUBSECTION_AI: {
@@ -59,25 +87,48 @@ __config_dict: Dict[str, Dict[str, Any]] = {
         LOG_PATH: "ClearWay.log",
     },
 }
+"""The dictionary containing all the current configuration."""
 
 
 def save_config_from_file(p_path: str) -> None:
     """Save the config from the given config file.
 
-    The configuration file must be in toml format. The section searched is `PROJECT_KEY_CONFIG`.
+    The configuration file must be in toml format. The section searched is `MAIN_SECTION`.
     If the section is not found, then nothing happens.
 
-    If one of the subsection does not match, then this section is not taken into consideration.
+    If one of the subsection, or key does not match, then the process continues without taking into account the error.
+
+    The toml file should respect the following format:
+
+    ```toml
+    [clearway]
+
+    [clearway.gpio]
+    use_gpio = false
+    panel_gpios = [5, 6]
+    camera_angle = 75
+    servo_gpio = 12
+
+    [clearway.ai]
+    input_path = "input/video1.mp4"
+    output_path = "output/video1.mp4"
+    yolo_cfg = "yolo_cfg"
+    yolo_weights = "yolo_weights"
+
+    [clearway.log]
+    verbosity = "DEBUG"
+    ```
 
     Parameters
     ----------
     p_path : `str`
         The path to the config file.
 
-    Raises
-    ------
-    toml.TomlDecodeError:
-        Error while decoding toml
+    See
+    ---
+    - `save_config_gpio`
+    - `save_config_ai`
+    - `save_config_logging`
     """
     global __config_dict
 
@@ -112,47 +163,61 @@ def save_config_logging(
 
     If the argument is set to `None` then it will not be saved.
 
+    It is possible to provide a dictionary containing all or part of the information, example:
+
+    ```python
+        {
+            LOG_VERBOSITY_LEVEL: logging.INFO,
+            LOG_FORMAT: "%(asctime)s [%(filename)s:%(lineno)d] %(levelname)s >> %(message)s",
+            LOG_PATH: "ClearWay.log",
+        }
+    ```
+
+    Notes
+    -----
+    It is recommended to use the constants provided by the module, for the dictionary keys,
+    `LOG_VERBOSITY_LEVEL`, `LOG_FORMAT` and `LOG_PATH` documentation.
+
+    To have futher details on the available option see `apply_config_logging` function.
+
     Parameters
     ----------
-    p_verbosity_level : str, optional
-        The verbosity level to use, by default None
+    p_verbosity_level : `str`, optional
+        The verbosity level to use, by default `None`
+    p_dict : `Dict[str, Any]`, optional
+        A dictionary containing the informations, by default `None`
 
     Raises
     ------
-    TypeError
-        The type of `p_verbosity_level` is not `str`
     ValueError
         The value of `p_verbosity_level` is unknown
     """
     global __config_dict
 
+    # TODO accept format and path
+
     if p_dict is not None:
         if LOG_VERBOSITY_LEVEL in p_dict.keys():
             save_config_logging(p_verbosity_level=p_dict[LOG_VERBOSITY_LEVEL])
 
-    if p_verbosity_level is not None:
-        if isinstance(p_verbosity_level, str):
+    if isinstance(p_verbosity_level, str):
 
+        l_verbosity_level = logging.INFO
+        if p_verbosity_level == logging.getLevelName(logging.ERROR):
+            l_verbosity_level = logging.ERROR
+        elif p_verbosity_level == logging.getLevelName(logging.CRITICAL):
+            l_verbosity_level = logging.CRITICAL
+        elif p_verbosity_level == logging.getLevelName(logging.WARNING):
+            l_verbosity_level = logging.WARNING
+        elif p_verbosity_level == logging.getLevelName(logging.INFO):
             l_verbosity_level = logging.INFO
-            if p_verbosity_level == logging.getLevelName(logging.ERROR):
-                l_verbosity_level = logging.ERROR
-            elif p_verbosity_level == logging.getLevelName(logging.CRITICAL):
-                l_verbosity_level = logging.CRITICAL
-            elif p_verbosity_level == logging.getLevelName(logging.WARNING):
-                l_verbosity_level = logging.WARNING
-            elif p_verbosity_level == logging.getLevelName(logging.INFO):
-                l_verbosity_level = logging.INFO
-            elif p_verbosity_level == logging.getLevelName(logging.DEBUG):
-                l_verbosity_level = logging.DEBUG
-            else:
-                raise ValueError("[CONFIG] Unknown verbosity level: {}".format(p_verbosity_level))
-
-            logging.debug("[CONFIG] Save a new verbosity level: %s", logging.getLevelName(l_verbosity_level))
-            __config_dict[SUBSECTION_LOG][LOG_VERBOSITY_LEVEL] = l_verbosity_level
+        elif p_verbosity_level == logging.getLevelName(logging.DEBUG):
+            l_verbosity_level = logging.DEBUG
         else:
-            raise TypeError(
-                "[CONFIG] Wrong type for p_verbosity_level, {} instead of str".format(type(p_verbosity_level))
-            )
+            raise ValueError("[CONFIG] Unknown verbosity level: {}".format(p_verbosity_level))
+
+        logging.debug("[CONFIG] Save a new verbosity level: %s", logging.getLevelName(l_verbosity_level))
+        __config_dict[SUBSECTION_LOG][LOG_VERBOSITY_LEVEL] = l_verbosity_level
 
 
 def apply_config_logging() -> None:
@@ -203,23 +268,38 @@ def save_config_gpio(
 ) -> None:
     """Save the configuration for `clearway.gpio` module.
 
-    If the argument is set to `None` then it will not be saved.
+    If the element is `None` or does not respect the expected type, then it will be ignored.
+
+    It is possible to provide a dictionary containing all or part of the information, example:
+
+    ```python
+        {
+            USE_GPIO: True,
+            PANEL_GPIOS: {5, 6},
+            SERVO_GPIO: 12,
+            CAMERA_ANGLE: 75,
+        }
+    ```
+
+    Notes
+    -----
+    It is recommended to use the constants provided by the module, for the dictionary keys,
+    `USE_GPIO`, `PANEL_GPIOS`, `SERVO_GPIO` and `CAMERA_ANGLE` documentation.
+
+    To have futher details on the available option see `apply_config_gpio` function.
 
     Parameters
     ----------
     p_use_gpio : `bool`, optional
-        `True` if you want to use GPIOs, `False` otherwise, by default None
+        `True` if you want to use GPIOs, `False` otherwise, by default `None`
     p_gpios : `Iterable[int]`, optional
-        GPIOs to use, by default None
-
-    Raises
-    ------
-    TypeError
-        The type of `p_use_gpio` is not `bool`
-    TypeError
-        The type of `p_gpios` is not `Iterable`
-    TypeError
-        One of the elements in `p_gpios` is not an `int`
+        GPIOs to use, by default `None`
+    p_servo : `int`, optional
+        The GPIO to use for the servo-motor, by default `None`
+    p_camera_angle : `int`, optional
+        The angle for the camera, by default `None`
+    p_dict : `Dict[str, Any]`, optional
+        A dictionary containing the informations, by default `None`
     """
     global __config_dict
 
@@ -236,36 +316,25 @@ def save_config_gpio(
         if CAMERA_ANGLE in p_dict.keys():
             save_config_gpio(p_camera_angle=p_dict[CAMERA_ANGLE])
 
-    if p_use_gpio is not None:
-        if isinstance(p_use_gpio, bool):
-            logging.debug("[CONFIG] Save new instruction for the use of the GPIOs: {}".format(p_use_gpio))
-            __config_dict[SUBSECTION_GPIO][USE_GPIO] = p_use_gpio
-        else:
-            raise TypeError("[CONFIG] Wrong type for p_use_gpio, {} instead of bool".format(type(p_use_gpio)))
+    if isinstance(p_use_gpio, bool):
+        logging.debug("[CONFIG] Save new instruction for the use of the GPIOs: {}".format(p_use_gpio))
+        __config_dict[SUBSECTION_GPIO][USE_GPIO] = p_use_gpio
 
-    if p_gpios is not None:
-        if isinstance(p_gpios, Iterable):
-            if any(isinstance(l_gpio, int) for l_gpio in p_gpios):
-                logging.debug("[CONFIG] Save new GPIOs to use: %s", ", ".join([str(i) for i in p_gpios]))
-                __config_dict[SUBSECTION_GPIO][PANEL_GPIOS] = p_gpios
-            else:
-                raise TypeError("[CONFIG] Wrong type in p_gpios, not all element are int")
-        else:
-            raise TypeError("[CONFIG] Wrong type for p_gpios, {} instead of Iterable".format(type(p_gpios)))
+    if (
+        isinstance(p_gpios, Iterable)
+        and any(isinstance(l_gpio, int) for l_gpio in p_gpios)
+        and any((int(l_gpio) > 0) for l_gpio in p_gpios)
+    ):
+        logging.debug("[CONFIG] Save new GPIOs to use: %s", ", ".join([str(i) for i in p_gpios]))
+        __config_dict[SUBSECTION_GPIO][PANEL_GPIOS] = p_gpios
 
-    if p_servo is not None:
-        if isinstance(p_servo, int):
-            logging.debug("[CONFIG] Save new GPIO for the servo-motors to use: %d", p_servo)
-            __config_dict[SUBSECTION_GPIO][SERVO_GPIO] = p_servo
-        else:
-            raise TypeError("[CONFIG] Wrong type for p_servo, {} instead of int".format(type(p_use_gpio)))
+    if isinstance(p_servo, int):
+        logging.debug("[CONFIG] Save new GPIO for the servo-motors to use: %d", p_servo)
+        __config_dict[SUBSECTION_GPIO][SERVO_GPIO] = p_servo
 
-    if p_camera_angle is not None:
-        if isinstance(p_camera_angle, int):
-            logging.debug("[CONFIG] Save new GPIO for the servo-motors to use: %d", p_camera_angle)
-            __config_dict[SUBSECTION_GPIO][CAMERA_ANGLE] = p_camera_angle
-        else:
-            raise TypeError("[CONFIG] Wrong type for p_servo, {} instead of int".format(type(p_camera_angle)))
+    if isinstance(p_camera_angle, int):
+        logging.debug("[CONFIG] Save new GPIO for the servo-motors to use: %d", p_camera_angle)
+        __config_dict[SUBSECTION_GPIO][CAMERA_ANGLE] = p_camera_angle
 
 
 def apply_config_gpio() -> None:
@@ -276,7 +345,7 @@ def apply_config_gpio() -> None:
     - what are the GPIOs to use for signaling.
     - which GPIO to use for the servo motor.
 
-    All these values are the ones provided when using `save_config_gpio`, otherwise the default values will be used
+    All these values are the ones provided when using `save_config_gpio`, otherwise the default values will be used.
     """
     logging.info("[CONFIG] Apply configuration for gpio module")
 
@@ -302,29 +371,38 @@ def save_config_ai(
 ) -> None:
     """Save the configuration for `clearway.ai` module.
 
-    If the argument is set to `None` then it will not be saved.
+    If the element is `None` or does not respect the expected type, then it will be ignored.
+
+    It is possible to provide a dictionary containing all or part of the information, example:
+
+    ```python
+        {
+            INPUT_PATH: "path/to/my/video.mp4",
+            OUTPUT_PATH: "path/to/my/videoOutput.mp4",
+            YOLO_CFG_PATH: "path/to/my/yolo.cfg",
+            YOLO_WEIGHTS_PATH: "path/to/my/yolo.weights",
+        }
+    ```
+
+    Notes
+    -----
+    It is recommended to use the constants provided by the module, for the dictionary keys,
+    `INPUT_PATH`, `YOLO_CFG_PATH`, `OUTPUT_PATH` and `YOLO_WEIGHTS_PATH` documentation.
+
+    To have futher details on the available option see `apply_config_ai` function.
 
     Parameters
     ----------
     p_input_video_path : str, optional
-        The path to the video to be analyzed, by default None
+        The path to the video to be analyzed, by default `None`
     p_output_video_path : str, optional
-        The path to the file where the video analysis result is saved, by default None
+        The path to the file where the video analysis result is saved, by default `None`
     p_yolo_cfg_path : str, optional
-        The path to the file containing the YOLO configuration, by default None
+        The path to the file containing the YOLO configuration, by default `None`
     p_yolo_weights_path : str, optional
-        The path to the file containing the YOLO weights, by default None
-
-    Raises
-    ------
-    TypeError
-        The type of `p_input_video_path` is not `str`
-    TypeError
-        The type of `p_output_video_path` is not `str`
-    TypeError
-        The type of `p_yolo_cfg_path` is not `str`
-    TypeError
-        The type of `p_yolo_weights_path` is not `str`
+        The path to the file containing the YOLO weights, by default `None`
+    p_dict : `Dict[str, Any]`, optional
+        A dictionary containing the informations, by default `None`
     """
     global __config_dict
 
@@ -333,42 +411,27 @@ def save_config_ai(
     if p_dict is not None:
         if INPUT_PATH in p_dict.keys():
             save_config_ai(p_input_video_path=p_dict[INPUT_PATH])
+
         if OUTPUT_PATH in p_dict.keys():
             save_config_ai(p_output_video_path=p_dict[OUTPUT_PATH])
+
         if YOLO_CFG_PATH in p_dict.keys():
             save_config_ai(p_yolo_cfg_path=p_dict[YOLO_CFG_PATH])
+
         if YOLO_WEIGHTS_PATH in p_dict.keys():
             save_config_ai(p_yolo_weights_path=p_dict[YOLO_WEIGHTS_PATH])
 
-    if p_input_video_path is not None:
-        if isinstance(p_input_video_path, str):
-            __config_dict[SUBSECTION_AI][INPUT_PATH] = p_input_video_path
-        else:
-            raise TypeError(
-                "[CONFIG] Wrong type for p_input_video_path, {} instead of str".format(type(p_input_video_path))
-            )
+    if isinstance(p_input_video_path, str):
+        __config_dict[SUBSECTION_AI][INPUT_PATH] = p_input_video_path
 
-    if p_output_video_path is not None:
-        if isinstance(p_output_video_path, str):
-            __config_dict[SUBSECTION_AI][OUTPUT_PATH] = p_output_video_path
-        else:
-            raise TypeError(
-                "[CONFIG] Wrong type for p_output_video_path, {} instead of str".format(type(p_output_video_path))
-            )
+    if isinstance(p_output_video_path, str):
+        __config_dict[SUBSECTION_AI][OUTPUT_PATH] = p_output_video_path
 
-    if p_yolo_cfg_path is not None:
-        if isinstance(p_yolo_cfg_path, str):
-            __config_dict[SUBSECTION_AI][YOLO_CFG_PATH] = p_yolo_cfg_path
-        else:
-            raise TypeError("[CONFIG] Wrong type for p_yolo_cfg_path, {} instead of str".format(type(p_yolo_cfg_path)))
+    if isinstance(p_yolo_cfg_path, str):
+        __config_dict[SUBSECTION_AI][YOLO_CFG_PATH] = p_yolo_cfg_path
 
-    if p_yolo_weights_path is not None:
-        if isinstance(p_yolo_weights_path, str):
-            __config_dict[SUBSECTION_AI][YOLO_WEIGHTS_PATH] = p_yolo_weights_path
-        else:
-            raise TypeError(
-                "[CONFIG] Wrong type for p_yolo_weights_path, {} instead of str".format(type(p_yolo_weights_path))
-            )
+    if isinstance(p_yolo_weights_path, str):
+        __config_dict[SUBSECTION_AI][YOLO_WEIGHTS_PATH] = p_yolo_weights_path
 
 
 def apply_config_ai() -> None:
@@ -399,6 +462,12 @@ def apply_config_all() -> None:
     """Configure all modules.
 
     Calls all methods `apply_config_<module>`.
+
+    See
+    ---
+    - `apply_config_logging`
+    - `apply_config_gpio`
+    - `apply_config_ai`
     """
     apply_config_logging()
     apply_config_gpio()
