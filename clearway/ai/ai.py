@@ -31,26 +31,41 @@ class Ai:
     """Artificial intelligence management."""
 
     # Class variables shared by all instances
-    __object_detection_id = _IdYoloOutputLayer.BICYCLE
+    __object_detection_id = _IdYoloOutputLayer.PERSON
     __output_color = (0, 0, 255)  # Blue
     __prob_threshold = 0.5
     __object_detection_counter = 0
     __font = cv2.FONT_HERSHEY_DUPLEX
 
-    def __init__(self, yolo_weights, yolo_cfg, path_to_input_video=None, path_to_output_video=None) -> None:
+    def __init__(
+        self,
+        on_raspberry,
+        see_real_time_processing,
+        yolo_weights,
+        yolo_cfg,
+        size,
+        path_to_input_video=None,
+        path_to_output_video=None,
+    ) -> None:
         """Get the three output layers of YOLO and start the video stream.
 
         Parameters
         ----------
+        on_raspberry : bool
+            Tells the program if we are using a raspberry or a computer.
+        see_real_time_processing : bool
+            Tells the program if we want to see a window with the real-time processing in it.
         yolo_weights : string
-            The path to the weights file of YOLO
+            The path to the weights file of YOLO.
         yolo_cfg : string
-            The path to the config file of YOLO
+            The path to the config file of YOLO.
+        size : int
+            The size of the images converted to blob.
         path_to_input_video : string, optional
             The path to the input video that is going to be processed, by default None.
         path_to_output_video : string, optional
-            the path to the folder that will contain the output video with boxes around detected bicycles,
-            by default None
+            The path to the folder that will contain the output video with boxes around detected bicycles,
+            by default None.
         """
         # Read the deep learning network Yolo
         self.__network = cv2.dnn.readNet(yolo_weights, yolo_cfg)
@@ -58,17 +73,22 @@ class Ai:
         layer_names = self.__network.getLayerNames()
         self.__output_layers = [layer_names[i[0] - 1] for i in self.__network.getUnconnectedOutLayers()]
 
+        self.__on_raspberry = on_raspberry
+        self.__see_real_time_processing = see_real_time_processing
         self.__path_to_input_video = path_to_input_video
         self.__path_to_output_video = path_to_output_video
+        self.__size = size
 
         if self.__path_to_input_video is None:
-            self.__video_stream = VideoStream(usePiCamera=True).start()
-            # Very important! Otherwise, video_stream.read() gives a NonType
-            time.sleep(2.0)
-            logging.info("[AI] Camera ready to detect")
+            if self.__on_raspberry is True:
+                self.__video_stream = VideoStream(usePiCamera=True).start()
+                # Very important! Otherwise, video_stream.read() gives a NonType
+                time.sleep(2.0)
+                logging.info("[AI] Camera ready to detect")
+            else:
+                self.__video_stream = cv2.VideoCapture("/dev/video0")
         else:
             self.__video_stream = cv2.VideoCapture(path_to_input_video)
-            # self.__video_stream = cv2.VideoCapture("/dev/video0")
 
         if self.__path_to_output_video is not None:
             output_video_file = os.path.join(path_to_output_video, "video_processed.mp4")
@@ -93,7 +113,7 @@ class Ai:
         # Start the frames per second
         fps = FPS().start()
 
-        if self.__path_to_input_video is None:
+        if self.__on_raspberry is True and self.__path_to_input_video is None:
             read_ok = True
             img = self.__video_stream.read()
         else:
@@ -106,7 +126,7 @@ class Ai:
             # Convert image to Blob
             # Scalefactor of 1/255 to scale the pixel values to [0..1]
             blob = cv2.dnn.blobFromImage(
-                img, scalefactor=1 / 255, size=(416, 416), mean=(0, 0, 0), swapRB=True, crop=False
+                img, scalefactor=1 / 255, size=(self.__size, self.__size), mean=(0, 0, 0), swapRB=True, crop=False
             )
             # Set input for YOLO object detection
             self.__network.setInput(blob)
@@ -141,20 +161,13 @@ class Ai:
             # Update the FPS counter
             fps.update()
 
-            # cv2.imshow("Image", img)
-            # # Close video window by pressing 'x'
-            # if cv2.waitKey(1) & 0xFF == ord("x"):
-            #     break
+            if self.__see_real_time_processing:
+                cv2.imshow("Image", img)
+                # Close video window by pressing 'x'
+                if cv2.waitKey(1) & 0xFF == ord("x"):
+                    break
 
-            # Write the image to the output video
-            if self.__path_to_output_video is not None:
-                self.__output_video.write(img)
-
-            # Read the next frame
-            if self.__path_to_input_video is None:
-                img = self.__video_stream.read()
-            else:
-                read_ok, img = self.__video_stream.read()
+            read_ok, img = Ai.get_next_image(self, img)
 
         # Stop the timer and display FPS information
         fps.stop()
@@ -164,9 +177,7 @@ class Ai:
         logging.debug("[AI] approx. FPS: {:.2f}".format(fps.fps()))
         logging.debug("[AI] Nb of object detected: " + str(Ai.__object_detection_counter))
 
-        if self.__path_to_input_video is None:
-            self.__video_stream.stop()
-        cv2.destroyAllWindows()
+        Ai.stop_video_stream_and_destroy_window(self)
 
     def draw_boxes_and_call_state_machine(self, indexes, boxes, confidences, img, gpio_led):
         """Draw boxes around object detected and inform the gpio stateMachinePanel if a cyclist is detected or not.
@@ -214,3 +225,35 @@ class Ai:
             stateMachinePanel.end_signal(gpio_led)
 
         return img
+
+    def get_next_image(self, img):
+        """Write the processed image to the output video if it was asked and get the next image.
+
+        Parameters
+        ----------
+        img : ndarray
+            The image processed.
+        """
+        # Write the image to the output video
+        if self.__path_to_output_video is not None:
+            self.__output_video.write(img)
+
+        # Read the next frame
+        if self.__on_raspberry is True and self.__path_to_input_video is None:
+            read_ok = True
+            img = self.__video_stream.read()
+        else:
+            read_ok, img = self.__video_stream.read()
+
+        return read_ok, img
+
+    def stop_video_stream_and_destroy_window(self):
+        """Stop the video stream and destroy the openCV window in case of real-time processing."""
+        if self.__path_to_input_video is None:
+            if self.__on_raspberry is True:
+                self.__video_stream.stop()
+            else:
+                self.__video_stream.release()
+
+        if self.__see_real_time_processing:
+            cv2.destroyAllWindows()

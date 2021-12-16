@@ -16,10 +16,13 @@ __DEFAULT_VERBOSITY_LEVEL = logging.INFO
 __LOG_PATH = "ClearWay.log"
 
 __gpio_led = None
+__on_raspberry = None
+__see_real_time_processing = None
 __input_video_path = None
 __output_video_path = None
 __yolo_cfg = ""
 __yolo_weights = ""
+__size = None
 __verbosity_level = None
 
 # Angle of the camera
@@ -69,6 +72,10 @@ def __parse_arg() -> None:
             tells the program which gpio to use, the default is __DEFAULT_GPIO
         --no-gpio
             tells the program that it does not want to use the GPIOs, only the logs will be displayed
+        --on-raspberry ON_RASPBERRY
+            tells the program if we are using a raspberry or a computer
+        -see-rtp SEE_RTP
+            tells the program if we want to see a window with the real-time processing in it
         -i INPUT_PATH, --input-path INPUT_PATH
             the path to the input video to be analyzed rather than using the video stream from the camera
         -o OUTPUT_PATH, --output-path OUTPUT_PATH
@@ -83,9 +90,11 @@ def __parse_arg() -> None:
             the path to the weights file of yolo
         --yolo-cfg YOLO_CFG
             the path to the configuration file of yolo
+        --size SIZE
+            the size of the images converted to blob (320 or 416 recommended)
     """
-    global __gpio_led, __input_video_path, __output_video_path, __yolo_cfg, __yolo_weights
-    global __verbosity_level, __DEFAULT_GPIO
+    global __gpio_led, __on_raspberry, __see_real_time_processing, __input_video_path, __output_video_path
+    global __yolo_cfg, __yolo_weights, __size, __verbosity_level, __DEFAULT_GPIO
 
     l_parser = argparse.ArgumentParser()
 
@@ -102,6 +111,20 @@ def __parse_arg() -> None:
         "--no-gpio",
         help="tells the program that it does not want to use the GPIOs, only the logs will be displayed",
         action="store_true",
+        default=False,
+    )
+
+    l_parser.add_argument(
+        "--on-raspberry",
+        help="tells the program if we are using a raspberry or a computer",
+        action="store",
+        default=False,
+    )
+
+    l_parser.add_argument(
+        "--see-rtp",
+        help="tells the program if we want to see a window with the real-time processing in it",
+        action="store",
         default=False,
     )
 
@@ -160,14 +183,26 @@ def __parse_arg() -> None:
         required=True,
     )
 
+    required_arguments.add_argument(
+        "--size",
+        type=int,
+        help="the size of the images converted to blob (320 or 416 recommended)",
+        action="store",
+        default=None,
+        required=True,
+    )
+
     l_args = l_parser.parse_args()
 
     gpio.use_gpio(not l_args.no_gpio)
     __gpio_led = l_args.gpio
+    __on_raspberry = l_args.on_raspberry
+    __see_real_time_processing = l_args.see_rtp
     __input_video_path = l_args.input_path
     __output_video_path = l_args.output_path
     __yolo_cfg = l_args.yolo_cfg
     __yolo_weights = l_args.yolo_weights
+    __size = l_args.size
 
     if l_args.verbosity == logging.getLevelName(logging.WARNING):
         __verbosity_level = logging.WARNING
@@ -192,9 +227,15 @@ def main() -> None:
     stateMachinePanel.new(__gpio_led)
     stateMachinePanel.start(__gpio_led)
 
-    # Give the path to the input video to process it
-    # Otherwise it will use the Raspberry Pi camera
-    ai_instance = ai.Ai(__yolo_weights, __yolo_cfg, __input_video_path, __output_video_path)
+    ai_instance = ai.Ai(
+        __on_raspberry,
+        __see_real_time_processing,
+        __yolo_weights,
+        __yolo_cfg,
+        __size,
+        __input_video_path,
+        __output_video_path,
+    )
     ai.Ai.bicycle_detector(ai_instance, __gpio_led)
 
     stateMachinePanel.stop(__gpio_led)
