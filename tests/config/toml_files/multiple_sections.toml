@@ -4,15 +4,18 @@ keyA_2 = [2, 3]
 keyA_3 = "4"
 
 [clearway]
+[clearway.gpio]
 use_gpio = false
 panel_gpios = [5, 6]
+camera_angle = 75
+servo_gpio = 12
+[clearway.ai]
 input_path = "input/video1.mp4"
 output_path = "output/video1.mp4"
 yolo_cfg = "yolo_cfg"
 yolo_weights = "yolo_weights"
+[clearway.log]
 verbosity = "DEBUG"
-camera_angle = 75
-servo_gpio = 12
 
 [section_B]
 keyB_1 = 5

@@ -3,25 +3,32 @@
 import logging
 from typing import Any, Dict
 
-import pytest  # noqa: E402 module level import not at top of file
-from pytest_mock.plugin import MockerFixture  # noqa: E402 module level import not at top of file
-import clearway.gpio as gpio  # noqa: E402 module level import not at top of file
-from clearway.gpio import servo, stateMachinePanel  # noqa: E402 module level import not at top of file
-from clearway.ai import ai  # noqa: E402 module level import not at top of file
-import clearway.config as config  # noqa: E402 module level import not at top of file
+import toml
+import pytest
+from pytest_mock.plugin import MockerFixture
+import clearway.gpio as gpio
+from clearway.gpio import servo, stateMachinePanel
+from clearway.ai import ai
+import clearway.config as config
 
 default_config: Dict[str, Any] = dict()
 
 VALUE_NOMINAL: Dict[str, Any] = {
-    config.USE_GPIO: False,
-    config.PANEL_GPIOS: [5, 6],
+    config.SUBSECTION_AI: {
     config.INPUT_PATH: "input/video1.mp4",
     config.OUTPUT_PATH: "output/video1.mp4",
     config.YOLO_CFG_PATH: "yolo_cfg",
     config.YOLO_WEIGHTS_PATH: "yolo_weights",
-    config.LOG_VERBOSITY_LEVEL: "DEBUG",
+    },
+    config.SUBSECTION_GPIO: {
+        config.USE_GPIO: False,
+        config.PANEL_GPIOS: [5, 6],
     config.CAMERA_ANGLE: 75,
     config.SERVO_GPIO: 12,
+    },
+    config.SUBSECTION_LOG: {
+        config.LOG_VERBOSITY_LEVEL: logging.DEBUG,
+    },
 }
 """Contains the values of the parameters of the files `nominal.toml` and `multiple_sections.toml`."""
 
@@ -75,20 +82,23 @@ def test_nominal(p_file: str, mocker: MockerFixture) -> None:
     config.apply_config_all()
 
     # gpio
-    gpio.use_gpio.assert_called_with(VALUE_NOMINAL[config.USE_GPIO])
-    stateMachinePanel.config.assert_called_with(VALUE_NOMINAL[config.PANEL_GPIOS])
-    servo.config.assert_called_with(VALUE_NOMINAL[config.CAMERA_ANGLE], VALUE_NOMINAL[config.SERVO_GPIO])
+    gpio.use_gpio.assert_called_with(VALUE_NOMINAL[config.SUBSECTION_GPIO][config.USE_GPIO])
+    stateMachinePanel.config.assert_called_with(VALUE_NOMINAL[config.SUBSECTION_GPIO][config.PANEL_GPIOS])
+    servo.config.assert_called_with(
+        VALUE_NOMINAL[config.SUBSECTION_GPIO][config.CAMERA_ANGLE],
+        VALUE_NOMINAL[config.SUBSECTION_GPIO][config.SERVO_GPIO],
+    )
 
     # ai
     ai.config.assert_called_with(
-        VALUE_NOMINAL[config.YOLO_WEIGHTS_PATH],
-        VALUE_NOMINAL[config.YOLO_CFG_PATH],
-        VALUE_NOMINAL[config.INPUT_PATH],
-        VALUE_NOMINAL[config.OUTPUT_PATH],
+        VALUE_NOMINAL[config.SUBSECTION_AI][config.YOLO_WEIGHTS_PATH],
+        VALUE_NOMINAL[config.SUBSECTION_AI][config.YOLO_CFG_PATH],
+        VALUE_NOMINAL[config.SUBSECTION_AI][config.INPUT_PATH],
+        VALUE_NOMINAL[config.SUBSECTION_AI][config.OUTPUT_PATH],
     )
 
     # logging
-    assert logging.basicConfig.call_args[1]["level"] == logging.DEBUG
+    assert logging.basicConfig.call_args[1]["level"] == VALUE_NOMINAL[config.SUBSECTION_LOG][config.LOG_VERBOSITY_LEVEL]
 
 
 @pytest.mark.parametrize("p_file", ["tests/config/toml_files/empty.toml", "tests/config/toml_files/no_section.toml"])
@@ -118,23 +128,26 @@ def test_no_section(p_file: str, mocker: MockerFixture) -> None:
     config.apply_config_all()
 
     # gpio
-    gpio.use_gpio.assert_called_with(default_config[config.USE_GPIO])
-    stateMachinePanel.config.assert_called_with(default_config[config.PANEL_GPIOS])
-    servo.config.assert_called_with(default_config[config.CAMERA_ANGLE], default_config[config.SERVO_GPIO])
+    gpio.use_gpio.assert_called_with(default_config[config.SUBSECTION_GPIO][config.USE_GPIO])
+    stateMachinePanel.config.assert_called_with(default_config[config.SUBSECTION_GPIO][config.PANEL_GPIOS])
+    servo.config.assert_called_with(
+        default_config[config.SUBSECTION_GPIO][config.CAMERA_ANGLE],
+        default_config[config.SUBSECTION_GPIO][config.SERVO_GPIO],
+    )
 
     # ai
     ai.config.assert_called_with(
-        default_config[config.YOLO_WEIGHTS_PATH],
-        default_config[config.YOLO_CFG_PATH],
-        default_config[config.INPUT_PATH],
-        default_config[config.OUTPUT_PATH],
+        default_config[config.SUBSECTION_AI][config.YOLO_WEIGHTS_PATH],
+        default_config[config.SUBSECTION_AI][config.YOLO_CFG_PATH],
+        default_config[config.SUBSECTION_AI][config.INPUT_PATH],
+        default_config[config.SUBSECTION_AI][config.OUTPUT_PATH],
     )
 
     # logging
-    assert logging.basicConfig.call_args[1]["level"] == logging.INFO
+    assert logging.basicConfig.call_args[1]["level"] == default_config[config.SUBSECTION_LOG][config.LOG_VERBOSITY_LEVEL]
 
 
-def test_wrong_key() -> None:
+def test_wrong_key(mocker: MockerFixture) -> None:
     """Test if the configuration file contains non-recognized keys.
 
     The file keys are the expected ones but written in capital, the keys are case sensitive.
@@ -142,5 +155,32 @@ def test_wrong_key() -> None:
     """
     l_file = "tests/config/toml_files/wrong_key.toml"
 
-    with pytest.raises(KeyError):
+    mocker.patch("clearway.gpio.use_gpio")
+    mocker.patch("clearway.gpio.stateMachinePanel.config")
+    mocker.patch("clearway.gpio.servo.config")
+    mocker.patch("clearway.ai.ai.config")
+    mocker.patch("logging.basicConfig")
+
         config.save_config_from_file(l_file)
+    config.apply_config_all()
+
+    # gpio
+    gpio.use_gpio.assert_called_with(default_config[config.SUBSECTION_GPIO][config.USE_GPIO])
+    stateMachinePanel.config.assert_called_with(default_config[config.SUBSECTION_GPIO][config.PANEL_GPIOS])
+    servo.config.assert_called_with(
+        default_config[config.SUBSECTION_GPIO][config.CAMERA_ANGLE],
+        default_config[config.SUBSECTION_GPIO][config.SERVO_GPIO],
+    )
+
+    # ai
+    ai.config.assert_called_with(
+        default_config[config.SUBSECTION_AI][config.YOLO_WEIGHTS_PATH],
+        default_config[config.SUBSECTION_AI][config.YOLO_CFG_PATH],
+        default_config[config.SUBSECTION_AI][config.INPUT_PATH],
+        default_config[config.SUBSECTION_AI][config.OUTPUT_PATH],
+    )
+
+    # logging
+    assert logging.basicConfig.call_args[1]["level"] == default_config[config.SUBSECTION_LOG][config.LOG_VERBOSITY_LEVEL]
+
+
