@@ -3,7 +3,6 @@
 import logging
 from typing import Any, Dict
 
-import toml
 import pytest
 from pytest_mock.plugin import MockerFixture
 import clearway.gpio as gpio
@@ -144,7 +143,9 @@ def test_no_section(p_file: str, mocker: MockerFixture) -> None:
     )
 
     # logging
-    assert logging.basicConfig.call_args[1]["level"] == default_config[config.SUBSECTION_LOG][config.LOG_VERBOSITY_LEVEL]
+    assert (
+        logging.basicConfig.call_args[1]["level"] == default_config[config.SUBSECTION_LOG][config.LOG_VERBOSITY_LEVEL]
+    )
 
 
 def test_wrong_key(mocker: MockerFixture) -> None:
@@ -181,7 +182,9 @@ def test_wrong_key(mocker: MockerFixture) -> None:
     )
 
     # logging
-    assert logging.basicConfig.call_args[1]["level"] == default_config[config.SUBSECTION_LOG][config.LOG_VERBOSITY_LEVEL]
+    assert (
+        logging.basicConfig.call_args[1]["level"] == default_config[config.SUBSECTION_LOG][config.LOG_VERBOSITY_LEVEL]
+    )
 
 
 @pytest.mark.parametrize(
@@ -204,10 +207,21 @@ def test_wrong_value_gpio(p_file: str, mocker: MockerFixture) -> None:
     mocker : `MockerFixture`
         The interface for the mock module functions.
     """
-
     config.save_config_from_file(p_file)
 
-    assert config.__config_dict[config.SUBSECTION_GPIO][config.USE_GPIO] == default_config[config.SUBSECTION_GPIO][config.USE_GPIO]
-    assert config.__config_dict[config.SUBSECTION_GPIO][config.PANEL_GPIOS] == default_config[config.SUBSECTION_GPIO][config.PANEL_GPIOS]
-    assert config.__config_dict[config.SUBSECTION_GPIO][config.SERVO_GPIO] == default_config[config.SUBSECTION_GPIO][config.SERVO_GPIO]
-    assert config.__config_dict[config.SUBSECTION_GPIO][config.CAMERA_ANGLE] == default_config[config.SUBSECTION_GPIO][config.CAMERA_ANGLE]
+    assert (
+        config.__config_dict[config.SUBSECTION_GPIO][config.USE_GPIO]
+        == default_config[config.SUBSECTION_GPIO][config.USE_GPIO]
+    )
+    assert (
+        config.__config_dict[config.SUBSECTION_GPIO][config.PANEL_GPIOS]
+        == default_config[config.SUBSECTION_GPIO][config.PANEL_GPIOS]
+    )
+    assert (
+        config.__config_dict[config.SUBSECTION_GPIO][config.SERVO_GPIO]
+        == default_config[config.SUBSECTION_GPIO][config.SERVO_GPIO]
+    )
+    assert (
+        config.__config_dict[config.SUBSECTION_GPIO][config.CAMERA_ANGLE]
+        == default_config[config.SUBSECTION_GPIO][config.CAMERA_ANGLE]
+    )
