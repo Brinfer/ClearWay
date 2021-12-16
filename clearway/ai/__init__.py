@@ -1,1 +1,1 @@
-"""Module to detect bicycles with openCV."""
+"""Module to detect bicycles with YOLO and openCV."""
