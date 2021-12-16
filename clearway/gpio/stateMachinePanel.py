@@ -91,7 +91,8 @@ class StateMachinePanel:
         Signaling --> Off : end_signal / stop_signal()
         Signaling --> [*] : stop / stop_signal()
 
-    .. [1] https://github.com/pytransitions/transitions
+    .. _[1]:
+        https://github.com/pytransitions/transitions
     """
 
     STATES = (
