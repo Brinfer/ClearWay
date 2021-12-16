@@ -1,7 +1,0 @@
-[clearway]
-
-[clearway.gpio]
-use_gpio = false
-panel_gpios = [5, 6]
-camera_angle = 75
-servo_gpio = "12"

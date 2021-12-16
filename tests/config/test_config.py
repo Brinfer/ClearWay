@@ -185,15 +185,29 @@ def test_wrong_key(mocker: MockerFixture) -> None:
 
 
 @pytest.mark.parametrize(
-    ("p_file, p_error_type"),
+    "p_file",
     [
-        ("tests/config/toml_files/wrong_value_gpio_A.toml", TypeError),
-        ("tests/config/toml_files/wrong_value_gpio_B.toml", TypeError),
-        ("tests/config/toml_files/wrong_value_gpio_C.toml", toml.TomlDecodeError),
-        ("tests/config/toml_files/wrong_value_gpio_D.toml", TypeError),
-        ("tests/config/toml_files/wrong_value_gpio_E.toml", TypeError)
+        "tests/config/toml_files/wrong_value_gpio_A.toml",
+        "tests/config/toml_files/wrong_value_gpio_B.toml",
+        "tests/config/toml_files/wrong_value_gpio_C.toml",
     ],
 )
-def test_wrong_value_gpio(p_file: str, p_error_type: Exception, mocker: MockerFixture) -> None:
-    with pytest.raises((p_error_type)):
-        config.save_config_from_file(p_file)
+def test_wrong_value_gpio(p_file: str, mocker: MockerFixture) -> None:
+    """Test if the file contains invalid values.
+
+    If a value is invalid, then the configuration associated with the key must remain the same as the default.
+
+    Parameters
+    ----------
+    p_file : `str`
+        The path to the configuration file.
+    mocker : `MockerFixture`
+        The interface for the mock module functions.
+    """
+
+    config.save_config_from_file(p_file)
+
+    assert config.__config_dict[config.SUBSECTION_GPIO][config.USE_GPIO] == default_config[config.SUBSECTION_GPIO][config.USE_GPIO]
+    assert config.__config_dict[config.SUBSECTION_GPIO][config.PANEL_GPIOS] == default_config[config.SUBSECTION_GPIO][config.PANEL_GPIOS]
+    assert config.__config_dict[config.SUBSECTION_GPIO][config.SERVO_GPIO] == default_config[config.SUBSECTION_GPIO][config.SERVO_GPIO]
+    assert config.__config_dict[config.SUBSECTION_GPIO][config.CAMERA_ANGLE] == default_config[config.SUBSECTION_GPIO][config.CAMERA_ANGLE]
