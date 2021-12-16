@@ -66,8 +66,7 @@ black:
 mypy:
   stage: quality
   script:
-    - python -m mypy --install-types --non-interactive clearway/  # Installs any missing stub packages
-    - python -m mypy --config-file setup.cfg clearway/
+    - python -m mypy --install-types --non-interactive --config-file setup.cfg clearway/  # Installs any missing stub packages
   allow_failure: true
   only:
     changes:
