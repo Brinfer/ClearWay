@@ -77,9 +77,7 @@ def __parse_arg() -> None:
     # TODO accept a list of gpios
     l_parser.add_argument(
         "--gpios",
-        help="tells the program which gpio to use, the default is {}".format(
-            ", ".join([str(i) for i in config.DEFAULT_PANEL_GPIOS])
-        ),
+        help="tells the program which gpio to use",
         action="store",
         type=int,
         default=None,
@@ -126,9 +124,7 @@ def __parse_arg() -> None:
             logging.getLevelName(logging.INFO),
             logging.getLevelName(logging.DEBUG),
         ],
-        help="indicates the level of verbosity, default is {}".format(
-            logging.getLevelName(logging.getLevelName(config.DEFAULT_LOG_VERBOSITY_LEVEL))
-        ),
+        help="indicates the level of verbosity",
         type=str,
         default=None,
     )
