@@ -367,6 +367,7 @@ def save_config_ai(
     p_output_video_path: Optional[str] = None,
     p_yolo_cfg_path: Optional[str] = None,
     p_yolo_weights_path: Optional[str] = None,
+    p_size: Optional[int] = None,
     p_dict: Optional[Dict[str, Any]] = None,
 ) -> None:
     """Save the configuration for `clearway.ai` module.
@@ -405,6 +406,8 @@ def save_config_ai(
         A dictionary containing the informations, by default `None`
     """
     global __config_dict
+
+    # TODO add size arg
 
     logging.debug(p_dict)
 

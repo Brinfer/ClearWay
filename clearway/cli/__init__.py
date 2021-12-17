@@ -41,6 +41,10 @@ def __parse_arg() -> None:
             tells the program that it does not want to use the GPIOs, only the logs will be displayed
         - -i INPUT_PATH, --input-path INPUT_PATH
             the path to the input video to be analyzed rather than using the video stream from the camera
+        --on-raspberry ON_RASPBERRY
+            tells the program if we are using a raspberry or a computer
+        -see-rtp SEE_RTP
+            tells the program if we want to see a window with the real-time processing in it
         - -o OUTPUT_PATH, --output-path OUTPUT_PATH
             the path to the folder that will contain the output video with boxes around detected bicycles
         - -v {WARNING,INFO,DEBUG}, --verbosity {WARNING,INFO,DEBUG}
@@ -53,6 +57,8 @@ def __parse_arg() -> None:
             the path to the weights file of yolo
         - --yolo-cfg YOLO_CFG
             the path to the configuration file of yolo
+        --size SIZE
+            the size of the images converted to blob (320 or 416 recommended)
     """
 
     def arguments_is_given(*p_args: str) -> bool:
@@ -96,6 +102,20 @@ def __parse_arg() -> None:
         help="tells the program to use the GPIOs",
         action="store_true",
         default=None,
+    )
+
+    l_parser.add_argument(
+        "--on-raspberry",
+        help="tells the program if we are using a raspberry or a computer",
+        action="store",
+        default=False,
+    )
+
+    l_parser.add_argument(
+        "--see-rtp",
+        help="tells the program if we want to see a window with the real-time processing in it",
+        action="store",
+        default=False,
     )
 
     l_parser.add_argument(
@@ -173,6 +193,15 @@ def __parse_arg() -> None:
         required=not (arguments_is_given("--yolo-cfg") and arguments_is_given("--yolo-weights")),
     )
 
+    required_arguments.add_argument(
+        "--size",
+        type=int,
+        help="the size of the images converted to blob (320 or 416 recommended)",
+        action="store",
+        default=None,
+        required=not arguments_is_given("--config", "-c"),
+    )
+
     # Parse the arguments
     l_args = l_parser.parse_args()
 
@@ -193,6 +222,7 @@ def __parse_arg() -> None:
         p_output_video_path=l_args.output_path,
         p_yolo_cfg_path=l_args.yolo_cfg,
         p_yolo_weights_path=l_args.yolo_weights,
+        p_size=l_args.size
     )
 
     # Save logging config module
