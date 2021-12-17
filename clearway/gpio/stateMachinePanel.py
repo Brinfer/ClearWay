@@ -18,12 +18,12 @@ Examples
 >>> stateMachinePanel.free(GPIO)
 """
 
-from threading import Thread
+from threading import Event, Thread, Lock
 import time
 import logging
 from enum import auto, unique, Enum
 from queue import Queue
-from typing import Any, Dict, Iterable, Optional, Set
+from typing import Any, Dict, Iterable, Optional, Union
 
 from transitions import State
 from transitions.core import Machine
@@ -34,11 +34,10 @@ import clearway.gpio as gpio
 logging.getLogger("transitions").setLevel(logging.WARNING)
 
 __state_machines: Dict[str, Any] = {}
-gpios_signals: Set[int] = set()
-__LOOP_KEY = "loop"
-__QUEUE_KEY = "queue"
-
-_FREQUENCY = 2
+__running_thread: Thread
+__queue: Queue
+__mutex: Optional[Lock] = None
+_FREQUENCY: int = 2
 
 
 @unique
@@ -54,6 +53,7 @@ class __EventEnum(Enum):
     STOP = 0
     SIGNAL = auto()
     STOP_SIGNAL = auto()
+    FINISH_THREAD = auto()
 
 
 class StateMachinePanel:
@@ -80,8 +80,7 @@ class StateMachinePanel:
 
     Notes
     -----
-    The state machine is based on the transitions [1]_ package licenced by MIT
-
+    The state machine is based on the transitions [1]_ package licensed by MIT
 
     .. uml::
 
@@ -209,140 +208,81 @@ class StateMachinePanel:
             time.sleep(_FREQUENCY / 2)
 
 
-# TODO Usefull with config ?, Update to use set or nomething else
-def new(p_gpio: int) -> StateMachinePanel:
-    """Create a new state machine for the given port.
+def new(p_gpio: Union[int, Iterable[int]]) -> None:
+    """Create a new state machine for the given GPIOs.
 
     Parameters
     ----------
-    p_gpio : `int`
-        The port that will be controlled by the state machine.
-
-    Returns
-    -------
-    StateMachinePanel
-        The new state machine created
+    p_gpio : Union[int, Iterable[int]]
+        The GPIOs that will be controlled by a state machine.
     """
-    global __state_machines
+    global __state_machines, __mutex
 
-    logging.info("[PANEL-%s] - Event: create new state machine", p_gpio)
+    if __mutex is None:
+        logging.debug("[PANEL] Create the mutex")
+        __mutex = Lock()
 
-    queue: Queue = Queue()
-    state_machine = StateMachinePanel(p_gpio)
+    l_gpios: set
 
-    __state_machines[str(p_gpio)] = {
-        __LOOP_KEY: Thread(
-            target=__run,
-            name="[PANEL-{}]".format(str(p_gpio)),
-            args=(queue, state_machine),
-        ),
-        __QUEUE_KEY: queue,
-    }
+    if isinstance(p_gpio, int):
+        l_gpios = set([p_gpio])
+    elif not isinstance(p_gpio, set):
+        l_gpios = set(p_gpio)
+    else:
+        l_gpios = p_gpio
 
-    return state_machine
+    for l_gpio in l_gpios:
+        logging.info("[PANEL-%s] - Event: create new state machine", l_gpio)
+
+        state_machine = StateMachinePanel(l_gpio)
+
+        __mutex.acquire()
+        __state_machines[str(l_gpio)] = state_machine
+        __mutex.release()
 
 
-def config(p_gpios: Iterable[int]) -> None:
-    """Modify the GPIOs to be used to signal.
+def start() -> None:
+    """Start all the state machine."""
+    global __state_machines, __running_thread, __queue, __mutex
 
-    Pass an empty set to not use GPIO.
+    logging.info("[PANEL] - Event: start the thread for %d state machine", len(__state_machines.keys()))
 
-    Parameters
-    ----------
-    p_gpios : `Iterable[int]`
-        The GPIO to use.
+    if __mutex is None:
+        logging.debug("[PANEL] Create the mutex")
+        __mutex = Lock()
+
+    __queue = Queue()
+
+    __running_thread = Thread(
+        target=__run,
+        name="[PANEL]",
+    )
+
+    __running_thread.start()
+
+
+def stop() -> None:
+    """Stop all the state machine.
+
+    The current thread will be blocked until the state machine are stopped.
     """
-    global gpios_signals
+    global __state_machines, __running_thread, __queue
 
-    gpios_signals = set(p_gpios)
-
-
-# TODO Update to use set or something else
-def start(p_gpio: int) -> None:
-    """Start the state machine for the given port.
-
-    Parameters
-    ----------
-    p_gpio : `int`
-        The port controlled by the state machine
-
-    Raises
-    ------
-    KeyError
-        The state machine was not created
-    """
-    global __state_machines
-
-    logging.info("[PANEL-%s] - Event: start the state machine", p_gpio)
-
-    __state_machines[str(p_gpio)][__LOOP_KEY].start()
-
-
-# TODO Update to use set or something else
-def stop(p_gpio: int) -> None:
-    """Stop the state machine for the given port.
-
-    The current thread will be blocked until the state machine is stopped.
-
-    Parameters
-    ----------
-    p_gpio : `int`
-        The port that will be controlled by the state machine.
-
-    Raises
-    ------
-    KeyError
-        The state machine was not created.
-    """
-    global __state_machines
-
-    logging.info("[PANEL-%s] - Event: stop the state machine", p_gpio)
-    __state_machines[str(p_gpio)][__QUEUE_KEY].put(__EventEnum.STOP)
-    __state_machines[str(p_gpio)][__LOOP_KEY].join()
-
-
-# TODO Update to use set or something else
-def free(p_gpio: int) -> None:
-    """Destroy the state machine for the given port.
-
-    Parameters
-    ----------
-    p_gpio : `int`
-        The port that will be controlled by the state machine.
-
-    Raises
-    ------
-    KeyError
-        The state machine was not created.
-    """
-    global __state_machines
-
-    logging.info("[PANEL-%s] - Event: destroy the state machine", p_gpio)
-
-    del __state_machines[str(p_gpio)]
-
-
-def stop_all() -> None:
-    """Stop all state machine.
-
-    The current thread will be blocked until all the state machine are stopped.
-    """
-    global __state_machines
-
-    logging.info("[GPIO] Stop all the state machine")
+    logging.info("[PANEL] - Event: stop all the state machine")
 
     l_gpio_list = tuple(__state_machines.keys())
 
     for l_gpio in l_gpio_list:
-        __state_machines[l_gpio][__QUEUE_KEY].put(__EventEnum.STOP)
+        __queue.put((__EventEnum.STOP, l_gpio))
 
-    for l_gpio in l_gpio_list:
-        __state_machines[l_gpio][__LOOP_KEY].join()
+    __queue.put((__EventEnum.FINISH_THREAD, None))
+    __running_thread.join()
 
 
-def free_all() -> None:
-    """Destroy all state machine."""
+def free() -> None:
+    """Destroy all the state machine."""
     global __state_machines
+
     logging.info("[GPIO] Free all the state machine")
 
     l_gpio_list = tuple(__state_machines.keys())
@@ -351,54 +291,76 @@ def free_all() -> None:
         del __state_machines[l_gpio]
 
 
-def signal(p_gpio: int) -> None:
-    """Signal to the state machine of the given port to emit the signal.
+def signal(p_gpio: Union[int, Iterable[int]]) -> None:
+    """Signal to the state machine of the given GPIOs to emit the signal.
 
     Parameters
     ----------
-    p_gpio : `int`
-        The port that will be controlled by the state machine.
+    p_gpio : Union[int, Iterable[int]]
+        The GPIOs that will be controlled by the state machine.
 
     Raises
     ------
     KeyError
         The state machine was not created.
     """
-    global __state_machines
+    global __queue
 
-    logging.info("[PANEL-%s] - Event: make blinking the state machine", p_gpio)
-    __state_machines[str(p_gpio)][__QUEUE_KEY].put(__EventEnum.SIGNAL)
+    l_gpios: set
+
+    if isinstance(p_gpio, int):
+        l_gpios = set([p_gpio])
+    elif not isinstance(p_gpio, set):
+        l_gpios = set(p_gpio)
+    else:
+        l_gpios = p_gpio
+
+    for l_gpio in l_gpios:
+        logging.info("[PANEL-%s] - Event: make blinking the state machine", l_gpio)
+        __queue.put((__EventEnum.SIGNAL, str(l_gpio)))
 
 
-def end_signal(p_gpio: int) -> None:
-    """Signal to the given port state machine to stop transmitting the signal.
+def end_signal(p_gpio: Union[int, Iterable[int]]) -> None:
+    """Signal to the given GPIOs state machine to stop transmitting the signal.
 
     Parameters
     ----------
-    p_gpio : `int`
-        The port that will be controlled by the state machine.
+    p_gpio : Union[int, Iterable[int]]
+        The GPIOs that will be controlled by the state machine.
 
     Raises
     ------
     KeyError
         The state machine was not created.
     """
-    global __state_machines
+    global __queue
 
-    logging.info("[PANEL-%s] - Event: stop blinking the state machine", p_gpio)
-    __state_machines[str(p_gpio)][__QUEUE_KEY].put(__EventEnum.STOP_SIGNAL)
+    l_gpios: set
+
+    if isinstance(p_gpio, int):
+        l_gpios = set([p_gpio])
+    elif not isinstance(p_gpio, set):
+        l_gpios = set(p_gpio)
+    else:
+        l_gpios = p_gpio
+
+    for l_gpio in l_gpios:
+        logging.info("[PANEL-%s] - Event: stop blinking the state machine", l_gpio)
+        __queue.put((__EventEnum.STOP_SIGNAL, str(l_gpio)))
 
 
-# TODO share the thread beetween all the GPIO
-def __run(p_queue: Queue, p_state_machine: StateMachinePanel) -> None:
-    l_last_event = None
+def __run() -> None:
+    global __queue, __mutex, __state_machines
+    l_last_event: Optional[__EventEnum] = None
 
-    while l_last_event is not __EventEnum.STOP:
-        l_last_event = p_queue.get()
+    while l_last_event is not __EventEnum.FINISH_THREAD:
+        l_last_event, l_gpio = __queue.get()
 
+        __mutex.acquire()  # type: ignore[union-attr]
         if l_last_event is __EventEnum.SIGNAL:
-            p_state_machine.startSignal()  # type: ignore[attr-defined]
+            __state_machines[l_gpio].startSignal()  # type: ignore[attr-defined]
         elif l_last_event is __EventEnum.STOP_SIGNAL:
-            p_state_machine.stopSignal()  # type: ignore[attr-defined]
+            __state_machines[l_gpio].stopSignal()  # type: ignore[attr-defined]
         elif l_last_event is __EventEnum.STOP:
-            p_state_machine.stopStateMachine()  # type: ignore[attr-defined]
+            __state_machines[l_gpio].stopStateMachine()  # type: ignore[attr-defined]
+        __mutex.release()  # type: ignore[union-attr]
