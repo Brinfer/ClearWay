@@ -146,8 +146,6 @@ def save_config_from_file(p_path: str) -> None:
     """
     global __config_dict
 
-    logging.info("[CONFIG] Load config from the file %s", p_path)
-
     l_config_file = toml.load(p_path)
 
     if MAIN_SECTION in l_config_file:
@@ -231,7 +229,6 @@ def save_config_logging(
         else:
             raise ValueError("[CONFIG] Unknown verbosity level: {}".format(p_verbosity_level))
 
-        logging.debug("[CONFIG] Save a new verbosity level: %s", logging.getLevelName(l_verbosity_level))
         __config_dict[MODULE_LOGGING][LOG_VERBOSITY_LEVEL] = l_verbosity_level
 
 
@@ -301,7 +298,6 @@ def save_config_gpio(
         recursive_call(p_dict)
 
     if isinstance(p_use_gpio, bool):
-        logging.debug("[CONFIG] Save new instruction for the use of the GPIOs: {}".format(p_use_gpio))
         __config_dict[MODULE_GPIO][USE_GPIO] = p_use_gpio
 
     if (
@@ -309,15 +305,12 @@ def save_config_gpio(
         and any(isinstance(l_gpio, int) for l_gpio in p_gpios)
         and any((int(l_gpio) > 0) for l_gpio in p_gpios)
     ):
-        logging.debug("[CONFIG] Save new GPIOs to use: %s", ", ".join([str(i) for i in p_gpios]))
         __config_dict[MODULE_GPIO][PANEL_GPIOS] = p_gpios
 
     if isinstance(p_servo, int):
-        logging.debug("[CONFIG] Save new GPIO for the servo-motors to use: %d", p_servo)
         __config_dict[MODULE_GPIO][SERVO_GPIO] = p_servo
 
     if isinstance(p_camera_angle, int):
-        logging.debug("[CONFIG] Save new GPIO for the servo-motors to use: %d", p_camera_angle)
         __config_dict[MODULE_GPIO][CAMERA_ANGLE] = p_camera_angle
 
 

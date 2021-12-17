@@ -47,10 +47,10 @@ def __signal_handler(p_signum: int, _p_stack_frame: Optional[types.FrameType] = 
     logging.warning("[CLI] Intercept signal {}".format(signal.Signals(p_signum).name))
 
     # Stop all state machine
-    stateMachinePanel.stop_all()
+    stateMachinePanel.stop()
 
     # Free all state machine
-    stateMachinePanel.free_all()
+    stateMachinePanel.free()
 
     sys.exit(0)
 
@@ -278,6 +278,7 @@ def __apply_config_logging() -> None:
     All these values are the ones provided when using `save_config_logging`,
     otherwise the default values provided by the module will be used
     """
+
     logging.basicConfig(
         level=config.get_config(config.MODULE_LOGGING, config.LOG_VERBOSITY_LEVEL),
         format=config.get_config(config.MODULE_LOGGING, config.LOG_FORMAT),
@@ -303,25 +304,35 @@ def main() -> None:
     gpio.use_gpio(config.get_config(config.MODULE_GPIO, config.USE_GPIO))
     servo.set_angle()
 
-    stateMachinePanel.new(5)
-    stateMachinePanel.start(5)
+    stateMachinePanel.new({5, 6})
+    stateMachinePanel.start()
 
     # Give the path to the input video to process it
     # Otherwise it will use the Raspberry Pi camera
-    ai_instance = ai.Ai(
-        config.get_config(config.MODULE_AI, config.ON_RASPBERRY),
-        config.get_config(config.MODULE_AI, config.SEE_REAL_TIME_PROCESS),
-        config.get_config(config.MODULE_AI, config.YOLO_WEIGHTS_PATH),
-        config.get_config(config.MODULE_AI, config.YOLO_CFG_PATH),
-        config.get_config(config.MODULE_AI, config.IMG_SIZE),
-        config.get_config(config.MODULE_AI, config.INPUT_PATH),
-        config.get_config(config.MODULE_AI, config.OUTPUT_PATH),
-    )
+    # ai_instance = ai.Ai(
+    #     config.get_config(config.MODULE_AI, config.ON_RASPBERRY),
+    #     config.get_config(config.MODULE_AI, config.SEE_REAL_TIME_PROCESS),
+    #     config.get_config(config.MODULE_AI, config.YOLO_WEIGHTS_PATH),
+    #     config.get_config(config.MODULE_AI, config.YOLO_CFG_PATH),
+    #     config.get_config(config.MODULE_AI, config.IMG_SIZE),
+    #     config.get_config(config.MODULE_AI, config.INPUT_PATH),
+    #     config.get_config(config.MODULE_AI, config.OUTPUT_PATH),
+    # )
 
-    ai_instance.bicycle_detector(config.get_config(config.MODULE_GPIO, config.PANEL_GPIOS))
+    # ai_instance.bicycle_detector(config.get_config(config.MODULE_GPIO, config.PANEL_GPIOS))
 
-    stateMachinePanel.stop(5)
-    stateMachinePanel.free(5)
+    from time import sleep
+
+    for _ in range(5):
+        stateMachinePanel.signal(5)
+        sleep(1)
+        stateMachinePanel.signal(6)
+        sleep(3)
+        stateMachinePanel.end_signal({5, 6})
+        sleep(3)
+
+    stateMachinePanel.stop()
+    stateMachinePanel.free()
 
 
 if __name__ == "__main__":
