@@ -196,7 +196,7 @@ class Ai:
         boxes: List[List[int]],
         confidences: List[float],
         img: numpy.ndarray,
-        gpio_led: int,
+        gpio_led: Union[int, Iterable[int]],
     ) -> numpy.ndarray:
         """Draw boxes around object detected and inform the gpio stateMachinePanel if a cyclist is detected or not.
 
