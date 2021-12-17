@@ -39,7 +39,7 @@
 
 # 2. License
 
-See [`LICENCE.md`](./LICENCE.md).
+See [`LICENSE.md`](./LICENCE.md).
 
 # 3. About the Project
 
@@ -89,30 +89,36 @@ pip install -r requirements.txt
 
 ## 5.2. Optional Arguments
 
-```bash
-clearway [-h] [--gpio GPIO] [--no-gpio] [--on-raspberry ON_RASPBERRY] [-see-rtp SEE_RTP] [-i INPUT_PATH] [-o OUTPUT_PATH] [-v {WARNING,INFO,DEBUG}] [-V] --yolo-weights YOLO_WEIGHTS --yolo-cfg YOLO_CFG --size SIZE
+```text
+usage: clearway [OPTIONS] --yolo-cfg YOLO_CFG --yolo-weights YOLO_WEIGHTS --config CONFIG
 
 optional arguments:
   -h, --help            show this help message and exit
-  --gpio GPIO           tells the program which gpio to use, the default is 5
-  --no-gpio             tells the program that it does not want to use the GPIOs, only the logs will be displayed
-  --on-raspberry ON_RASPBERRY
-                        tells the program if we are using a raspberry or a computer
-  -see-rtp SEE_RTP
-                        tells the program if we want to see a window with the real-time processing in it
+  --panel_gpios PANEL_GPIOS
+                        tells the program which gpio to use
+  --no-gpio             tells the program to not use the GPIOs, only the logs will be displayed
+  --use-gpio            tells the program to use the GPIOs
+  --on-raspberry        tells the program if we are using a raspberry or a computer
+  --see-rtp             tells the program if we want to see a window with the real-time processing in it
   -i INPUT_PATH, --input-path INPUT_PATH
                         the path to the input video to be analyzed rather than using the video stream from the camera
   -o OUTPUT_PATH, --output-path OUTPUT_PATH
                         the path to the folder that will contain the output video with boxes around detected bicycles
   -v {WARNING,INFO,DEBUG}, --verbosity {WARNING,INFO,DEBUG}
-                        indicates the level of verbosity, default is INFO
+                        indicates the level of verbosity
   -V, --version         print the ClearWay version and exit
 
 required arguments:
   --yolo-weights YOLO_WEIGHTS
-                        the path to the weights file of yolo
-  --yolo-cfg YOLO_CFG   the path to the configuration file of yolo
-  --size SIZE           the size of the images converted to blob (320 or 416 recommended)
+                        the path to the weights file of yolo, required if the --config argument is not provided.
+                        The configuration file must then contain the path to the yolo file
+  --yolo-cfg YOLO_CFG   the path to the configuration file of yolo, required if the argument --config is not provided.
+                        The configuration file must then contain the path to the yolo file.
+  -c CONFIG, --config CONFIG
+                        the path to the config file, required if the arguments --yolo-cfg and --yolo-weights are not provided.
+                        All parameters contained in the configuration file can be overloaded with optional arguments.
+  --size SIZE           the size of the images converted to blob (320 or 416 recommended), required if the argument --config is not provided.
+                        The configuration file must then contain the size of the image
 ```
 
 # 6. Contributing

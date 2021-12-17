@@ -3,9 +3,10 @@ import time
 import logging
 from enum import IntEnum, auto, unique
 import os
+from typing import Iterable, List, Optional, Tuple, Union
 
-from imutils.video import VideoStream
-from imutils.video import FPS
+import numpy
+from imutils.video import VideoStream, FPS
 import cv2
 from clearway.gpio import stateMachinePanel
 
@@ -31,21 +32,21 @@ class Ai:
     """Artificial intelligence management."""
 
     # Class variables shared by all instances
-    __object_detection_id = _IdYoloOutputLayer.PERSON
-    __output_color = (0, 0, 255)  # Blue
-    __prob_threshold = 0.5
-    __object_detection_counter = 0
-    __font = cv2.FONT_HERSHEY_DUPLEX
+    __object_detection_id: _IdYoloOutputLayer = _IdYoloOutputLayer.PERSON
+    __output_color: Tuple[int, int, int] = (0, 0, 255)  # Blue
+    __prob_threshold: float = 0.5
+    __object_detection_counter: int = 0
+    __font: int = cv2.FONT_HERSHEY_DUPLEX
 
     def __init__(
         self,
-        on_raspberry,
-        see_real_time_processing,
-        yolo_weights,
-        yolo_cfg,
-        size,
-        path_to_input_video=None,
-        path_to_output_video=None,
+        on_raspberry: bool,
+        see_real_time_processing: bool,
+        yolo_weights: str,
+        yolo_cfg: str,
+        size: int,
+        path_to_input_video: Optional[str] = None,
+        path_to_output_video: Optional[str] = None,
     ) -> None:
         """Get the three output layers of YOLO and start the video stream.
 
@@ -67,6 +68,16 @@ class Ai:
             The path to the folder that will contain the output video with boxes around detected bicycles,
             by default None.
         """
+        self.__size: int
+        self.__on_raspberry: bool
+        self.__see_real_time_processing: bool
+        self.__path_to_input_video: Optional[str]
+        self.__path_to_output_video: Optional[str]
+        self.__output_layers: List[str]
+        self.__network: cv2.dnn_Net
+        self.__video_stream: Union[cv2.VideoCapture, VideoStream]
+        self.__output_video: Optional[cv2.VideoWriter]
+
         # Read the deep learning network Yolo
         self.__network = cv2.dnn.readNet(yolo_weights, yolo_cfg)
         # Find names of all layers of the YOLO model architecture
@@ -90,14 +101,14 @@ class Ai:
         else:
             self.__video_stream = cv2.VideoCapture(path_to_input_video)
 
-        if self.__path_to_output_video is not None:
-            output_video_file = os.path.join(path_to_output_video, "video_processed.mp4")
+        if isinstance(self.__path_to_output_video, str):
+            output_video_file = os.path.join(self.__path_to_output_video, "video_processed.mp4")
             x_shape = int(self.__video_stream.get(cv2.CAP_PROP_FRAME_WIDTH))
             y_shape = int(self.__video_stream.get(cv2.CAP_PROP_FRAME_HEIGHT))
             four_cc = cv2.VideoWriter_fourcc("m", "p", "4", "v")
             self.__output_video = cv2.VideoWriter(output_video_file, four_cc, fps=15, frameSize=(x_shape, y_shape))
 
-    def bicycle_detector(self, gpio_led) -> None:
+    def bicycle_detector(self, gpio_led: Union[int, Iterable[int]]) -> None:
         """Detect cyclists on a video stream frame by frame.
 
         Get the video stream from the Raspberry Pi camera.
@@ -105,10 +116,10 @@ class Ai:
 
         Parameters
         ----------
-        gpio_led : int
-            The gpio number where we send our signals.
+        gpio_led : Union[int, Iterable[int]]
+            The GPIOs number where we send our signals.
         """
-        start_time = time.time()
+        start_time: float = time.time()
 
         # Start the frames per second
         fps = FPS().start()
@@ -179,7 +190,14 @@ class Ai:
 
         Ai.stop_video_stream_and_destroy_window(self)
 
-    def draw_boxes_and_call_state_machine(self, indexes, boxes, confidences, img, gpio_led):
+    def draw_boxes_and_call_state_machine(
+        self,
+        indexes: List[List[int]],
+        boxes: List[List[int]],
+        confidences: List[float],
+        img: numpy.ndarray,
+        gpio_led: Union[int, Iterable[int]],
+    ) -> numpy.ndarray:
         """Draw boxes around object detected and inform the gpio stateMachinePanel if a cyclist is detected or not.
 
         Parameters
@@ -226,16 +244,21 @@ class Ai:
 
         return img
 
-    def get_next_image(self, img):
+    def get_next_image(self, img: numpy.ndarray) -> Tuple[bool, numpy.ndarray]:
         """Write the processed image to the output video if it was asked and get the next image.
 
         Parameters
         ----------
-        img : ndarray
+        img : numpy.ndarray
             The image processed.
+
+        Returns
+        -------
+        Tuple[bool, numpy.ndarray]
+            The next image.
         """
         # Write the image to the output video
-        if self.__path_to_output_video is not None:
+        if isinstance(self.__output_video, cv2.VideoWriter):
             self.__output_video.write(img)
 
         # Read the next frame
@@ -247,7 +270,7 @@ class Ai:
 
         return read_ok, img
 
-    def stop_video_stream_and_destroy_window(self):
+    def stop_video_stream_and_destroy_window(self) -> None:
         """Stop the video stream and destroy the openCV window in case of real-time processing."""
         if self.__path_to_input_video is None:
             if self.__on_raspberry is True:

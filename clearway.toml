@@ -1,0 +1,14 @@
+[clearway]
+[clearway.gpio]
+use_gpio = false
+panel_gpios = [5, 6]
+camera_angle = 75
+servo_gpio = 12
+[clearway.ai]
+yolo_cfg = "resources/yolov2-tiny.cfg"
+yolo_weights = "resources/yolov2-tiny.weights"
+on_raspberry = false
+size = 320
+see_rtp = false
+[clearway.log]
+verbosity = "DEBUG"
