@@ -18,7 +18,7 @@ Examples
 >>> stateMachinePanel.free(GPIO)
 """
 
-from threading import Event, Thread, Lock
+from threading import Thread, Lock
 import time
 import logging
 from enum import auto, unique, Enum

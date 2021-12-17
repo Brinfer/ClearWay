@@ -15,7 +15,6 @@ from typing import Any, Dict, Iterable, Optional
 
 import toml
 
-# TODO Change argument name to correspond with dict key
 
 # For the gpio module
 
@@ -48,7 +47,7 @@ YOLO_WEIGHTS_PATH = "yolo_weights"
 ON_RASPBERRY = "on_raspberry"
 """The dictionary key to indicate the if we are using a raspberry or a computer."""
 
-IMG_SIZE = "image_size"
+IMG_SIZE = "size"
 """The dictionary key to indicate the size of the images converted to blob."""
 
 SEE_REAL_TIME_PROCESS = "see_rtp"
@@ -126,7 +125,7 @@ def save_config_from_file(p_path: str) -> None:
     yolo_cfg = "resources/yolov2-tiny.cfg"
     yolo_weights = "resources/yolov2-tiny.weights"
     on_raspberry = false
-    image_size = 320
+    size = 320
     see_rtp = false
 
     [clearway.log]
