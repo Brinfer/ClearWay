@@ -190,7 +190,7 @@ class StateMachinePanel:
             )
             self.__blinkThread.start()
         else:
-            logging.warning("[PANEL-%s] - Action: already signaling", self.__gpio)
+            logging.info("[PANEL-%s] - Action: already signaling", self.__gpio)
 
     def _stop_signal(self) -> None:
         if self.__blinkThread is not None and self.__blinkThread.is_alive():
@@ -198,7 +198,7 @@ class StateMachinePanel:
             self.__blinkThread.join()
             self.__blinkThread = None
         else:
-            logging.warning("[PANEL-%s] - Action: is not signaling", self.__gpio)
+            logging.info("[PANEL-%s] - Action: is not signaling", self.__gpio)
 
     def __thread_run(self) -> None:
         while self.is_SIGNALING() is True:  # type: ignore
@@ -322,7 +322,35 @@ def free(p_gpio: int) -> None:
     del __state_machines[str(p_gpio)]
 
 
-# TODO Update to use set or something else
+def stop_all() -> None:
+    """Stop all state machine.
+
+    The current thread will be blocked until all the state machine are stopped.
+    """
+    global __state_machines
+
+    logging.info("[GPIO] Stop all the state machine")
+
+    l_gpio_list = tuple(__state_machines.keys())
+
+    for l_gpio in l_gpio_list:
+        __state_machines[l_gpio][__QUEUE_KEY].put(__EventEnum.STOP)
+
+    for l_gpio in l_gpio_list:
+        __state_machines[l_gpio][__LOOP_KEY].join()
+
+
+def free_all() -> None:
+    """Destroy all state machine."""
+    global __state_machines
+    logging.info("[GPIO] Free all the state machine")
+
+    l_gpio_list = tuple(__state_machines.keys())
+
+    for l_gpio in l_gpio_list:
+        del __state_machines[l_gpio]
+
+
 def signal(p_gpio: int) -> None:
     """Signal to the state machine of the given port to emit the signal.
 

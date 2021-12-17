@@ -3,6 +3,9 @@
 import logging
 import argparse
 import sys
+import signal
+import types
+from typing import Optional
 
 import clearway
 import clearway.config as config
@@ -27,6 +30,29 @@ This program may be freely redistributed under the terms of the {} license.
     clearway.__version__, clearway.__author__, clearway.__license__
 )
 """The message displayed when using the `clearway --version` command."""
+
+
+def __signal_handler(p_signum: int, _p_stack_frame: Optional[types.FrameType] = None) -> None:
+    """Signal handler.
+
+    When is called, then all state machines are stopped and destroyed.
+
+    Parameters
+    ----------
+    p_signum : `int`
+        The number of the signal calling the function.
+    _p_stack_frame : `FrameType`, optional
+        the frame that was interrupted by the signal, by default `None`.
+    """
+    logging.warning("[CLI] Intercept signal {}".format(signal.Signals(p_signum).name))
+
+    # Stop all state machine
+    stateMachinePanel.stop_all()
+
+    # Free all state machine
+    stateMachinePanel.free_all()
+
+    sys.exit(0)
 
 
 # TODO UPdate docstring
@@ -270,6 +296,9 @@ def main() -> None:
     __apply_config_logging()
 
     # TODO use the good GPIOs
+    # Add signal handler
+    signal.signal(signal.SIGINT, __signal_handler)  # Interrupt from keyboard (CTRL + C)
+    signal.signal(signal.SIGTERM, __signal_handler)  # Termination signal
 
     gpio.use_gpio(config.get_config(config.MODULE_GPIO, config.USE_GPIO))
     servo.set_angle()
