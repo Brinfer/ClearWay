@@ -6,7 +6,8 @@ import sys
 
 import clearway
 import clearway.config as config
-from clearway.gpio import stateMachinePanel
+import clearway.gpio as gpio
+from clearway.gpio import stateMachinePanel, servo
 from clearway.ai import ai
 
 
@@ -21,7 +22,7 @@ VERSION_MESAGE: str = """
 ClearWay v{}
 Copyright (C) 2021-2022 {}
 
-This program may be freely redistributed under the terms of the {} licence.
+This program may be freely redistributed under the terms of the {} license.
 """.format(
     clearway.__version__, clearway.__author__, clearway.__license__
 )
@@ -107,15 +108,15 @@ def __parse_arg() -> None:
     l_parser.add_argument(
         "--on-raspberry",
         help="tells the program if we are using a raspberry or a computer",
-        action="store",
-        default=False,
+        action="store_true",
+        default=None,
     )
 
     l_parser.add_argument(
         "--see-rtp",
         help="tells the program if we want to see a window with the real-time processing in it",
-        action="store",
-        default=False,
+        action="store_true",
+        default=None,
     )
 
     l_parser.add_argument(
@@ -159,9 +160,9 @@ def __parse_arg() -> None:
 
     # Required arguments
 
-    l_group_argument = l_parser.add_argument_group("required arguments")
+    l_group_required = l_parser.add_argument_group("required arguments")
 
-    l_group_argument.add_argument(
+    l_group_required.add_argument(
         "--yolo-weights",
         help="the path to the weights file of yolo, required if the --config argument is not provided",
         action="store",
@@ -171,7 +172,7 @@ def __parse_arg() -> None:
     )
 
     # TODO better help message => must have yolo-* path in config file or use the command line
-    l_group_argument.add_argument(
+    l_group_required.add_argument(
         "--yolo-cfg",
         help="the path to the configuration file of yolo, required if the argument --config is not provided",
         action="store",
@@ -180,7 +181,7 @@ def __parse_arg() -> None:
         required=not arguments_is_given("--config", "-c"),
     )
 
-    l_group_argument.add_argument(
+    l_group_required.add_argument(
         "-c",
         "--config",
         help="""
@@ -193,7 +194,7 @@ def __parse_arg() -> None:
         required=not (arguments_is_given("--yolo-cfg") and arguments_is_given("--yolo-weights")),
     )
 
-    required_arguments.add_argument(
+    l_group_required.add_argument(
         "--size",
         type=int,
         help="the size of the images converted to blob (320 or 416 recommended)",
@@ -222,27 +223,73 @@ def __parse_arg() -> None:
         p_output_video_path=l_args.output_path,
         p_yolo_cfg_path=l_args.yolo_cfg,
         p_yolo_weights_path=l_args.yolo_weights,
-        p_size=l_args.size
+        p_size=l_args.size,
+        p_on_raspberry=l_args.on_raspberry,
+        p_real_time_processing=l_args.see_rtp,
     )
 
     # Save logging config module
     config.save_config_logging(p_verbosity_level=l_args.verbosity)
 
 
+def __apply_config_logging() -> None:
+    """Configure the `logging` module.
+
+    The log file is stored in `DEFAULT_LOG_PATH` and every time the program
+    restart, the file is cleared.
+    Is format is:
+        `Date Time FileName:FunctionName Level >> Message`
+        example:
+            `2021-10-28 18:20:19,018 [foo.py:10] INFO >> Foo`
+
+    The levels available are:
+        - CRITICAL
+        - ERROR
+        - WARNING
+        - INFO
+        - DEBUG
+
+    All these values are the ones provided when using `save_config_logging`,
+    otherwise the default values provided by the module will be used
+    """
+    logging.basicConfig(
+        level=config.get_config(config.MODULE_LOGGING, config.LOG_VERBOSITY_LEVEL),
+        format=config.get_config(config.MODULE_LOGGING, config.LOG_FORMAT),
+        handlers=[
+            logging.FileHandler(config.get_config(config.MODULE_LOGGING, config.LOG_PATH)),
+            logging.StreamHandler(sys.stdout),
+        ],
+    )
+
+    logging.info("[CONFIG] Apply configuration for logging module")
+
+
 def main() -> None:
     """Program input function."""
     __parse_arg()
-
-    config.apply_config_all()
+    __apply_config_logging()
 
     # TODO use the good GPIOs
+
+    gpio.use_gpio(config.get_config(config.MODULE_GPIO, config.USE_GPIO))
+    servo.set_angle()
 
     stateMachinePanel.new(5)
     stateMachinePanel.start(5)
 
     # Give the path to the input video to process it
     # Otherwise it will use the Raspberry Pi camera
-    ai.bicycle_detector(5)
+    ai_instance = ai.Ai(
+        config.get_config(config.MODULE_AI, config.ON_RASPBERRY),
+        config.get_config(config.MODULE_AI, config.SEE_REAL_TIME_PROCESS),
+        config.get_config(config.MODULE_AI, config.YOLO_WEIGHTS_PATH),
+        config.get_config(config.MODULE_AI, config.YOLO_CFG_PATH),
+        config.get_config(config.MODULE_AI, config.IMG_SIZE),
+        config.get_config(config.MODULE_AI, config.INPUT_PATH),
+        config.get_config(config.MODULE_AI, config.OUTPUT_PATH),
+    )
+
+    ai_instance.bicycle_detector(config.get_config(config.MODULE_GPIO, config.PANEL_GPIOS))
 
     stateMachinePanel.stop(5)
     stateMachinePanel.free(5)

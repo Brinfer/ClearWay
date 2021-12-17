@@ -20,13 +20,9 @@ def setup() -> None:
     gpio.use_gpio(False)
 
 
-@pytest.mark.parametrize(('input_angle', 'output_result'), [
-    (180, 2.0),
-    (0, 2.0),
-    (-180, 2.0),
-    (-45, 9.5),
-    (45, 4.5),
-    (77.5, 6.3)])
+@pytest.mark.parametrize(
+    ("input_angle", "output_result"), [(180, 2.0), (0, 2.0), (-180, 2.0), (-45, 9.5), (45, 4.5), (77.5, 6.3)]
+)
 def test_servo_motor(input_angle, output_result):
     """Test the function of the servo motor.
 
@@ -38,5 +34,5 @@ def test_servo_motor(input_angle, output_result):
     output_result : [float]
         The dutyCycle of the servo motor
     """
-    servo.config(input_angle, gpio_pin)
+    servo.set_angle(input_angle, gpio_pin)
     assert round(servo.newposition, 1) == output_result

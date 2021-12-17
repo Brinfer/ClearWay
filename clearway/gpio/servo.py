@@ -2,13 +2,15 @@
 
 import time
 import logging
+from typing import Optional
 
 import clearway.gpio as gpio
+import clearway.config as config
 
 newposition = None
 
 
-def config(angle: int, servo_gpio: int) -> None:
+def set_angle(p_angle: Optional[int] = None, p_servo_gpio: Optional[int] = None) -> None:
     """Initialize the servo motor to fit with the given parameter.
 
     Parameters
@@ -19,6 +21,19 @@ def config(angle: int, servo_gpio: int) -> None:
         The GPIO pin of the raspberry Pi
     """
     global newposition
+
+    angle: int
+    servo_gpio: int
+
+    if p_angle is None:
+        angle = config.get_config(config.MODULE_GPIO, config.CAMERA_ANGLE)
+    else:
+        angle = p_angle
+
+    if p_servo_gpio is None:
+        servo_gpio = config.get_config(config.MODULE_GPIO, config.SERVO_GPIO)
+    else:
+        servo_gpio = p_servo_gpio
 
     logging.info("[SERVO-%d] Set angle to %d", servo_gpio, angle)
 
