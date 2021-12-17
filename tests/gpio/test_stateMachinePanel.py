@@ -8,7 +8,6 @@ Yields
 
 from time import sleep
 
-import pytest
 import clearway.gpio as gpio
 from pytest_mock.plugin import MockerFixture
 from clearway.gpio import stateMachinePanel

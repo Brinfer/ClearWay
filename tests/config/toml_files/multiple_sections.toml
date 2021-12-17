@@ -15,7 +15,7 @@ output_path = "output/video1.mp4"
 yolo_cfg = "yolo_cfg"
 yolo_weights = "yolo_weights"
 on_raspberry = true
-image_size = 416
+size = 416
 see_rtp = true
 [clearway.log]
 verbosity = "DEBUG"

@@ -10,7 +10,7 @@ OUTPUT_PATH = "output/video1.mp4"
 YOLO_CFG = "yolo_cfg"
 YOLO_WEIGHTS = "yolo_weights"
 ON_RASPBERRY = true
-IMAGE_SIZE = 460
+size = 460
 SEE_RTP = true
 [clearway.config]
 VERBOSITY = "DEBUG"

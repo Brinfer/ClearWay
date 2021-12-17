@@ -13,7 +13,6 @@ import clearway.gpio as gpio
 from clearway.gpio import stateMachinePanel, servo
 from clearway.ai import ai
 
-
 VERSION_MESAGE: str = """
    ________               _       __
   / ____/ /__  ____ _____| |     / /___ ___  __
@@ -55,37 +54,47 @@ def __signal_handler(p_signum: int, _p_stack_frame: Optional[types.FrameType] = 
     sys.exit(0)
 
 
-# TODO UPdate docstring
 def __parse_arg() -> None:
     """Parse the arguments passed in parameter at the launching of the program.
 
     After parsing all the options, they are saved for the different modules.
 
-    The available optional arguments are:
-        - --gpios GPIO
-            tells the program which gpio to use, the default is __DEFAULT_GPIO
-        - --no-gpio
-            tells the program that it does not want to use the GPIOs, only the logs will be displayed
-        - -i INPUT_PATH, --input-path INPUT_PATH
-            the path to the input video to be analyzed rather than using the video stream from the camera
-        --on-raspberry ON_RASPBERRY
-            tells the program if we are using a raspberry or a computer
-        -see-rtp SEE_RTP
-            tells the program if we want to see a window with the real-time processing in it
-        - -o OUTPUT_PATH, --output-path OUTPUT_PATH
-            the path to the folder that will contain the output video with boxes around detected bicycles
-        - -v {WARNING,INFO,DEBUG}, --verbosity {WARNING,INFO,DEBUG}
-            indicates the level of verbosity, default is __DEFAULT_VERBOSITY_LEVEL
-        - -V, --version
-            print the ClearWay version and exit
+    ```text
+    optional arguments:
+        -h, --help            show this help message and exit
+        --panel_gpios PANEL_GPIOS
+                              tells the program which gpio to use
+        --no-gpio             tells the program to not use the GPIOs, only the logs will be displayed
+        --use-gpio            tells the program to use the GPIOs
+        --on-raspberry        tells the program if we are using a raspberry or a computer
+        --see-rtp             tells the program if we want to see a window with the real-time processing in it
+        -i INPUT_PATH, --input-path INPUT_PATH
+                              the path to the input video to be analyzed rather than using the video stream from
+                              the camera
+        -o OUTPUT_PATH, --output-path OUTPUT_PATH
+                              the path to the folder that will contain the output video with boxes around detected
+                              bicycles
+        -v {WARNING,INFO,DEBUG}, --verbosity {WARNING,INFO,DEBUG}
+                              indicates the level of verbosity
+        -V, --version         print the ClearWay version and exit
 
-    The required arguments are:
-        - --yolo-weights YOLO_WEIGHTS
-            the path to the weights file of yolo
-        - --yolo-cfg YOLO_CFG
-            the path to the configuration file of yolo
-        --size SIZE
-            the size of the images converted to blob (320 or 416 recommended)
+        required arguments:
+        --yolo-weights YOLO_WEIGHTS
+                              the path to the weights file of yolo, required if the --config argument is not
+                              provided.
+                              The configuration file must then contain the path to the yolo file
+        --yolo-cfg YOLO_CFG   the path to the configuration file of yolo, required if the argument --config is not
+                              provided.
+                              The configuration file must then contain the path to the yolo file.
+        -c CONFIG, --config CONFIG
+                              the path to the config file, required if the arguments --yolo-cfg and --yolo-weights are
+                              not provided.
+                              All parameters contained in the configuration file can be overloaded with optional
+                              arguments.
+        --size SIZE           the size of the images converted to blob (320 or 416 recommended), required if the
+                              argument --config is not provided.
+                              The configuration file must then contain the size of the image.
+        ```
     """
 
     def arguments_is_given(*p_args: str) -> bool:
@@ -107,10 +116,10 @@ def __parse_arg() -> None:
 
     # Optionals arguments
 
-    # TODO accept a list of gpios
     l_parser.add_argument(
-        "--gpios",
+        "--panel-gpios",
         help="tells the program which gpio to use",
+        nargs="+",
         action="store",
         type=int,
         default=None,
@@ -190,17 +199,18 @@ def __parse_arg() -> None:
 
     l_group_required.add_argument(
         "--yolo-weights",
-        help="the path to the weights file of yolo, required if the --config argument is not provided",
+        help="""the path to the weights file of yolo, required if the --config argument is not provided.
+The configuration file must then contain the path to the yolo file""",
         action="store",
         default=None,
         type=str,
         required=not arguments_is_given("--config", "-c"),
     )
 
-    # TODO better help message => must have yolo-* path in config file or use the command line
     l_group_required.add_argument(
         "--yolo-cfg",
-        help="the path to the configuration file of yolo, required if the argument --config is not provided",
+        help="""the path to the configuration file of yolo, required if the argument --config is not provided.
+The configuration file must then contain the path to the yolo file.""",
         action="store",
         type=str,
         default=None,
@@ -210,10 +220,8 @@ def __parse_arg() -> None:
     l_group_required.add_argument(
         "-c",
         "--config",
-        help="""
-            the path to the config file, required if the arguments --yolo-cfg and --yolo-weights are not provided.
-            All parameters contained in the configuration file can be overloaded with optional arguments.
-            """,
+        help="""the path to the config file, required if the arguments --yolo-cfg and --yolo-weights are not provided.
+All parameters contained in the configuration file can be overloaded with optional arguments.""",
         action="store",
         type=str,
         default=None,
@@ -223,7 +231,8 @@ def __parse_arg() -> None:
     l_group_required.add_argument(
         "--size",
         type=int,
-        help="the size of the images converted to blob (320 or 416 recommended)",
+        help="""the size of the images converted to blob (320 or 416 recommended), required if the argument --config is not provided.
+The configuration file must then contain the size of the image""",
         action="store",
         default=None,
         required=not arguments_is_given("--config", "-c"),
@@ -240,8 +249,12 @@ def __parse_arg() -> None:
 
     # Overload config file with argument
 
+    print(l_args.panel_gpios)
+    print(type(l_args.panel_gpios))
+    print(type(l_args.panel_gpios[0]))
+
     # Save GPIO config module
-    config.save_config_gpio(p_use_gpio=l_args.use_gpio, p_gpios=[l_args.gpios])
+    config.save_config_gpio(p_use_gpio=l_args.use_gpio, p_gpios=l_args.panel_gpios)
 
     # Save AI config module
     config.save_config_ai(
@@ -278,7 +291,6 @@ def __apply_config_logging() -> None:
     All these values are the ones provided when using `save_config_logging`,
     otherwise the default values provided by the module will be used
     """
-
     logging.basicConfig(
         level=config.get_config(config.MODULE_LOGGING, config.LOG_VERBOSITY_LEVEL),
         format=config.get_config(config.MODULE_LOGGING, config.LOG_FORMAT),
@@ -288,15 +300,12 @@ def __apply_config_logging() -> None:
         ],
     )
 
-    logging.info("[CONFIG] Apply configuration for logging module")
-
 
 def main() -> None:
     """Program input function."""
     __parse_arg()
     __apply_config_logging()
 
-    # TODO use the good GPIOs
     # Add signal handler
     signal.signal(signal.SIGINT, __signal_handler)  # Interrupt from keyboard (CTRL + C)
     signal.signal(signal.SIGTERM, __signal_handler)  # Termination signal
@@ -304,32 +313,22 @@ def main() -> None:
     gpio.use_gpio(config.get_config(config.MODULE_GPIO, config.USE_GPIO))
     servo.set_angle()
 
-    stateMachinePanel.new({5, 6})
+    stateMachinePanel.new(config.get_config(config.MODULE_GPIO, config.PANEL_GPIOS))
     stateMachinePanel.start()
 
     # Give the path to the input video to process it
     # Otherwise it will use the Raspberry Pi camera
-    # ai_instance = ai.Ai(
-    #     config.get_config(config.MODULE_AI, config.ON_RASPBERRY),
-    #     config.get_config(config.MODULE_AI, config.SEE_REAL_TIME_PROCESS),
-    #     config.get_config(config.MODULE_AI, config.YOLO_WEIGHTS_PATH),
-    #     config.get_config(config.MODULE_AI, config.YOLO_CFG_PATH),
-    #     config.get_config(config.MODULE_AI, config.IMG_SIZE),
-    #     config.get_config(config.MODULE_AI, config.INPUT_PATH),
-    #     config.get_config(config.MODULE_AI, config.OUTPUT_PATH),
-    # )
+    ai_instance = ai.Ai(
+        config.get_config(config.MODULE_AI, config.ON_RASPBERRY),
+        config.get_config(config.MODULE_AI, config.SEE_REAL_TIME_PROCESS),
+        config.get_config(config.MODULE_AI, config.YOLO_WEIGHTS_PATH),
+        config.get_config(config.MODULE_AI, config.YOLO_CFG_PATH),
+        config.get_config(config.MODULE_AI, config.IMG_SIZE),
+        config.get_config(config.MODULE_AI, config.INPUT_PATH),
+        config.get_config(config.MODULE_AI, config.OUTPUT_PATH),
+    )
 
-    # ai_instance.bicycle_detector(config.get_config(config.MODULE_GPIO, config.PANEL_GPIOS))
-
-    from time import sleep
-
-    for _ in range(5):
-        stateMachinePanel.signal(5)
-        sleep(1)
-        stateMachinePanel.signal(6)
-        sleep(3)
-        stateMachinePanel.end_signal({5, 6})
-        sleep(3)
+    ai_instance.bicycle_detector(config.get_config(config.MODULE_GPIO, config.PANEL_GPIOS))
 
     stateMachinePanel.stop()
     stateMachinePanel.free()

@@ -3,7 +3,7 @@ import time
 import logging
 from enum import IntEnum, auto, unique
 import os
-from typing import List, Optional, Tuple, Union
+from typing import Iterable, List, Optional, Tuple, Union
 
 import numpy
 from imutils.video import VideoStream, FPS
@@ -108,7 +108,7 @@ class Ai:
             four_cc = cv2.VideoWriter_fourcc("m", "p", "4", "v")
             self.__output_video = cv2.VideoWriter(output_video_file, four_cc, fps=15, frameSize=(x_shape, y_shape))
 
-    def bicycle_detector(self, gpio_led: int) -> None:
+    def bicycle_detector(self, gpio_led: Union[int, Iterable[int]]) -> None:
         """Detect cyclists on a video stream frame by frame.
 
         Get the video stream from the Raspberry Pi camera.
@@ -116,8 +116,8 @@ class Ai:
 
         Parameters
         ----------
-        gpio_led : int
-            The gpio number where we send our signals.
+        gpio_led : Union[int, Iterable[int]]
+            The GPIOs number where we send our signals.
         """
         start_time: float = time.time()
 
