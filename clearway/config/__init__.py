@@ -11,22 +11,27 @@ Notes
 """
 
 import logging
-import sys
 from typing import Any, Dict, Iterable, Optional
 
 import toml
-import clearway.gpio as gpio
-from clearway.ai import ai
-from clearway.gpio import stateMachinePanel, servo
 
 # TODO Change argument name to correspond with dict key
 
+# For the gpio module
 
 USE_GPIO = "use_gpio"
 """The dictionary key to indicate if you want to use GPIOs or not."""
 
 PANEL_GPIOS = "panel_gpios"
 """The dictionary key to indicate the set of GPIOs to use for signaling."""
+
+CAMERA_ANGLE = "camera_angle"
+"""The dictionary key to indicate the angle of the camera to be used."""
+
+SERVO_GPIO = "servo_gpio"
+"""The dictionary key to indicate the GPIO to use for the servo-motor."""
+
+# For the ai module
 
 INPUT_PATH = "input_path"
 """The dictionary key to indicate the path to the input video."""
@@ -40,11 +45,16 @@ YOLO_CFG_PATH = "yolo_cfg"
 YOLO_WEIGHTS_PATH = "yolo_weights"
 """The dictionary key to indicate the path to the YOLO weights file."""
 
-CAMERA_ANGLE = "camera_angle"
-"""The dictionary key to indicate the angle of the camera to be used."""
+ON_RASPBERRY = "on_raspberry"
+"""The dictionary key to indicate the if we are using a raspberry or a computer."""
 
-SERVO_GPIO = "servo_gpio"
-"""The dictionary key to indicate the GPIO to use for the servo-motor."""
+IMG_SIZE = "image_size"
+"""The dictionary key to indicate the size of the images converted to blob."""
+
+SEE_REAL_TIME_PROCESS = "see_rtp"
+"""The dictionary key to indicate if we want to see a window with the real-time processing in it."""
+
+# For the logging module
 
 LOG_VERBOSITY_LEVEL = "verbosity"
 """The dictionary key to indicate the verbosity level for the `logging` module."""
@@ -55,33 +65,37 @@ LOG_FORMAT = "log_format"
 LOG_PATH = "log_path"
 """The dictionary key to indicate the path to the log file for the `logging` module."""
 
+# List au module
 
 MAIN_SECTION = "clearway"
 """The main section searched in a toml file."""
 
-SUBSECTION_GPIO = "gpio"
-"""The subsection for the `gpio` module searched in the toml file."""
+MODULE_GPIO = "gpio"
+"""The subsection for the `gpio` module searched in the configuration."""
 
-SUBSECTION_AI = "ai"
-"""The subsection for the `ai` module searched in the toml file."""
+MODULE_AI = "ai"
+"""The subsection for the `ai` module searched in the configuration."""
 
-SUBSECTION_LOG = "log"
-"""The subsection for the `logging` module searched in the toml file."""
+MODULE_LOGGING = "log"
+"""The subsection for the `logging` module searched in the configuration."""
 
 __config_dict: Dict[str, Dict[str, Any]] = {
-    SUBSECTION_AI: {
+    MODULE_AI: {
         INPUT_PATH: "",
         YOLO_CFG_PATH: "",
         OUTPUT_PATH: "",
         YOLO_WEIGHTS_PATH: "",
+        ON_RASPBERRY: False,
+        IMG_SIZE: 320,
+        SEE_REAL_TIME_PROCESS: False,
     },
-    SUBSECTION_GPIO: {
+    MODULE_GPIO: {
         USE_GPIO: True,
         PANEL_GPIOS: {5},
         SERVO_GPIO: 12,  # GPIO 12 for PWM with 50Hz, pin 32,
         CAMERA_ANGLE: 75,
     },
-    SUBSECTION_LOG: {
+    MODULE_LOGGING: {
         LOG_VERBOSITY_LEVEL: logging.INFO,
         LOG_FORMAT: "%(asctime)s [%(filename)s:%(lineno)d] %(levelname)s >> %(message)s",
         LOG_PATH: "ClearWay.log",
@@ -102,7 +116,6 @@ def save_config_from_file(p_path: str) -> None:
 
     ```toml
     [clearway]
-
     [clearway.gpio]
     use_gpio = false
     panel_gpios = [5, 6]
@@ -110,10 +123,11 @@ def save_config_from_file(p_path: str) -> None:
     servo_gpio = 12
 
     [clearway.ai]
-    input_path = "input/video1.mp4"
-    output_path = "output/video1.mp4"
-    yolo_cfg = "yolo_cfg"
-    yolo_weights = "yolo_weights"
+    yolo_cfg = "resources/yolov2-tiny.cfg"
+    yolo_weights = "resources/yolov2-tiny.weights"
+    on_raspberry = false
+    image_size = 320
+    see_rtp = false
 
     [clearway.log]
     verbosity = "DEBUG"
@@ -142,12 +156,12 @@ def save_config_from_file(p_path: str) -> None:
 
         for l_subsection in l_clearway_config.keys():
             if l_subsection in __config_dict:
-                if l_subsection == SUBSECTION_GPIO:
-                    save_config_gpio(p_dict=l_clearway_config[SUBSECTION_GPIO])
-                elif l_subsection == SUBSECTION_AI:
-                    save_config_ai(p_dict=l_clearway_config[SUBSECTION_AI])
-                elif l_subsection == SUBSECTION_LOG:
-                    save_config_logging(p_dict=l_clearway_config[SUBSECTION_LOG])
+                if l_subsection == MODULE_GPIO:
+                    save_config_gpio(p_dict=l_clearway_config[MODULE_GPIO])
+                elif l_subsection == MODULE_AI:
+                    save_config_ai(p_dict=l_clearway_config[MODULE_AI])
+                elif l_subsection == MODULE_LOGGING:
+                    save_config_logging(p_dict=l_clearway_config[MODULE_LOGGING])
 
 
 #
@@ -185,7 +199,7 @@ def save_config_logging(
     p_verbosity_level : `str`, optional
         The verbosity level to use, by default `None`
     p_dict : `Dict[str, Any]`, optional
-        A dictionary containing the informations, by default `None`
+        A dictionary containing the information, by default `None`
 
     Raises
     ------
@@ -195,13 +209,14 @@ def save_config_logging(
     global __config_dict
 
     # TODO accept format and path
-
-    if p_dict is not None:
+    def recursive_call(p_dict: Dict[str, Any]) -> None:
         if LOG_VERBOSITY_LEVEL in p_dict.keys():
             save_config_logging(p_verbosity_level=p_dict[LOG_VERBOSITY_LEVEL])
 
-    if isinstance(p_verbosity_level, str):
+    if p_dict is not None:
+        recursive_call(p_dict)
 
+    if isinstance(p_verbosity_level, str):
         l_verbosity_level = logging.INFO
         if p_verbosity_level == logging.getLevelName(logging.ERROR):
             l_verbosity_level = logging.ERROR
@@ -217,41 +232,7 @@ def save_config_logging(
             raise ValueError("[CONFIG] Unknown verbosity level: {}".format(p_verbosity_level))
 
         logging.debug("[CONFIG] Save a new verbosity level: %s", logging.getLevelName(l_verbosity_level))
-        __config_dict[SUBSECTION_LOG][LOG_VERBOSITY_LEVEL] = l_verbosity_level
-
-
-def apply_config_logging() -> None:
-    """Configure the `logging` module.
-
-    The log file is stored in `DEFAULT_LOG_PATH` and every time the program
-    restart, the file is cleared.
-    Is format is:
-        `Date Time FileName:FunctionName Level >> Message`
-        example:
-            `2021-10-28 18:20:19,018 [foo.py:10] INFO >> Foo`
-
-    The levels available are:
-        - CRITICAL
-        - ERROR
-        - WARNING
-        - INFO
-        - DEBUG
-
-    All these values are the ones provided when using `save_config_logging`,
-    otherwise the default values provided by the module will be used
-    """
-    global __config_dict
-
-    logging.info("[CONFIG] Apply configuration for logging module")
-
-    logging.basicConfig(
-        level=__config_dict[SUBSECTION_LOG][LOG_VERBOSITY_LEVEL],
-        format=__config_dict[SUBSECTION_LOG][LOG_FORMAT],
-        handlers=[
-            logging.FileHandler(__config_dict[SUBSECTION_LOG][LOG_PATH]),
-            logging.StreamHandler(sys.stdout),
-        ],
-    )
+        __config_dict[MODULE_LOGGING][LOG_VERBOSITY_LEVEL] = l_verbosity_level
 
 
 #
@@ -299,11 +280,11 @@ def save_config_gpio(
     p_camera_angle : `int`, optional
         The angle for the camera, by default `None`
     p_dict : `Dict[str, Any]`, optional
-        A dictionary containing the informations, by default `None`
+        A dictionary containing the information, by default `None`
     """
     global __config_dict
 
-    if p_dict is not None:
+    def recursive_call(p_dict: Dict[str, Any]) -> None:
         if USE_GPIO in p_dict.keys():
             save_config_gpio(p_use_gpio=p_dict[USE_GPIO])
 
@@ -316,9 +297,12 @@ def save_config_gpio(
         if CAMERA_ANGLE in p_dict.keys():
             save_config_gpio(p_camera_angle=p_dict[CAMERA_ANGLE])
 
+    if p_dict is not None:
+        recursive_call(p_dict)
+
     if isinstance(p_use_gpio, bool):
         logging.debug("[CONFIG] Save new instruction for the use of the GPIOs: {}".format(p_use_gpio))
-        __config_dict[SUBSECTION_GPIO][USE_GPIO] = p_use_gpio
+        __config_dict[MODULE_GPIO][USE_GPIO] = p_use_gpio
 
     if (
         isinstance(p_gpios, Iterable)
@@ -326,35 +310,15 @@ def save_config_gpio(
         and any((int(l_gpio) > 0) for l_gpio in p_gpios)
     ):
         logging.debug("[CONFIG] Save new GPIOs to use: %s", ", ".join([str(i) for i in p_gpios]))
-        __config_dict[SUBSECTION_GPIO][PANEL_GPIOS] = p_gpios
+        __config_dict[MODULE_GPIO][PANEL_GPIOS] = p_gpios
 
     if isinstance(p_servo, int):
         logging.debug("[CONFIG] Save new GPIO for the servo-motors to use: %d", p_servo)
-        __config_dict[SUBSECTION_GPIO][SERVO_GPIO] = p_servo
+        __config_dict[MODULE_GPIO][SERVO_GPIO] = p_servo
 
     if isinstance(p_camera_angle, int):
         logging.debug("[CONFIG] Save new GPIO for the servo-motors to use: %d", p_camera_angle)
-        __config_dict[SUBSECTION_GPIO][CAMERA_ANGLE] = p_camera_angle
-
-
-def apply_config_gpio() -> None:
-    """Configure the `clearway.gpio` module.
-
-    Configures:
-    - whether the program uses GPIOs or not.
-    - what are the GPIOs to use for signaling.
-    - which GPIO to use for the servo motor.
-
-    All these values are the ones provided when using `save_config_gpio`, otherwise the default values will be used.
-    """
-    logging.info("[CONFIG] Apply configuration for gpio module")
-
-    # gpio
-    gpio.use_gpio(__config_dict[SUBSECTION_GPIO][USE_GPIO])
-    # gpio.stateMachinePanel
-    stateMachinePanel.config(__config_dict[SUBSECTION_GPIO][PANEL_GPIOS])
-    # gpio.servo
-    servo.config(__config_dict[SUBSECTION_GPIO][CAMERA_ANGLE], __config_dict[SUBSECTION_GPIO][SERVO_GPIO])
+        __config_dict[MODULE_GPIO][CAMERA_ANGLE] = p_camera_angle
 
 
 #
@@ -368,6 +332,8 @@ def save_config_ai(
     p_yolo_cfg_path: Optional[str] = None,
     p_yolo_weights_path: Optional[str] = None,
     p_size: Optional[int] = None,
+    p_on_raspberry: Optional[bool] = None,
+    p_real_time_processing: Optional[bool] = None,
     p_dict: Optional[Dict[str, Any]] = None,
 ) -> None:
     """Save the configuration for `clearway.ai` module.
@@ -382,6 +348,9 @@ def save_config_ai(
             OUTPUT_PATH: "path/to/my/videoOutput.mp4",
             YOLO_CFG_PATH: "path/to/my/yolo.cfg",
             YOLO_WEIGHTS_PATH: "path/to/my/yolo.weights",
+            ON_RASPBERRY: False,
+            IMG_SIZE: 320,
+            SEE_REAL_TIME_PROCESS: False,
         }
     ```
 
@@ -394,24 +363,27 @@ def save_config_ai(
 
     Parameters
     ----------
-    p_input_video_path : str, optional
-        The path to the video to be analyzed, by default `None`
-    p_output_video_path : str, optional
-        The path to the file where the video analysis result is saved, by default `None`
-    p_yolo_cfg_path : str, optional
-        The path to the file containing the YOLO configuration, by default `None`
-    p_yolo_weights_path : str, optional
-        The path to the file containing the YOLO weights, by default `None`
+    p_input_video_path : `str`, optional
+        The path to the video to be analyzed, by default `None`.
+    p_output_video_path : `str`, optional
+        The path to the file where the video analysis result is saved, by default `None`.
+    p_yolo_cfg_path : `str`, optional
+        The path to the file containing the YOLO configuration, by default `None`.
+    p_yolo_weights_path : `str`, optional
+        The path to the file containing the YOLO weights, by default `None`.
+    p_size : `int`, optional
+        The size of the images converted to blob, by default `None`.
+    p_on_raspberry : `bool`, optional
+        Indicate if we are using a raspberry or not, by default `None`.
+    p_real_time_processing : `bool`, optional
+        Indicate if we want to see a window with the real-time processing in it, by default `None`.
     p_dict : `Dict[str, Any]`, optional
-        A dictionary containing the informations, by default `None`
+        A dictionary containing the information, by default `None`.
+
     """
     global __config_dict
 
-    # TODO add size arg
-
-    logging.debug(p_dict)
-
-    if p_dict is not None:
+    def recursive_call(p_dict: Dict[str, Any]) -> None:
         if INPUT_PATH in p_dict.keys():
             save_config_ai(p_input_video_path=p_dict[INPUT_PATH])
 
@@ -424,54 +396,74 @@ def save_config_ai(
         if YOLO_WEIGHTS_PATH in p_dict.keys():
             save_config_ai(p_yolo_weights_path=p_dict[YOLO_WEIGHTS_PATH])
 
+        if SEE_REAL_TIME_PROCESS in p_dict.keys():
+            save_config_ai(p_real_time_processing=p_dict[SEE_REAL_TIME_PROCESS])
+
+        if ON_RASPBERRY in p_dict.keys():
+            save_config_ai(p_on_raspberry=p_dict[ON_RASPBERRY])
+
+        if IMG_SIZE in p_dict.keys():
+            save_config_ai(p_size=p_dict[IMG_SIZE])
+
+    if p_dict is not None:
+        recursive_call(p_dict)
+
     if isinstance(p_input_video_path, str):
-        __config_dict[SUBSECTION_AI][INPUT_PATH] = p_input_video_path
+        __config_dict[MODULE_AI][INPUT_PATH] = p_input_video_path
 
     if isinstance(p_output_video_path, str):
-        __config_dict[SUBSECTION_AI][OUTPUT_PATH] = p_output_video_path
+        __config_dict[MODULE_AI][OUTPUT_PATH] = p_output_video_path
 
     if isinstance(p_yolo_cfg_path, str):
-        __config_dict[SUBSECTION_AI][YOLO_CFG_PATH] = p_yolo_cfg_path
+        __config_dict[MODULE_AI][YOLO_CFG_PATH] = p_yolo_cfg_path
 
     if isinstance(p_yolo_weights_path, str):
-        __config_dict[SUBSECTION_AI][YOLO_WEIGHTS_PATH] = p_yolo_weights_path
+        __config_dict[MODULE_AI][YOLO_WEIGHTS_PATH] = p_yolo_weights_path
+
+    if isinstance(p_size, int):
+        __config_dict[MODULE_AI][IMG_SIZE] = p_size
+
+    if isinstance(p_on_raspberry, bool):
+        __config_dict[MODULE_AI][ON_RASPBERRY] = p_on_raspberry
+
+    if isinstance(p_real_time_processing, bool):
+        __config_dict[MODULE_AI][SEE_REAL_TIME_PROCESS] = p_real_time_processing
 
 
-def apply_config_ai() -> None:
-    """Configure the `clearway.ai` module.
+def get_config(p_module_id: Optional[str] = None, p_value_id: Optional[str] = None) -> Any:
+    """Return the configuration for the given module and given value id.
 
-    Configures:
-    - the path to the YOLO weights file
-    - the path to the YOLO config file
-    - the path to the input video file
-    - the path to the output video file
+    If `p_module_id` is not specified then all parameters are returned.
 
-    All these values are the ones provided when using `save_config_ai`,
-    otherwise the default values provided by the module will be used
-    """
-    logging.info("[CONFIG] Apply configuration for ai module")
+    If `p_value_id` is not specified but `p_module_id` is, then all parameters of the module are returned
 
-    logging.debug(__config_dict[SUBSECTION_AI])
-    # ai.ai
-    ai.config(
-        __config_dict[SUBSECTION_AI][YOLO_WEIGHTS_PATH],
-        __config_dict[SUBSECTION_AI][YOLO_CFG_PATH],
-        __config_dict[SUBSECTION_AI][INPUT_PATH],
-        __config_dict[SUBSECTION_AI][OUTPUT_PATH],
-    )
+    Parameters
+    ----------
+    p_module_id : `str`, optional
+        The name of the module whose parameters are desired, by default `None`.
+    p_value_id : Optional[`str`], optional
+        The name of the module variable whose parameters are desired, by default `None`.
 
+    Returns
+    -------
+    Any
+        The requested configuration.
 
-def apply_config_all() -> None:
-    """Configure all modules.
-
-    Calls all methods `apply_config_<module>`.
+    Raises
+    ------
+    KeyError
+        The module or the variable does not exist or is not linked.
 
     See
     ---
-    - `apply_config_logging`
-    - `apply_config_gpio`
-    - `apply_config_ai`
+    - `save_config_ai`
+    - `save_config_gpio`
+    - `save_config_logging`
     """
-    apply_config_logging()
-    apply_config_gpio()
-    apply_config_ai()
+    if p_module_id is not None:
+        if p_value_id is not None:
+            return __config_dict[p_module_id][p_value_id]
+        else:
+            return __config_dict[p_module_id].copy()
+    else:
+        return __config_dict.copy()
