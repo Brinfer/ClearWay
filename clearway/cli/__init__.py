@@ -23,7 +23,7 @@ __yolo_weights = ""
 __verbosity_level = None
 
 # Angle of the camera
-_camera_angle = 75
+_camera_angle = 90
 _servo_pin = 12
 
 
