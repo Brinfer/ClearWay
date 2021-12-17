@@ -3,6 +3,8 @@
 import logging
 import sys
 import argparse
+import signal
+import types
 
 import clearway
 import clearway.gpio as gpio
@@ -28,6 +30,29 @@ __verbosity_level = None
 # Angle of the camera
 _camera_angle = 75
 _servo_pin = 12
+
+
+def __signal_handler(p_signum: int, _p_stack_frame: types.FrameType) -> None:
+    """Signal handler.
+
+    When is called, then all state machines are stopped and destroyed
+
+    Parameters
+    ----------
+    p_signum : `int`
+        The number of the signal calling the function
+    _p_stack_frame : `FrameType`
+        the frame that was interrupted by the signal.
+    """
+    logging.warning("[CLI] Intercept signal {}".format(signal.Signals(p_signum).name))
+
+    # Stop all state machine
+    stateMachinePanel.stop_all()
+
+    # Free all state machine
+    stateMachinePanel.free_all()
+
+    sys.exit(0)
 
 
 def __is_positive(p_value):
@@ -218,6 +243,10 @@ def main() -> None:
 
     __parse_arg()
     __configure_logging()
+
+    # Add signal handler
+    signal.signal(signal.SIGINT, __signal_handler)  # Interrupt from keyboard (CTRL + C)
+    signal.signal(signal.SIGTERM, __signal_handler)  # Termination signal
 
     if __gpio_led is None:
         __gpio_led = __DEFAULT_GPIO
