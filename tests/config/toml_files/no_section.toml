@@ -1,0 +1,9 @@
+[section_A]
+keyA_1 = 1
+keyA_2 = [2, 3]
+keyA_3 = "4"
+
+[section_B]
+keyB_1 = 5
+keyB_2 = [6, 7]
+keyB_3 = "8"

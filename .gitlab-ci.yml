@@ -1,6 +1,6 @@
 # Official language image. Look for the different tagged releases at:
 # https://hub.docker.com/r/library/python/tags/
-image: python:3.7.3
+image: python:3.7
 
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
@@ -21,6 +21,8 @@ cache:
 before_script:
   - export https_proxy=http://192.168.4.8:3128/
   - export http_proxy=http://192.168.4.8:3128/
+  - apt update
+  - apt install libgl-dev -y  # Install libgl for imutils python package
   - python -V  # Print out python version for debugging
   - pip install virtualenv
   - virtualenv venv
@@ -44,7 +46,7 @@ test:
 flake8:
   stage: quality
   script:
-    - python -m flake8 --config setup.cfg
+    - python -m flake8 --config setup.cfg clearway/
   allow_failure: true
   only:
     changes:
@@ -54,7 +56,17 @@ flake8:
 black:
   stage: quality
   script:
-    - python -m black --check --config pyproject.toml ./clearway
+    - python -m black --check --config pyproject.toml clearway/
+  allow_failure: true
+  only:
+    changes:
+      - clearway/**/*
+      - tests/**/*
+
+mypy:
+  stage: quality
+  script:
+    - python -m mypy --install-types --non-interactive --config-file setup.cfg clearway/  # Installs any missing stub packages
   allow_failure: true
   only:
     changes:

@@ -74,9 +74,11 @@ _minted*
 ## Python cache file
 __pycache__/
 .pytest_cache/
+.mypy_cache/
 
 ## Python virtual environnemnt
 venv/
+.env/
 
 ## Python build
 *.egg-info/

@@ -1,0 +1,6 @@
+[clearway]
+    [clearway.gpio]
+    use_gpio = [false]
+    panel_gpios = [false, true]
+    camera_angle = [444, 555]
+    servo_gpio = [666, 777]

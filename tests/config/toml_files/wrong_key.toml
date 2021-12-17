@@ -1,0 +1,16 @@
+[clearway]
+[clearway.gpio]
+USE_GPIO = false
+PANEL_GPIOS = [5, 6]
+CAMERA_ANGLE = 75
+SERVO_GPIO = 12
+[clearway.ai]
+INPUT_PATH = "input/video1.mp4"
+OUTPUT_PATH = "output/video1.mp4"
+YOLO_CFG = "yolo_cfg"
+YOLO_WEIGHTS = "yolo_weights"
+ON_RASPBERRY = true
+size = 460
+SEE_RTP = true
+[clearway.config]
+VERBOSITY = "DEBUG"
