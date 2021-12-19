@@ -247,12 +247,6 @@ The configuration file must then contain the size of the image""",
     if l_args.config is not None:
         config.save_config_from_file(l_args.config)
 
-    # Overload config file with argument
-
-    print(l_args.panel_gpios)
-    print(type(l_args.panel_gpios))
-    print(type(l_args.panel_gpios[0]))
-
     # Save GPIO config module
     config.save_config_gpio(p_use_gpio=l_args.use_gpio, p_gpios=l_args.panel_gpios)
 

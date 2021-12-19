@@ -80,9 +80,9 @@ MODULE_LOGGING = "log"
 
 __config_dict: Dict[str, Dict[str, Any]] = {
     MODULE_AI: {
-        INPUT_PATH: "",
+        INPUT_PATH: None,
         YOLO_CFG_PATH: "",
-        OUTPUT_PATH: "",
+        OUTPUT_PATH: None,
         YOLO_WEIGHTS_PATH: "",
         ON_RASPBERRY: False,
         IMG_SIZE: 320,

@@ -76,7 +76,7 @@ class Ai:
         self.__output_layers: List[str]
         self.__network: cv2.dnn_Net
         self.__video_stream: Union[cv2.VideoCapture, VideoStream]
-        self.__output_video: Optional[cv2.VideoWriter]
+        self.__output_video: Optional[cv2.VideoWriter] = None
 
         # Read the deep learning network Yolo
         self.__network = cv2.dnn.readNet(yolo_weights, yolo_cfg)
@@ -90,7 +90,7 @@ class Ai:
         self.__path_to_output_video = path_to_output_video
         self.__size = size
 
-        if self.__path_to_input_video is None:
+        if not isinstance(self.__path_to_input_video, str):
             if self.__on_raspberry is True:
                 self.__video_stream = VideoStream(usePiCamera=True).start()
                 # Very important! Otherwise, video_stream.read() gives a NonType
