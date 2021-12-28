@@ -32,7 +32,7 @@ class Ai:
     """Artificial intelligence management."""
 
     # Class variables shared by all instances
-    __object_detection_id: _IdYoloOutputLayer = _IdYoloOutputLayer.PERSON
+    __object_detection_id: _IdYoloOutputLayer = _IdYoloOutputLayer.BICYCLE
     __output_color: Tuple[int, int, int] = (0, 0, 255)  # Blue
     __prob_threshold: float = 0.5
     __object_detection_counter: int = 0
@@ -92,7 +92,7 @@ class Ai:
 
         if not isinstance(self.__path_to_input_video, str):
             if self.__on_raspberry is True:
-                self.__video_stream = VideoStream(usePiCamera=True).start()
+                self.__video_stream = cv2.VideoCapture("/dev/video0")
                 # Very important! Otherwise, video_stream.read() gives a NonType
                 time.sleep(2.0)
                 logging.info("[AI] Camera ready to detect")
@@ -124,11 +124,7 @@ class Ai:
         # Start the frames per second
         fps = FPS().start()
 
-        if self.__on_raspberry is True and self.__path_to_input_video is None:
-            read_ok = True
-            img = self.__video_stream.read()
-        else:
-            read_ok, img = self.__video_stream.read()
+        read_ok, img = self.__video_stream.read()
 
         while read_ok:
             # Get dimensions of image
@@ -262,21 +258,14 @@ class Ai:
             self.__output_video.write(img)
 
         # Read the next frame
-        if self.__on_raspberry is True and self.__path_to_input_video is None:
-            read_ok = True
-            img = self.__video_stream.read()
-        else:
-            read_ok, img = self.__video_stream.read()
+        read_ok, img = self.__video_stream.read()
 
         return read_ok, img
 
     def stop_video_stream_and_destroy_window(self) -> None:
         """Stop the video stream and destroy the openCV window in case of real-time processing."""
         if self.__path_to_input_video is None:
-            if self.__on_raspberry is True:
-                self.__video_stream.stop()
-            else:
-                self.__video_stream.release()
+            self.__video_stream.release()
 
         if self.__see_real_time_processing:
             cv2.destroyAllWindows()
