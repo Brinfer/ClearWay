@@ -1,7 +1,7 @@
 \part{Guide d'installation}
 
 L'installation de \gls{sae} nécessite l'installation de \gls{python} et de \gls{pip}.\\
-La version minimal de \gls{python} demandé est \textbf{3.7.*}, les versions \textbf{3.9} et supérieur n'ont pas été
+La version minimale de \gls{python} demandé est \textbf{3.7.*}, les versions \textbf{3.9} et supérieur n'ont pas été
 testées.\\
 Référer vous à la documentation de votre distribution (ou OS) pour savoir comment les installer.
 
@@ -50,27 +50,29 @@ trouvant à la racine du projet :
           \begin{description}
               \item[transitions] Une implémentation légère et orientée objet de la machine à états en \gls{python} \cite{transition}
               \item[RPi.GPIO] Fournit une classe pour contrôler le GPIO sur une Raspberry Pi \cite{rpi_gpio}.
-                  {\color{red}Il ne sera pas installer avec le fichier \verb=requirements.txt= car pas disponible pour les architecture
-                  autre que ARM}
-              \item[imutils]
-              \item[numpy]
-              \item[opencv-python]
-              \item[toml]
-              \item[Mock.GPIO]
+                  {\color{red}Il ne sera pas installé avec le fichier \verb=requirements.txt=, car non disponible pour
+                  les architectures autres que ARM}
+              \item[imutils] Une série de fonctions de commodité pour rendre les fonctions de traitement d'image de
+                  base \cite{imutils}
+              \item[numpy] Permet d’effectuer des calculs numériques avec \gls{python} \cite{numpy}
+              \item[opencv-python] Bibliothèque open-source pour la vision par ordinateur, l'apprentissage automatique
+                  et le traitement des images \cite{opencv}
+              \item[toml] Analyse et créer des fichierl TOML \cite{toml}
+              \item[Mock.GPIO] Bibliothèque de \glspl{mock} pour la bibliothèque \gls{python} \textit{RPI.GPIO} \cite{mock_gpio}.
           \end{description}
 
     \item Nécessaire pour les tests
           \begin{description}
-              \item[pytest]
-              \item[pytest-cov]
-              \item[pytest-mock]
+              \item[pytest] \Gls{framework} permettant d'écrire facilement des tests petits et lisibles \cite{pytest}
+              \item[pytest-cov] Produit un rapport de couverture avec de tests réalisés avec \textit{pytest} \cite{pytest_cov}
+              \item[pytest-mock] Fournit un injecteur de \gls{mock} \cite{pytest_mock}
               \item[flake8-pytest-style]
                   Vérifie les problèmes de style communs ou les incohérences \cite{flake8_pytest_style}.
           \end{description}
 
     \item Nécessaire pour la génération du \gls{paquet} du \gls{sae}
           \begin{description}
-              \item[build]
+              \item[build] Outil de construction simple qui n'effectue aucune gestion des dépendances. \cite{build}
           \end{description}
 \end{itemize}
 
