@@ -1,1 +1,79 @@
 \part{Guide d'installation}
+
+L'installation de \gls{sae} nécessite l'installation de \gls{python} et de \gls{pip}.\\
+La version minimal de \gls{python} demandé est \textbf{3.7.*}, les versions \textbf{3.9} et supérieur n'ont pas été
+testées.\\
+Référer vous à la documentation de votre distribution (ou OS) pour savoir comment les installer.
+
+\section{Depuis les fichiers sources}
+
+Dans toute cette section, nous considérons que le terminal est placé au niveau du dossier du projet.
+
+\begin{minted}{bash}
+    cd path/vers/le/dossier/du/projet
+\end{minted}
+
+\subsection{Installation des \glsentryplural{paquet}}
+
+Afin de pouvoir utiliser \gls{sae}, certains \glspl{paquet} sont nécessaires.\newline
+
+L'installation des \glspl{paquet} peut être rapidement faite en utilisant le fichier \verb=requirements.txt= se
+trouvant à la racine du projet :
+
+\begin{minted}{bash}
+    python3 -m pip install -r requirements.txt
+\end{minted}
+
+\subsubsection{Liste des \glsentryplural{paquet}}
+
+\begin{itemize}
+    \item Formater et linter
+          \begin{description}
+              \item[black] Formateur de code \gls{python} \cite{black}
+              \item[flake8] Combinaison d'outils pour vérifier la code par rapport au style de codage PEP8
+                  \cite{flake8, pep8}
+                  \begin{description}
+                      \item[flake8-bandit] Tests de sécurité automatisés \cite{flake8_bandit}
+                      \item[flake8-import-order] Vérifie l'ordre de vos importations \cite{flake8_import_order}
+                      \item[flake8-docstrings] Vérifie la conformité aux conventions des \gls{docstring} \gls{python}
+                          \cite{flake8_docstrings}
+                      \item[flake8-bugbear] Trouve les probables bogues et problèmes de conception dans le code
+                          \cite{flake8_bugbear}
+                      \item[flake8-return] Vérifie les valeurs de retour des fonctions dans le code \cite{flake8_return}
+                      \item[pep8-naming] Vérifie le code par rapport aux conventions de nommage PEP8 \cite{pep8_naming, pep8}.
+                  \end{description}
+              \item[mypy]
+                  Vérificateur de type statique pour \gls{python}. \cite{mypy}.
+          \end{description}
+
+    \item Nécessaire pour le fonctionnement
+          \begin{description}
+              \item[transitions] Une implémentation légère et orientée objet de la machine à états en \gls{python} \cite{transition}
+              \item[RPi.GPIO] Fournit une classe pour contrôler le GPIO sur une Raspberry Pi \cite{rpi_gpio}.
+                  {\color{red}Il ne sera pas installer avec le fichier \verb=requirements.txt= car pas disponible pour les architecture
+                  autre que ARM}
+              \item[imutils]
+              \item[numpy]
+              \item[opencv-python]
+              \item[toml]
+              \item[Mock.GPIO]
+          \end{description}
+
+    \item Nécessaire pour les tests
+          \begin{description}
+              \item[pytest]
+              \item[pytest-cov]
+              \item[pytest-mock]
+              \item[flake8-pytest-style]
+                  Vérifie les problèmes de style communs ou les incohérences \cite{flake8_pytest_style}.
+          \end{description}
+
+    \item Nécessaire pour la génération du \gls{paquet} du \gls{sae}
+          \begin{description}
+              \item[build]
+          \end{description}
+\end{itemize}
+
+
+\section{Installation avec \glsentryname{pip}}
+
