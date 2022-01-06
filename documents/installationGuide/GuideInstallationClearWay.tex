@@ -1,0 +1,79 @@
+%-----------------------------------------------------------------
+% LaTeX template for a document
+% Written By: Pierre-Louis GAUTIER
+% Date Updated: August 21, 2021 (v1.2.1)
+%-----------------------------------------------------------------
+
+\documentclass[a4paper, 11pt]{article}
+
+% NOTE To conserve the space in the sentence passed as option to the package double braces to protect the spaces.
+% It's an unfortunate feature of the core latex option handling
+
+\usepackage[imageHeaderLeft     =   {clearWayShort.png},
+            imageHeaderRight    =   {eseoShort.jpg},
+            subject             =   {{}},
+            keywords            =   {{}},
+            encoding            =   {utf8},
+            language            =   {french},
+            showunnemberred     =   false
+            ]{Parameter}
+
+\usepackage[logoSchool  =   {eseoLong.jpg},
+            logoCompany =   {clearWayLong.png},
+            nameCompany =   {{ClearWay}},
+            nameSchool  =   {{École d'Électronique de l'Ouest}},
+            version     =   {0.0.1},
+            status      =   {{En cours}},
+            texte       =   {{}}
+            ]{FrontPage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Load the glossary from the given files %%
+
+\newignoredglossary{ignored}
+
+\makeglossaries
+\loadglsentries{glossary.tex}
+\loadglsentries[ignored]{glossary-ignored.tex}
+
+%% Load the bibliography from the given files %%
+
+\addbibresource{biblio.bib}
+
+%% General config for header, footer and front page %%
+
+\author{\glsentryname{leo}, \glsentryname{damien}, \glsentryname{pierreLouis}}
+\title{Guide d'installation de \glsentryname{sae}}
+\date{\normalsize\today} % Enter a custom date or let it, it's the current date
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\maketitle
+
+\newpage
+\pagenumbering{arabic} % restart the page numbering
+\input{versionningTable.tex}
+
+\newpage
+\tableofcontents
+
+\newpage
+\input{installation.tex}
+
+\newpage
+\input{utilisation.tex}
+
+\newpage
+\part*{Annexes}
+\listoffigures
+\listoftables
+
+\newpage
+\printglossary % Display the glossary, see the documentation for the options
+
+\newpage
+\printbibliography % Display the bibliography, see the documentation for the options
+
+\end{document}
