@@ -12,3 +12,5 @@ size = 320
 see_rtp = false
 [clearway.log]
 verbosity = "DEBUG"
+format = "%(asctime)s [%(filename)s:%(lineno)d] %(levelname)s >> %(message)s"
+path = "clearway.log"
