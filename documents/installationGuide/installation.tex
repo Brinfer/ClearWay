@@ -17,17 +17,59 @@ Dans toute cette section, nous considérons que le terminal est placé au niveau
 
 Afin de pouvoir utiliser \gls{sae}, certains \glspl{paquet} sont nécessaires.\newline
 
-L'installation des \glspl{paquet} peut être rapidement faite en utilisant le fichier \verb=requirements.txt= se
+L'installation des \glspl{paquet} peut être rapidement faite en utilisant le fichier \texttt{requirements.txt} se
 trouvant à la racine du projet :
 
 \begin{minted}{bash}
     python3 -m pip install -r requirements.txt
 \end{minted}
 
+Les dépendances de chaque \glspl{paquet} s'installeront automatiquement.\newline
+
+En cas d'erreur référez-vous à la documentation du \gls{paquet} concernait ou à la section \nameref{sec:listePackages}.
+
 \subsubsection{Liste des \glsentryplural{paquet}}
+\label{sec:listePackages}
+
+Il est aussi possible d'installer individuellement chaque \glspl{paquet} afin d'avoir une installation minimale de \gls{sae}.
+
+\begin{minted}{bash}
+    python3 -m pip install <package>
+\end{minted}
 
 \begin{itemize}
-    \item Formater et linter
+    \item Nécessaire pour le fonctionnement
+          \begin{description}
+              \item[transitions] Une implémentation légère et orienté objet de la machine à états en \gls{python} \cite{transition}
+              \item[RPi.GPIO] Fournit une classe pour contrôler le GPIO sur une Raspberry Pi \cite{rpi_gpio}.\\
+                  Une erreur peut survenir lors de son installation, il peut parfois être nécessaire d'entrer la commande
+                  \mintinline{bash}{export CFLAGS=-fcommon} avant afin de pouvoir bien compiler et installer le \gls{paquet}.\\
+                  Ce \gls{paquet} est toutefois optionnel si vous choisissez d'utiliser \gls{sae} sans le contrôle des GPIOs
+                  (voir section \nameref{sec:executionArg_clearWay})
+              \item[imutils] Une série de fonctions de commodité pour rendre les fonctions de traitement d'image de
+                  base \cite{imutils}
+              \item[numpy] Permet d’effectuer des calculs numériques avec \gls{python} \cite{numpy}
+              \item[opencv-python] Bibliothèque open-source pour la vision par ordinateur, l'apprentissage automatique
+                  et le traitement des images \cite{opencv}
+              \item[toml] Analyse et créer des fichiers TOML \cite{toml}
+              \item[Mock.GPIO] Bibliothèque de \glspl{mock} pour la bibliothèque \gls{python} \textit{RPI.GPIO} \cite{mock_gpio}.
+          \end{description}
+
+    \item Nécessaire pour les tests
+          \begin{description}
+              \item[pytest] \Gls{framework} permettant d'écrire facilement des tests petits et lisibles \cite{pytest}
+              \item[pytest-cov] Produit un rapport de couverture avec de tests réalisés avec \textit{pytest} \cite{pytest_cov}
+              \item[pytest-mock] Fournit un injecteur de \gls{mock} \cite{pytest_mock}
+              \item[flake8-pytest-style]
+                  Vérifie les problèmes de style communs ou les incohérences \cite{flake8_pytest_style}.
+          \end{description}
+
+    \item Génération du \gls{paquet} du \gls{sae} (optionnel)
+          \begin{description}
+              \item[build] Outil de construction simple qui n'effectue aucune gestion des dépendances. \cite{build}
+          \end{description}
+
+    \item Formater et linter (optionnel)
           \begin{description}
               \item[black] Formateur de code \gls{python} \cite{black}
               \item[flake8] Combinaison d'outils pour vérifier la code par rapport au style de codage PEP8
@@ -45,37 +87,33 @@ trouvant à la racine du projet :
               \item[mypy]
                   Vérificateur de type statique pour \gls{python}. \cite{mypy}.
           \end{description}
-
-    \item Nécessaire pour le fonctionnement
-          \begin{description}
-              \item[transitions] Une implémentation légère et orientée objet de la machine à états en \gls{python} \cite{transition}
-              \item[RPi.GPIO] Fournit une classe pour contrôler le GPIO sur une Raspberry Pi \cite{rpi_gpio}.
-                  {\color{red}Il ne sera pas installé avec le fichier \verb=requirements.txt=, car non disponible pour
-                  les architectures autres que ARM}
-              \item[imutils] Une série de fonctions de commodité pour rendre les fonctions de traitement d'image de
-                  base \cite{imutils}
-              \item[numpy] Permet d’effectuer des calculs numériques avec \gls{python} \cite{numpy}
-              \item[opencv-python] Bibliothèque open-source pour la vision par ordinateur, l'apprentissage automatique
-                  et le traitement des images \cite{opencv}
-              \item[toml] Analyse et créer des fichierl TOML \cite{toml}
-              \item[Mock.GPIO] Bibliothèque de \glspl{mock} pour la bibliothèque \gls{python} \textit{RPI.GPIO} \cite{mock_gpio}.
-          \end{description}
-
-    \item Nécessaire pour les tests
-          \begin{description}
-              \item[pytest] \Gls{framework} permettant d'écrire facilement des tests petits et lisibles \cite{pytest}
-              \item[pytest-cov] Produit un rapport de couverture avec de tests réalisés avec \textit{pytest} \cite{pytest_cov}
-              \item[pytest-mock] Fournit un injecteur de \gls{mock} \cite{pytest_mock}
-              \item[flake8-pytest-style]
-                  Vérifie les problèmes de style communs ou les incohérences \cite{flake8_pytest_style}.
-          \end{description}
-
-    \item Nécessaire pour la génération du \gls{paquet} du \gls{sae}
-          \begin{description}
-              \item[build] Outil de construction simple qui n'effectue aucune gestion des dépendances. \cite{build}
-          \end{description}
 \end{itemize}
 
 
 \section{Installation avec \glsentryname{pip}}
 
+Il est possible de facilement distribuer \gls{sae} sur plusieurs Raspberry Pi en utilisant \gls{pip}. Pour
+cela il est nécessaire d'installer le \gls{paquet} \textit{build} (voir section \nameref{sec:listePackages}).
+
+\begin{minted}{bash}
+    python3 -m build
+\end{minted}
+
+Cette commande va alors créer un dossier \texttt{dist} et \texttt{clearway.egg-info}
+\footnote{c'est un résidu de l'opération, il  peut être supprimé}. Le dossier \texttt{dist} contient
+alors deux fichiers : un \texttt{.whl} et un \texttt{.tar.gz} \nocite{wheel}\nocite{setuptools}.\newline
+
+Ces fichiers peuvent être distribués (voir section \nameref{sec:utilisationSSH}) et installé avec la commande :
+
+\begin{minted}{bash}
+    pip install --upgrade clearway-<version>--py3-none-any.whl
+\end{minted}
+
+ou
+
+\begin{minted}{bash}
+    pip install --upgrade clearway-<version>.tar.gz
+\end{minted}
+
+Le \gls{paquet} de \gls{sae} est alors installé avec toutes les dépendances nécessaires à son fonctionnement (voir
+section \nameref{sec:listePackages}).
