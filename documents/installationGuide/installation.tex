@@ -79,3 +79,32 @@ trouvant à la racine du projet :
 
 \section{Installation avec \glsentryname{pip}}
 
+
+\newpage
+\section{Branchements des composants au Raspberry}
+Le \gls{RPiCard} doit être alimenté avec une alimentation secteur. Un switch permet d'éteindre et d'allumer la carte.
+
+\includegraphics[width=\textwidth]{img/Rpi4_pin.png}
+
+\subsection{Branchements du servomoteur}
+
+Pour le logiciel fournit, le servomoteur \gls{SG90} a des branchements spécifiques.
+\begin{itemize}
+    \item Fil marron : GND
+    \item Fil rouge  : 5V
+    \item Fil orange : GPIO 12
+\end{itemize}
+
+\subsection{Branchements du panneau de LEDs}
+
+En considérant que vous êtes dos au panneau :
+\begin{itemize}
+    \item Brancher la borne de droite du bornier à la broche GPIO 5
+    \item La borne du milieu doit rester vide
+    \item Brancher la borne de gauche du bornier au GND
+\end{itemize}
+
+\subsection{Branchements de la caméra}
+La caméra \gls{RPiCamera} est fournie avec une nappe. Côté caméra : Ouvrer le connecteur d'accueil de nappe en tirant sur la languette. 
+Positionner la nappe de façon à ce que le trait de couleur bleu soit au dos de la lentille et fermer le connecteur. 
+Faire de même sur le port d'accueil caméra du \gls{RPiCard}. Positionner le trait bleu face au connecteur Ethernet.
