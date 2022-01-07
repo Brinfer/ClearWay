@@ -24,6 +24,7 @@ Pour une exécution sur la \gls{raspberry} à distance, il faut établir une con
 Pour se faire, le plus simple est d'être connecté au même réseau que cette dernière.
 
 \subsubsection{Trouver l'adresse \glsentrytext{ip}}
+\label{sec:trouverIP}
 
 \paragraph{À partie du \textit{hostname}}
 
@@ -79,6 +80,31 @@ Dans notre exemple ci-dessus, la commande \texttt{nmap} a trouvé un périphéri
 \begin{minted}{text}
     MAC Address: B8:37:EB:EA: E0:D5 (Raspberry Pi Foundation)
     Nmap scan report for 123.123.123.200
+\end{minted}
+
+\subsubsection{Connexion}
+
+Pour se connecter en \gls{ssh} à la \gls{raspberry}, il faut connaitre l'utilisateur\footnote{Par défaut sur une
+    \gls{raspberry}, l'utilisateur est \underline{pi}.} auquel on veut se connecter et l'\gls{ip} de la \gls{raspberry}
+(voir section \nameref{sec:trouverIP}).\\
+La commande à exécuter est :
+
+\begin{minted}{bash}
+    ssh <user>@<ip_address>
+\end{minted}
+
+Il vous sera alors demandé de confirmer si vous souhaiter vous connecter, et ensuite, le mot de passe de
+l'utilisateur\footnote{Par défaut pour l'utilisateur \underline{pi}, le mot de passe est \underline{raspberry}}.
+
+\paragraph{Copie de fichier de l'ordinateur vers la \glsentryname{raspberry}}
+\label{sec:copieVersRaspberry}
+
+Pour copier un fichier depuis votre ordinateur vers la \gls{raspberry} (ou une quelconque cible distante), il faut
+utiliser la commande \texttt{scp} qui utilise le \gls{ssh}.\\
+La commande est :
+
+\begin{minted}{bash}
+    scp <file_to_send> <user>@<ip_address>:<path_on_the_raspberry>
 \end{minted}
 
 \subsection{Arguments nécessaires pour l'exécution du programme}
