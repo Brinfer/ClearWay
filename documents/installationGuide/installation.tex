@@ -119,10 +119,15 @@ Le \gls{paquet} de \gls{sae} est alors installé avec toutes les dépendances n�
 section \nameref{sec:listePackages}).
 
 \newpage
-\section{Branchements des composants au Raspberry}
-Le \gls{RPiCard} doit être alimenté avec une alimentation secteur. Un switch permet d'éteindre et d'allumer la carte.
+\section{Branchements des composants au \glsentryname{raspberry}}
 
-\includegraphics[width=\textwidth]{img/Rpi4_pin.png}
+La \gls{raspberry} doit être alimenté avec une alimentation secteur. Un interrupteur permet d'éteindre et d'allumer la carte.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/Rpi4_pin.png}
+    \caption{Liste des PINs / GPIOs de la \glsentryname{raspberry}}
+\end{figure}
 
 \subsection{Branchements du servomoteur}
 
@@ -143,6 +148,12 @@ En considérant que vous êtes dos au panneau :
 \end{itemize}
 
 \subsection{Branchements de la caméra}
-La caméra \gls{RPiCamera} est fournie avec une nappe. Côté caméra : Ouvrer le connecteur d'accueil de nappe en tirant sur la languette.
-Positionner la nappe de façon à ce que le trait de couleur bleu soit au dos de la lentille et fermer le connecteur.
-Faire de même sur le port d'accueil caméra du \gls{RPiCard}. Positionner le trait bleu face au connecteur Ethernet.
+
+La caméra \gls{RPiCamera} est fournie avec une nappe. Côté caméra :
+
+\begin{enumerate}
+    \item Ouvrer le connecteur d'accueil de nappe en tirant sur la languette
+    \item Positionner la nappe de façon à ce que le trait de couleur bleu soit au dos de la lentille et fermer le
+          connecteur. Faire de même sur le port d'accueil caméra de la \gls{raspberry}
+    \item Positionner le trait bleu face au connecteur Ethernet.
+\end{enumerate}
