@@ -1,1 +1,35 @@
 \part{Guide d'utilisation}
+La présente section a pour but de décrire l'utilisation du \gls{sae}.
+
+\section{\glsentryname{sae} - Description du service}
+\label{sec:description_clearWay}
+
+\gls{sae} est composé de trois éléments :
+\begin{itemize}
+    \item Le module caméra comprend une caméra (\gls{RPiCamera}), un socle en bois, un servomoteur (\gls{SG90})  
+    et un dispositif en plastique permettant de faire la liaison entre le servomoteur et la caméra.
+    \item Un boîtier noir où se trouve une carte \gls{RPiCard}.
+    \item Le panneau en bois intégrant des LEDs permettant les automobilistes qu'un cycliste arrive.
+\end{itemize}
+
+\section{Exécution de \glsentryname{sae}}
+\label{sec:execution_clearWay}
+
+Le service est actuellement un prototype. Pour une exécution sur le \gls{RPiCard} :
+Afin de l'exécuter il faut établir une connexion ssh avec le \gls{RPiCard} et être connecté au même réseau que ce dernier.
+Trouver l'adresse IP de votre Raspberry :
+\begin{itemize}
+    \item Connaître l'adresse IP du réseau local, par exemple : 169.25.2.11
+    \item Trouver votre Raspberry en tapant cette commande dans un terminal bash, par exemple 169.25.2.168 : 
+\begin{minted}{bash}
+    nmap -sn 169.25.2.0/24
+\end{minted}
+    \item Se connecter en ssh à la \gls{RPiCard} :
+\begin{minted}{bash}
+    ssh pi@169.25.2.168
+\end{minted}
+\end{itemize}
+
+\subsection{Arguments nécessaires pour l'exécution du programme}
+\label{sec:executionArg_clearWay}
+Certains arguments sont nécessaires afin d'utiliser \gls{sae}.
