@@ -65,17 +65,17 @@ Chaque option doit être précédée par \verb=--=.
         \rowcolor{tableColorDark} Option & Signification & Support   \\
         \hline
         % Data
-        \verb=camera_angle=                          & Renseigner l'angle de la caméra en degrés, faire suivre cette option d'un "=AngleVoulu"                                                                           & Raspberry               \\\hline
+        \verb=camera_angle=                          & Renseigner l'angle de la caméra en degrés.                                                                                                                        & Raspberry               \\\hline
         \verb=help=                                  & (Utilisable avec l'alias \verb=-h=) Affiche les arguments et options possibles.                                                                                   & Raspberry Ordinateur    \\\hline
         \verb=input-path INPUT_PATH=                 & (Utilisable avec l'alias \verb=-i INPUT_PATH=) Chemin vers la vidéo à analyser si la caméra n'est pas utilisée                                                    & Raspberry Ordinateur    \\\hline
         \verb=no-gpio=                               & Les GPIOs ne seront pas utilisés. Uniquement les logs seront affichés.                                                                                            & Raspberry Ordinateur    \\\hline
         \verb=on-raspberry=                          & Informe le programme que le Raspberry sera utilisée                                                                                                               & Raspberry               \\\hline
         \verb=output-path OUTPUT_PATH=               & (Utilisable avec l'alias \verb=-o OUTPUT_PATH=) Chemin vers le dossier qui contraindra la vidéo analysée (inclut les boxes autours des objets détectés)           & Raspberry Ordinateur    \\\hline
         \verb=panel_gpios PANEL_GPIOS=               & Informe le programme quel(s) GPIO(s) utiliser, sous forme d'une liste                                                                                             & Raspberry               \\\hline
-        \verb=see-rtp=                               & Permet d'avoir une fenêtre avec l'analyse en temps réelle                                                                                                         & Raspberry Ordinateur    \\\hline
-        \verb=servo_gpio=                            & Permet d'indiquer la broche GPIO utilisé par le servomoteur                                                                                                       & Raspberry               \\\hline        
+        \verb=see-rtp=                               & Permet d'avoir une fenêtre avec l'analyse en temps réelle.                                                                                                        & Raspberry Ordinateur    \\\hline
+        \verb=servo_gpio=                            & Permet d'indiquer la broche GPIO utilisé par le servomoteur.                                                                                                      & Raspberry               \\\hline        
         \verb=use-gpio=                              & Les GPIOs seront utilisés, les logs seront également affichés.                                                                                                    & Raspberry               \\\hline
-        \verb=verbosity {WARNING,INFO,DEBUG}=        & (Utilisable avec l'alias \verb=-v {WARNING,INFO,DEBUG}=) Indique le niveau de verbosité                                                                           & Raspberry Ordinateur    \\\hline
+        \verb=verbosity {WARNING,INFO,DEBUG}=        & (Utilisable avec l'alias \verb=-v {WARNING,INFO,DEBUG}=) Indique le niveau de verbosité.                                                                          & Raspberry Ordinateur    \\\hline
         \verb=version=                               & (Utilisable avec l'alias \verb=-V=) Affiche la version de \gls{sae}                                                                                               & Raspberry Ordinateur    \\\hline
     \end{tabularx}
     \label{tabOptClearway}
@@ -91,7 +91,7 @@ Chaque option doit être précédée par \verb=--=.
     \begin{tabularx}{\linewidth}{|c|X|c|}
         % Header
         \hline
-        \rowcolor{tableColorDark} Option & Signification & Support   \\
+        \rowcolor{tableColorDark} Fichier toml & Signification & Support   \\
         \hline
         % Data
         \texttt{camera\_angle = 90}                  & Renseigner l'angle de la caméra en degrés                                                                                                                         & Raspberry               \\\hline
@@ -106,7 +106,6 @@ Chaque option doit être précédée par \verb=--=.
         \texttt{verbosity = "DEBUG"}                 & Indique le niveau de verbosité                                                                                                                                    & Raspberry Ordinateur    \\\hline
         \texttt{yolo\_cfg = "yolov2.cfg"}            & Chemin jusqu'au fichier .cfg de yolo                                                                                                                              & Raspberry Ordinateur    \\\hline
         \texttt{yolo\_weight = "yolov2.weight"}      & Chemin jusqu'au fichier .weight de yolo                                                                                                                           & Raspberry Ordinateur    \\\hline
-    
     \end{tabularx}
     \label{tab:tomlClearway}
     \caption{Argument d'exécution de \gls{sae}}
