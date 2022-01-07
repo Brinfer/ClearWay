@@ -159,16 +159,24 @@ Certains arguments sont nécessaires afin d'utiliser \gls{sae}. La liste ci-dess
     \caption{Options d'exécution de \gls{sae}}
 \end{table}
 
-\subsection{Champs du fichier .toml}
+Exemple de la ligne de commande pour utiliser les paramètres par défauts :
+
+\begin{minted}{bash}
+    clearway --yolo-weights resources/yolov2-tiny.weights --yolo-cfg  resources/yolov2-tiny.cfg
+\end{minted}
+
+\subsection{Champs du fichier \textbf{TOML}}
 \label{sec:executionTOML_clearWay}
-\gls{sae} est livré avec un fichier toml permettant de configurer le système.
+
+\gls{sae} est livré avec un fichier \textbf{TOML} permettant de configurer le système.
+
 \begin{table}[H]
     \centering
     \rowcolors{2}{tableColor}{white}
     \begin{tabularx}{\linewidth}{|c|X|c|}
         % Header
         \hline
-        \rowcolor{tableColorDark} Fichier toml & Signification & Support   \\
+        \rowcolor{tableColorDark} Fichier \textbf{TOML}  & Signification                                                                                                                & Support              \\
         \hline
         % Data
         \texttt{camera\_angle = 90}                  & Renseigner l'angle de la caméra en degrés                                                                                                                         & Raspberry               \\\hline
@@ -187,3 +195,24 @@ Certains arguments sont nécessaires afin d'utiliser \gls{sae}. La liste ci-dess
     \label{tab:tomlClearway}
     \caption{Argument d'exécution de \gls{sae}}
 \end{table}
+
+Exemple complet du contenu possible d'un fichier \textbf{TOML} fonctionnel :
+
+\begin{minted}{toml}
+    [clearway]
+    [clearway.gpio]
+    use_gpio = false
+    panel_gpios = [5, 6]
+    camera_angle = 75
+    servo_gpio = 12
+    [clearway.ai]
+    yolo_cfg = "resources/yolov2-tiny.cfg"
+    yolo_weights = "resources/yolov2-tiny.weights"
+    on_raspberry = false
+    size = 320
+    see_rtp = false
+    [clearway.log]
+    verbosity = "DEBUG"
+    format = "%(asctime)s [%(filename)s:%(lineno)d] %(levelname)s >> %(message)s"
+    path = "clearway.log"
+\end{minted}
