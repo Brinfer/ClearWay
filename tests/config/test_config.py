@@ -27,8 +27,8 @@ VALUE_NOMINAL: Dict[str, Any] = {
     },
     config.MODULE_LOGGING: {
         config.LOG_VERBOSITY_LEVEL: logging.DEBUG,
-        config.LOG_FORMAT: "%(asctime)s [%(filename)s:%(lineno)d] %(levelname)s >> %(message)s",
-        config.LOG_PATH: "ClearWay.log",
+        config.LOG_FORMAT: "%(levelname)s >> %(message)s",
+        config.LOG_PATH: "output/Log.log",
     },
 }
 """Contains the values of the parameters of the files `nominal.toml` and `multiple_sections.toml`."""
