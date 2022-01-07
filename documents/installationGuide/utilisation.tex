@@ -168,35 +168,35 @@ Exemple de la ligne de commande pour utiliser les paramètres par défauts :
 \subsection{Champs du fichier \textbf{TOML}}
 \label{sec:executionTOML_clearWay}
 
-\gls{sae} est livré avec un fichier \textbf{TOML} permettant de configurer le système.
+\gls{sae} est livré avec un fichier \textbf{TOML} permettant de configurer le système. Ce fichier doit être composé
+d'une section principale \texttt{clearway}, elle-même composait de plusieurs sous-sections, chacune avec différentes clés.
 
 \begin{table}[H]
-    \centering
     \rowcolors{2}{tableColor}{white}
-    \begin{tabularx}{\linewidth}{|c|X|c|}
-        % Header
+    \begin{tabularx}{\linewidth}{|l|c|X|}
         \hline
-        \rowcolor{tableColorDark} Fichier \textbf{TOML}  & Signification                                                                                                                & Support              \\
-        \hline
-        % Data
-        \texttt{camera\_angle = 90}                  & Renseigner l'angle de la caméra en degrés                                                                                                                         & Raspberry               \\\hline
-        \texttt{format = "Format\_Type"}             & Format du fichier de logging, \href{https://docs.python.org/3/howto/logging-cookbook.html\#formatting-styles}{documentation}                                      & Raspberry Ordinateur    \\\hline
-        \texttt{on-raspberry = false}                & Informe le programme que le Raspberry sera utilisée                                                                                                               & Raspberry               \\\hline
-        \texttt{path = "clearway.log"}               & Chemin où sera sauvegardé le fichier des logging                                                                                                                  & Raspberry               \\\hline
-        \texttt{panel = [5, 7]}                      & Informe le programme quel(s) GPIO(s) utiliser, sous forme d'une liste                                                                                             & Raspberry               \\\hline
-        \texttt{see-rtp = false}                     & Permet d'avoir une fenêtre avec l'analyse en temps réelle                                                                                                         & Raspberry Ordinateur    \\\hline
-        \texttt{servo\_gpio = 17}                    & Permet d'indiquer la broche GPIO utilisé par le servomoteur                                                                                                       & Raspberry               \\\hline
-        \texttt{size = 416}                          & La taille de l'image (320 ou 416 recommandés).                                                                                                                    & Raspberry Ordinateur    \\\hline
-        \texttt{use-gpio = false}                    & Les GPIOs seront utilisés, les logs seront également affichés.                                                                                                    & Raspberry               \\\hline
-        \texttt{verbosity = "DEBUG"}                 & Indique le niveau de verbosité                                                                                                                                    & Raspberry Ordinateur    \\\hline
-        \texttt{yolo\_cfg = "yolov2.cfg"}            & Chemin jusqu'au fichier .cfg de yolo                                                                                                                              & Raspberry Ordinateur    \\\hline
-        \texttt{yolo\_weight = "yolov2.weight"}      & Chemin jusqu'au fichier .weight de yolo                                                                                                                           & Raspberry Ordinateur    \\\hline
+        \multicolumn{1}{|c|}{\cellcolor{tableColorDark}Clée} & \multicolumn{1}{c|}{\cellcolor{tableColorDark}Type} & \multicolumn{1}{c|}{\cellcolor{tableColorDark}Description} \\ \hline
+        \multicolumn{3}{|c|}{\cellcolor{tableColorDark}sous-section \texttt{gpio}}                                                                                                           \\ \hline
+        \texttt{camera\_angle}                               & entier                                              & L'angle de la caméra en degrés                             \\ \hline
+        \texttt{servo\_gpio}                                 & entier                                              & le GPIO utilisé par le servomoteur                         \\ \hline
+        \texttt{use\_gpio}                                   & booléen                                             & Les GPIOs à utiliser, les logs seront également affichés.  \\ \hline
+        \multicolumn{3}{|c|}{\cellcolor{tableColorDark}sous-section \texttt{logging}}                                                                                                        \\ \hline
+        \texttt{format}                                      & chaine de caractère                                 & Format des messages de log \cite{loggingFormat}            \\ \hline
+        \texttt{path}                                        & chaine de caractère                                 & Chemin vers le fichier des logs                            \\ \hline
+        \texttt{verbosity}                                   & chaine de caractère                                 & Le niveau de verbosité                                     \\ \hline
+        \multicolumn{3}{|c|}{\cellcolor{tableColorDark}sous-section \texttt{ia}}                                                                                                             \\ \hline
+        \texttt{size}                                        & entier                                              & La taille de l'image (320 ou 416 recommandés)              \\ \hline
+        \texttt{see\_rtp}                                    & booléen                                             & Affichage d'une fenêtre avec l'analyse en temps réelle     \\ \hline
+        \texttt{yolo\_cfg}                                   & chaine de caractère                                 & Chemin jusqu'au fichier \texttt{.cfg } de yolo             \\ \hline
+        \texttt{yolo\_weight}                                & chaine de caractère                                 & Chemin jusqu'au fichier \texttt{.weight} de yolo           \\ \hline
     \end{tabularx}
-    \label{tab:tomlClearway}
-    \caption{Argument d'exécution de \gls{sae}}
+    \caption{Argument d'exécution de \glsentryname{sae}}
 \end{table}
 
-Exemple complet du contenu possible d'un fichier \textbf{TOML} fonctionnel :
+Les clés \texttt{yolo\_cfg} et \texttt{yolo\_weight} sont obligatoires pour le fonctionnement sauf si ces valeurs sont
+passées en ligne de commande (voir section \nameref{sec:executionArg_clearWay}).\newline
+
+Voici un exemple complet du contenu possible d'un fichier \textbf{TOML} fonctionnel :
 
 \begin{minted}{toml}
     [clearway]
