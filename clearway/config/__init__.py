@@ -58,10 +58,10 @@ SEE_REAL_TIME_PROCESS = "see_rtp"
 LOG_VERBOSITY_LEVEL = "verbosity"
 """The dictionary key to indicate the verbosity level for the `logging` module."""
 
-LOG_FORMAT = "log_format"
+LOG_FORMAT = "format"
 """The dictionary key to indicate the format for the `logging` module."""
 
-LOG_PATH = "log_path"
+LOG_PATH = "path"
 """The dictionary key to indicate the path to the log file for the `logging` module."""
 
 # List au module
@@ -167,7 +167,9 @@ def save_config_from_file(p_path: str) -> None:
 
 
 def save_config_logging(
-    p_verbosity_level: str = None,
+    p_verbosity_level: Optional[str] = None,
+    p_format: Optional[str] = None,
+    p_path: Optional[str] = None,
     p_dict: Optional[Dict[str, Any]] = None,
 ) -> None:
     """Save the configuration for `logging` module.
@@ -195,6 +197,10 @@ def save_config_logging(
     ----------
     p_verbosity_level : `str`, optional
         The verbosity level to use, by default `None`
+    p_format : `str`, optional
+        The log format, by default `None`
+    p_path : `str`, optional
+        The path to the log file, by default `None`
     p_dict : `Dict[str, Any]`, optional
         A dictionary containing the information, by default `None`
 
@@ -209,6 +215,12 @@ def save_config_logging(
     def recursive_call(p_dict: Dict[str, Any]) -> None:
         if LOG_VERBOSITY_LEVEL in p_dict.keys():
             save_config_logging(p_verbosity_level=p_dict[LOG_VERBOSITY_LEVEL])
+
+        if LOG_FORMAT in p_dict.keys():
+            save_config_logging(p_format=p_dict[LOG_FORMAT])
+
+        if LOG_PATH in p_dict.keys():
+            save_config_logging(p_path=p_dict[LOG_PATH])
 
     if p_dict is not None:
         recursive_call(p_dict)
@@ -229,6 +241,12 @@ def save_config_logging(
             raise ValueError("[CONFIG] Unknown verbosity level: {}".format(p_verbosity_level))
 
         __config_dict[MODULE_LOGGING][LOG_VERBOSITY_LEVEL] = l_verbosity_level
+
+    if isinstance(p_format, str):
+        __config_dict[MODULE_LOGGING][LOG_FORMAT] = p_format
+
+    if isinstance(p_path, str):
+        __config_dict[MODULE_LOGGING][LOG_PATH] = p_path
 
 
 #
