@@ -32,4 +32,82 @@ Trouver l'adresse IP de votre Raspberry :
 
 \subsection{Arguments nécessaires pour l'exécution du programme}
 \label{sec:executionArg_clearWay}
-Certains arguments sont nécessaires afin d'utiliser \gls{sae}.
+Certains arguments sont nécessaires afin d'utiliser \gls{sae}. La liste ci-dessous répertorie ces derniers.
+Chaque argument doit être précédé par \verb=--=.
+\begin{table}[H]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabularx}{\linewidth}{|c|X|c|}
+        % Header
+        \hline
+        \rowcolor{tableColorDark} Argument & Signification & Support   \\
+        \hline
+        % Data
+        \verb=yolo-weights YOLO_WEIGHTS=     & Requis si l'argument \verb=config= n'est pas renseigné. Chemin vers le fichier yolo-weights                                                                   & Raspberry Ordinateur    \\\hline
+        \verb=yolo-cfg YOLO_CFG=             & Requis si l'argument \verb=config= n'est pas renseigné. Chemin vers le fichier yolo-cfg                                                                       & Raspberry Ordinateur    \\\hline
+        \verb=size SIZE=                      & Requis si l'argument \verb=config= n'est pas renseigné. La taille de l'image (320 ou 416 recommandés).                                                       & Raspberry Ordinateur    \\\hline
+        \verb=config CONFIG=                  & (Utilisable avec l'alias \verb=-c CONFIG=) Chemin vers le fichier de configuration. À utiliser si les trois arguments précédents n'ont pas été précisés      & Raspberry Ordinateur    \\\hline
+    \end{tabularx}
+    \label{tab:ArgClearway}
+    \caption{Argument d'exécution de \gls{sae}}
+\end{table}
+
+\subsection{Options possibles pour le programme}
+\label{sec:executionOption_clearWay}
+\gls{sae} est livré avec plusieurs options à renseigner lors du démarrage du programme. La liste ci-dessous répertorie ces dernières.
+Chaque option doit être précédée par \verb=--=.
+\begin{table}[H]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabularx}{\linewidth}{|c|X|c|}
+        % Header
+        \hline
+        \rowcolor{tableColorDark} Option & Signification & Support   \\
+        \hline
+        % Data
+        \verb=camera_angle=                          & Renseigner l'angle de la caméra en degrés, faire suivre cette option d'un "=AngleVoulu"                                                                           & Raspberry               \\\hline
+        \verb=help=                                  & (Utilisable avec l'alias \verb=-h=) Affiche les arguments et options possibles.                                                                                   & Raspberry Ordinateur    \\\hline
+        \verb=input-path INPUT_PATH=                 & (Utilisable avec l'alias \verb=-i INPUT_PATH=) Chemin vers la vidéo à analyser si la caméra n'est pas utilisée                                                    & Raspberry Ordinateur    \\\hline
+        \verb=no-gpio=                               & Les GPIOs ne seront pas utilisés. Uniquement les logs seront affichés.                                                                                            & Raspberry Ordinateur    \\\hline
+        \verb=on-raspberry=                          & Informe le programme que le Raspberry sera utilisée                                                                                                               & Raspberry               \\\hline
+        \verb=output-path OUTPUT_PATH=               & (Utilisable avec l'alias \verb=-o OUTPUT_PATH=) Chemin vers le dossier qui contraindra la vidéo analysée (inclut les boxes autours des objets détectés)           & Raspberry Ordinateur    \\\hline
+        \verb=panel_gpios PANEL_GPIOS=               & Informe le programme quel(s) GPIO(s) utiliser, sous forme d'une liste                                                                                             & Raspberry               \\\hline
+        \verb=see-rtp=                               & Permet d'avoir une fenêtre avec l'analyse en temps réelle                                                                                                         & Raspberry Ordinateur    \\\hline
+        \verb=servo_gpio=                            & Permet d'indiquer la broche GPIO utilisé par le servomoteur                                                                                                       & Raspberry               \\\hline        
+        \verb=use-gpio=                              & Les GPIOs seront utilisés, les logs seront également affichés.                                                                                                    & Raspberry               \\\hline
+        \verb=verbosity {WARNING,INFO,DEBUG}=        & (Utilisable avec l'alias \verb=-v {WARNING,INFO,DEBUG}=) Indique le niveau de verbosité                                                                           & Raspberry Ordinateur    \\\hline
+        \verb=version=                               & (Utilisable avec l'alias \verb=-V=) Affiche la version de \gls{sae}                                                                                               & Raspberry Ordinateur    \\\hline
+    \end{tabularx}
+    \label{tabOptClearway}
+    \caption{Options d'exécution de \gls{sae}}
+\end{table}
+
+\subsection{Champs du fichier .toml}
+\label{sec:executionTOML_clearWay}
+\gls{sae} est livré avec un fichier toml permettant de configurer le système.
+\begin{table}[H]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabularx}{\linewidth}{|c|X|c|}
+        % Header
+        \hline
+        \rowcolor{tableColorDark} Option & Signification & Support   \\
+        \hline
+        % Data
+        \texttt{camera\_angle = 90}                  & Renseigner l'angle de la caméra en degrés                                                                                                                         & Raspberry               \\\hline
+        \texttt{format = "Format\_Type"}             & Format du fichier de logging, \href{https://docs.python.org/3/howto/logging-cookbook.html\#formatting-styles}{documentation}                                      & Raspberry Ordinateur    \\\hline
+        \texttt{on-raspberry = false}                & Informe le programme que le Raspberry sera utilisée                                                                                                               & Raspberry               \\\hline
+        \texttt{path = "clearway.log"}               & Chemin où sera sauvegardé le fichier des logging                                                                                                                  & Raspberry               \\\hline
+        \texttt{panel = [5, 7]}                      & Informe le programme quel(s) GPIO(s) utiliser, sous forme d'une liste                                                                                             & Raspberry               \\\hline
+        \texttt{see-rtp = false}                     & Permet d'avoir une fenêtre avec l'analyse en temps réelle                                                                                                         & Raspberry Ordinateur    \\\hline
+        \texttt{servo\_gpio = 17}                    & Permet d'indiquer la broche GPIO utilisé par le servomoteur                                                                                                       & Raspberry               \\\hline        
+        \texttt{size = 416}                          & La taille de l'image (320 ou 416 recommandés).                                                                                                                    & Raspberry Ordinateur    \\\hline        
+        \texttt{use-gpio = false}                    & Les GPIOs seront utilisés, les logs seront également affichés.                                                                                                    & Raspberry               \\\hline
+        \texttt{verbosity = "DEBUG"}                 & Indique le niveau de verbosité                                                                                                                                    & Raspberry Ordinateur    \\\hline
+        \texttt{yolo\_cfg = "yolov2.cfg"}            & Chemin jusqu'au fichier .cfg de yolo                                                                                                                              & Raspberry Ordinateur    \\\hline
+        \texttt{yolo\_weight = "yolov2.weight"}      & Chemin jusqu'au fichier .weight de yolo                                                                                                                           & Raspberry Ordinateur    \\\hline
+    
+    \end{tabularx}
+    \label{tab:tomlClearway}
+    \caption{Argument d'exécution de \gls{sae}}
+\end{table}
