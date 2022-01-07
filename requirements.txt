@@ -12,7 +12,7 @@ mypy>=0.910
 
 # Package
 transitions>=0.8.10
-# RPi.GPIO>=0.7.0 # Not available for the GitLabRunner
+RPi.GPIO>=0.7.0
 imutils>=0.5.4
 numpy>=1.21.4
 opencv-python>=4.5.4.60
