@@ -26,7 +26,15 @@ trouvant à la racine du projet :
 
 Les dépendances de chaque \glspl{paquet} s'installeront automatiquement.\newline
 
-En cas d'erreur référez-vous à la documentation du \gls{paquet} concernait ou à la section \nameref{sec:listePackages}.
+En cas d'erreur référez-vous à la documentation du \gls{paquet} concernait ou à la section \nameref{sec:listePackages}.\newline
+
+Copier le dossier \texttt{clearway} sur la cible souhaité (\gls{raspberry}, ou ordinateur, voir section
+\nameref{sec:copieVersRaspberry}) et exécuté la commande suivante :
+
+\begin{minted}{bash}
+    python3 -m chemin/vers/dossier/clearway
+\end{minted}
+
 
 \subsubsection{Liste des \glsentryplural{paquet}}
 \label{sec:listePackages}
@@ -51,8 +59,8 @@ Il est aussi possible d'installer individuellement chaque \glspl{paquet} afin d'
               \item[numpy] Permet d’effectuer des calculs numériques avec \gls{python} \cite{numpy}
               \item[opencv-python] Bibliothèque open-source pour la vision par ordinateur, l'apprentissage automatique
                   et le traitement des images \cite{opencv}
-              \item[toml] Analyse et créer des fichiers TOML \cite{toml}
-              \item[Mock.GPIO] Bibliothèque de \glspl{mock} pour la bibliothèque \gls{python} \textit{RPI.GPIO} \cite{mock_gpio}.
+              \item[toml] Analyse et créer des fichiers \gls{toml} \cite{python_toml}
+              \item[Mock.GPIO] Bibliothèque de \glspl{mock} pour la bibliothèque \gls{python} \textit{RPi.GPIO} \cite{mock_gpio}.
           \end{description}
 
     \item Nécessaire pour les tests
@@ -89,7 +97,6 @@ Il est aussi possible d'installer individuellement chaque \glspl{paquet} afin d'
           \end{description}
 \end{itemize}
 
-
 \section{Installation avec \glsentryname{pip}}
 
 Il est possible de facilement distribuer \gls{sae} sur plusieurs Raspberry Pi en utilisant \gls{pip}. Pour
@@ -116,9 +123,19 @@ ou
 \end{minted}
 
 Le \gls{paquet} de \gls{sae} est alors installé avec toutes les dépendances nécessaires à son fonctionnement (voir
-section \nameref{sec:listePackages}).
+section \nameref{sec:listePackages}).\\
+Vous pouvez lacer \gls{sae} en entrant simplement la commande :
 
-\newpage
+\begin{minted}{bash}
+    clearway
+\end{minted}
+
+ou
+
+\begin{minted}{bash}
+    python3 -m clearway
+\end{minted}
+
 \section{Branchements des composants au \glsentryname{raspberry}}
 
 La \gls{raspberry} doit être alimenté avec une alimentation secteur. Un interrupteur permet d'éteindre et d'allumer la carte.
@@ -134,7 +151,7 @@ La \gls{raspberry} doit être alimenté avec une alimentation secteur. Un interr
 Pour le logiciel fournit, le servomoteur \gls{SG90} a des branchements spécifiques.
 \begin{itemize}
     \item Fil marron : GND
-    \item Fil rouge  : 5V
+    \item Fil rouge  : 5 V
     \item Fil orange : GPIO 12
 \end{itemize}
 
