@@ -39,7 +39,7 @@
 
 # 2. License
 
-See [`LICENSE.md`](./LICENCE.md).
+See [`LICENSE.md`](./LICENSE.md).
 
 # 3. About the Project
 
