@@ -84,3 +84,31 @@ build_clearway:
   artifacts:
     paths:
       - dist/*
+
+latex_research:
+  stage: build
+  image: ghcr.io/xu-cheng/texlive-full:latest
+  script:
+    - cd documents/research
+    - latexmk --verbose
+  only:
+    changes:
+      - documents/research/**/*
+  artifacts:
+    paths:
+      - "*.pdf"
+
+latex_research:
+  stage: build
+  image: ghcr.io/xu-cheng/texlive-full:latest
+  script:
+    - cd documents/installationGuide
+    - latexmk --verbose
+  only:
+    changes:
+      - documents/installationGuide/**/*
+    refs:
+      - merge_requests
+  artifacts:
+    paths:
+      - "*.pdf"
