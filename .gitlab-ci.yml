@@ -97,7 +97,7 @@ latex_research:
       - documents/research/**/*
   artifacts:
     paths:
-      - "*.pdf"
+      - documents/research/*.pdf
 
 latex_user_guide:
   stage: build
@@ -114,4 +114,4 @@ latex_user_guide:
       - merge_requests
   artifacts:
     paths:
-      - "*.pdf"
+      - documents/installationGuide/*.pdf
