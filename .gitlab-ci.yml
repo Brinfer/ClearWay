@@ -6,6 +6,7 @@ image: python:3.7
 # only cache local items.
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  LATEX_IMAGE: ghcr.io/xu-cheng/texlive-full:latest
 
 
 # Pip's cache doesn't store the python packages
@@ -87,7 +88,7 @@ build_clearway:
 
 latex_research:
   stage: build
-  image: ghcr.io/xu-cheng/texlive-full:latest
+  image: $LATEX_IMAGE
   script:
     - cd documents/research
     - latexmk --verbose
@@ -98,9 +99,11 @@ latex_research:
     paths:
       - "*.pdf"
 
-latex_research:
+latex_user_guide:
   stage: build
-  image: ghcr.io/xu-cheng/texlive-full:latest
+  image: $LATEX_IMAGE
+  before_script:
+    - echo Nothing to do
   script:
     - cd documents/installationGuide
     - latexmk --verbose
