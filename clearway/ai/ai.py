@@ -1,6 +1,5 @@
 """OpenCV object detection using picamera."""
 import time
-from threading import Event  # Needed for the  wait() method
 import logging
 from enum import IntEnum, auto, unique
 import os
@@ -235,8 +234,6 @@ class Ai:
                         Ai.__output_color,
                         2,
                     )
-            # Blink during 7 seconds by retarding the end_signal call
-            Event().wait(7)
             stateMachinePanel.end_signal(gpio_led)
 
         return img
