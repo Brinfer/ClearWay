@@ -15,7 +15,7 @@ transitions>=0.8.10
 RPi.GPIO>=0.7.0
 imutils>=0.5.4
 numpy>=1.21.4
-opencv-python>=4.5.4.60
+opencv-python==4.5.3.56
 toml>=0.10.2
 Mock.GPIO>=0.1.8
 
