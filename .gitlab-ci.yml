@@ -109,7 +109,8 @@ build_clearway:
     - python -m build
   only:
     refs:
-      - master
+      - merge_requests
+      - tags
   artifacts:
     paths:
       - dist/*
@@ -117,12 +118,17 @@ build_clearway:
 latex_research:
   stage: build
   image: $LATEX_IMAGE
+  before_script:
+    - echo Nothing to do
   script:
     - cd documents/research
     - latexmk --verbose
   only:
     changes:
       - documents/research/**/*
+    refs:
+      - merge_requests
+      - tags
   artifacts:
     paths:
       - documents/research/*.pdf
@@ -140,6 +146,7 @@ latex_user_guide:
       - documents/installationGuide/**/*
     refs:
       - merge_requests
+      - tags
   artifacts:
     paths:
       - documents/installationGuide/*.pdf
