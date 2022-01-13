@@ -33,6 +33,7 @@ before_script:
 
 stages:
   - test
+  - execute
   - quality
   - build
 
@@ -44,6 +45,33 @@ test:
     changes:
       - clearway/**/*
       - tests/**/*
+
+analyse_video_3fps:
+  stage: execute
+  script:
+    - python3 -m clearway -c clearway.toml -i resources/videos/bicycle_3fps.mp4
+  only:
+    refs:
+        - master
+        - dev
+        - merge_requests
+    changes:
+      - clearway/**/*
+      - resources/**/*
+
+analyse_video_original:
+  stage: execute
+  script:
+    - python3 -m clearway -c clearway.toml -i resources/videos/bicycle_original.mp4
+  only:
+    refs:
+        - master
+        - dev
+        - merge_requests
+    changes:
+      - clearway/**/*
+      - resources/**/*
+
 
 flake8:
   stage: quality
