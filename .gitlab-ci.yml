@@ -6,6 +6,7 @@ image: python:3.7
 # only cache local items.
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  LATEX_IMAGE: ghcr.io/xu-cheng/texlive-full:latest
 
 
 # Pip's cache doesn't store the python packages
@@ -27,6 +28,7 @@ before_script:
   - pip install virtualenv
   - virtualenv venv
   - source venv/bin/activate
+  - export CFLAGS=-fcommon # Allow the installation of RPi.GPIO
   - pip install -r requirements.txt  # Install all needed package
 
 stages:
@@ -83,3 +85,33 @@ build_clearway:
   artifacts:
     paths:
       - dist/*
+
+latex_research:
+  stage: build
+  image: $LATEX_IMAGE
+  script:
+    - cd documents/research
+    - latexmk --verbose
+  only:
+    changes:
+      - documents/research/**/*
+  artifacts:
+    paths:
+      - documents/research/*.pdf
+
+latex_user_guide:
+  stage: build
+  image: $LATEX_IMAGE
+  before_script:
+    - echo Nothing to do
+  script:
+    - cd documents/installationGuide
+    - latexmk --verbose
+  only:
+    changes:
+      - documents/installationGuide/**/*
+    refs:
+      - merge_requests
+  artifacts:
+    paths:
+      - documents/installationGuide/*.pdf
