@@ -1,0 +1,228 @@
+\part{Guide d'utilisation}
+La présente section a pour but de décrire l'utilisation du \gls{sae}.
+
+\section{\glsentryname{sae} - Description du service}
+\label{sec:description_clearWay}
+
+\gls{sae} est composé de trois éléments :
+\begin{itemize}
+    \item Le module caméra comprend une caméra (\gls{RPiCamera}), un socle en bois, un servomoteur (\gls{SG90})
+          et un dispositif en plastique permettant de faire la liaison entre le servomoteur et la caméra.
+    \item Un boîtier noir où se trouve une carte \gls{RPiCard}.
+    \item Le panneau en bois intégrant des LEDs permettant les automobilistes qu'un cycliste arrive.
+\end{itemize}
+
+\section{Exécution de \glsentryname{sae}}
+\label{sec:execution_clearWay}
+
+\gls{sae} est actuellement un prototype.
+
+\subsection{Utilisation du \glsentrytext{ssh}}
+\label{sec:utilisationSSH}
+
+Pour une exécution sur la \gls{raspberry} à distance, il faut établir une connexion \gls{ssh}
+Pour se faire, le plus simple est d'être connecté au même réseau que cette dernière.
+
+\subsubsection{Trouver l'adresse \glsentrytext{ip}}
+\label{sec:trouverIP}
+
+\paragraph{À partie du \textit{hostname}}
+
+Si vous connaissez le \textit{hostname} de votre \gls{raspberry} : \mintinline{bash}{ping <hostname>.local}.\\
+L'adresse \gls{ip} s'affichera dans le terminal.
+
+\subparagraph{Exemple}
+
+Pour une \gls{raspberry} dont le \textit{hostname} est \underline{raspberrypi} (valeur par défaut à
+l'installation) :
+
+\begin{minted}{text}
+    $ ping raspberrypi.local
+
+    PING raspberrypi.local (123.123.123.123) 56(84) octets de données.
+    64 octets de par10s33-in-f14.1e100.net (123.123.123.123) : icmp_seq=1 ttl=115 temps=19.3 ms
+    64 octets de fra02s18-in-f14.1e100.net (123.123.123.123) : icmp_seq=2 ttl=115 temps=24.3 ms
+    ...
+\end{minted}
+
+L'\gls{ip} nous est alors donné et est \texttt{123.123.123.123}.
+
+\paragraph{À partie de votre adresse \glsentrytext{ip}}
+
+Sinon retrouver votre adresse \gls{ip}\footnote{Référer vous à la documentation de votre OS}, afin de déterminer
+la plage de sous-réseau, le et utiliser la commande \mintinline{bash}{nmap -sn <subnet>/24}.
+L'ensemble des appareils sur votre réseau seront "pinger" :
+
+\subparagraph{Exemple}
+
+Si mon \gls{ip} est \texttt{123.123.123.5} alors mon sous-réseau est \texttt{123.123.123.0}.
+
+\begin{minted}{text}
+    # sudo nmap -sn 123.123.123.0/24
+
+    Starting Nmap 7.92 ( https://nmap.org ) at 2022-01-07 14:58 EAT
+    Nmap scan report for 123.123.123.1
+    Host is up (0.0055s latency).
+    MAC Address: 50:0F:F5:3E:22:50 (Unknown)
+    Nmap scan report for 123.123.123.106
+    Host is up (0.010s latency).
+    MAC Address: C4:D9:87:BA:88:17 (Intel Corporate)
+    Nmap scan report for 123.123.123.105
+    Host is up.
+    MAC Address: B8:37:EB:EA: E0:D5 (Raspberry Pi Foundation)
+    Nmap scan report for 123.123.123.200
+    Host is up (0.0049s latency).
+    Nmap done: 256 IP addresses (4 hosts up) scanned in 205.26 seconds.
+\end{minted}
+
+Dans notre exemple ci-dessus, la commande \texttt{nmap} a trouvé un périphérique \gls{raspberry} :
+
+\begin{minted}{text}
+    MAC Address: B8:37:EB:EA: E0:D5 (Raspberry Pi Foundation)
+    Nmap scan report for 123.123.123.200
+\end{minted}
+
+\subsubsection{Connexion}
+
+Pour se connecter en \gls{ssh} à la \gls{raspberry}, il faut connaitre l'utilisateur\footnote{Par défaut sur une
+    \gls{raspberry}, l'utilisateur est \underline{pi}.} auquel on veut se connecter et l'\gls{ip} de la \gls{raspberry}
+(voir section \nameref{sec:trouverIP}).\\
+La commande à exécuter est :
+
+\begin{minted}{bash}
+    ssh <user>@<ip_address>
+\end{minted}
+
+Il vous sera alors demandé de confirmer si vous souhaiter vous connecter, et ensuite, le mot de passe de
+l'utilisateur\footnote{Par défaut pour l'utilisateur \underline{pi}, le mot de passe est \underline{raspberry}}.
+
+\paragraph{Copie de fichier de l'ordinateur vers la \glsentryname{raspberry}}
+\label{sec:copieVersRaspberry}
+
+Pour copier un fichier depuis votre ordinateur vers la \gls{raspberry} (ou une quelconque cible distante), il faut
+utiliser la commande \texttt{scp} qui utilise le \gls{ssh}.\\
+La commande est :
+
+\begin{minted}{bash}
+    scp <file_to_send> <user>@<ip_address>:<path_on_the_raspberry>
+\end{minted}
+
+Pour copier un répertoire, ajouter l'argument \texttt{-r} à la commande \texttt{scp}.
+
+\subsection{Paramètres}
+
+\subsubsection{Paramètres obligatoires}
+\label{sec:executionArg_clearWay}
+
+Certains arguments sont nécessaires afin d'utiliser \gls{sae}. Le tableau ci-dessous répertorie ces derniers.
+
+\begin{table}[H]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabularx}{\linewidth}{|c|c|X|}
+        \hline
+        \rowcolor{tableColorDark}
+        Argument                  & Alias       & \multicolumn{1}{c|}{\cellcolor{tableColorDark}Description}                                                                                                                    \\ \hline
+        \texttt{-{}-yolo-weights} &             & Chemin jusqu'au fichier \texttt{.weight} de \gls{yolo}. Requis si la valeur n'est pas fournie dans le fichier \gls{toml} (voir section \nameref{sec:executionTOML_clearWay}). \\ \hline
+        \texttt{-{}-yolo-cfg}     &             & Chemin jusqu’au fichier \texttt{.cfg} de \gls{yolo}. Requis si la valeur n'est pas fournie dans le fichier \gls{toml} (voir section \nameref{sec:executionTOML_clearWay}).    \\ \hline
+        \texttt{-{}-config}       & \texttt{-c} & Chemin vers le fichier de configuration de \gls{sae}. Requis si au moins un des chemins vers un fichier \gls{yolo} n'est pas fournie.                                         \\ \hline
+    \end{tabularx}
+    \caption{Arguments obligatoires de \gls{sae}}
+\end{table}
+
+\subsubsection{Paramètres optionnels}
+\label{sec:executionOption_clearWay}
+\gls{sae} est livré avec plusieurs options à renseigner lors du démarrage du programme. La liste ci-dessous répertorie ces dernières.
+
+\begin{table}[H]
+    \centering
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabularx}{\linewidth}{|c|c|X|c|c|c|}
+        % Header
+        \hline
+        \cellcolor{tableColorDark}                           & \cellcolor{tableColorDark}                        & \multicolumn{1}{c|}{\cellcolor{tableColorDark}}                                                                 & \cellcolor{tableColorDark}                                    & \multicolumn{2}{c|}{\cellcolor{tableColorDark}Support}                                          \\ \cline{5-6}
+        \multirow{-2}{*}{\cellcolor{tableColorDark}Argument} & \multirow{-2}{*}{\cellcolor{tableColorDark}Alias} & \multicolumn{1}{c|}{\multirow{-2}{*}{\cellcolor{tableColorDark}Description}}                                    & \multirow{-2}{*}{\cellcolor{tableColorDark}Valeur par défaut} & \multicolumn{1}{c|}{\cellcolor{tableColorDark}Ordinateur} & \cellcolor{tableColorDark}Raspberry \\ \hline
+        % Data
+        \texttt{-{}-camera-angle}                            &                                                   & L'angle de la caméra en degrés.                                                                                 & \texttt{75}                                                   &                                                           & X                                   \\\hline
+        \texttt{-{}-help}                                    & \texttt{-h}                                       & Affiche les arguments et options possibles.                                                                     &                                                               & X                                                         & X                                   \\\hline
+        \texttt{-{}-input-path}                              & \texttt{-i}                                       & Chemin vers la vidéo à analyser si la caméra n'est pas utilisée.                                                &                                                               & X                                                         & X                                   \\\hline
+        \texttt{-{}-no-gpio}                                 &                                                   & Les GPIOs ne seront pas utilisés. Uniquement les logs seront affichés. Incompatible avec \texttt{-{}-use-gpio}. & \texttt{true}                                                 & X                                                         & X                                   \\\hline
+        \texttt{-{}-on-raspberry}                            &                                                   & Informe le programme que la \gls{raspberry} sera utilisée.                                                      & \texttt{false}                                                &                                                           & X                                   \\\hline
+        \texttt{-{}-output-path}                             & \texttt{-o}                                       & Chemin vers le dossier qui contraindra le résultat de la vidéo analysée                                         &                                                               & X                                                         & X                                   \\\hline
+        \texttt{-{}-panel-gpios}                             &                                                   & Les GPIOs à utiliser                                                                                            & \texttt{5}                                                    &                                                           & X                                   \\\hline
+        \texttt{-{}-see-rtp}                                 &                                                   & Affiche une fenêtre avec l'analyse en temps réelle.                                                             & \texttt{false}                                                & X                                                         & X                                   \\\hline
+        \texttt{-{}-servo-gpio}                              &                                                   & La broche GPIO utilisé par le servomoteur.                                                                      & \texttt{12}                                                   &                                                           & X                                   \\\hline
+        \texttt{-{}-use-gpio}                                &                                                   & Les GPIOs seront utilisés, les logs seront également affichés. Incompatible avec \texttt{-{}-no-gpio}.          & \texttt{false}                                                & X                                                         &                                     \\\hline
+        \texttt{-{}-verbosity }                              & \texttt{-v}                                       & Le niveau de verbosité, valeur possibles : \texttt{WARNING}, \texttt{INFO} ou \texttt{DEBUG}.                   & \texttt{INFO}                                                 & X                                                         & X                                   \\\hline
+        \texttt{-{}-version}                                 & \texttt{-V}                                       & Affiche la version de \gls{sae}                                                                                 &                                                               & X                                                         & X                                   \\\hline
+    \end{tabularx}
+    \label{tabOptClearway}
+    \caption{Arguments optionnels de \gls{sae}}
+\end{table}
+
+\paragraph{Exemple}
+
+\begin{minted}{bash}
+    clearway \
+    --no-gpio \
+    --gpios 5 6 \
+    --servo-gpio 12 \
+    --verbosity DEBUG \
+    --output-path output/video1.mp4 \
+    --size 320 \
+    --yolo-weights resources/yolov2-tiny.weights \
+    --yolo-cfg resources/yolov2-tiny.cfg
+\end{minted}
+
+\subsection{Utilisation d'un fichier \glsentrytext{toml}}
+\label{sec:executionTOML_clearWay}
+
+\gls{sae} peut être configuré à l'aide d'un fichier \gls{toml}. Ce fichier doit être composé
+d'une section principale \texttt{clearway}, elle-même composait de plusieurs sous-sections, chacune avec différentes clés.
+
+\begin{table}[H]
+    \rowcolors{2}{tableColor}{white}
+    \begin{tabularx}{\linewidth}{|l|c|X|}
+        \hline
+        \multicolumn{1}{|c|}{\cellcolor{tableColorDark}Clée} & \multicolumn{1}{c|}{\cellcolor{tableColorDark}Type} & \multicolumn{1}{c|}{\cellcolor{tableColorDark}Description} \\ \hline
+        \multicolumn{3}{|c|}{\cellcolor{tableColorDark}sous-section \texttt{gpio}}                                                                                              \\ \hline
+        \texttt{camera\_angle}                               & entier                                              & L'angle de la caméra en degrés                             \\ \hline
+        \texttt{servo\_gpio}                                 & entier                                              & le GPIO utilisé par le servomoteur                         \\ \hline
+        \texttt{use\_gpio}                                   & booléen                                             & Les GPIOs à utiliser, les logs seront également affichés.  \\ \hline
+        \multicolumn{3}{|c|}{\cellcolor{tableColorDark}sous-section \texttt{logging}}                                                                                           \\ \hline
+        \texttt{format}                                      & chaine de caractère                                 & Format des messages de log \cite{loggingFormat}            \\ \hline
+        \texttt{path}                                        & chaine de caractère                                 & Chemin vers le fichier des logs                            \\ \hline
+        \texttt{verbosity}                                   & chaine de caractère                                 & Le niveau de verbosité                                     \\ \hline
+        \multicolumn{3}{|c|}{\cellcolor{tableColorDark}sous-section \texttt{ia}}                                                                                                \\ \hline
+        \texttt{size}                                        & entier                                              & La taille de l'image (320 ou 416 recommandés)              \\ \hline
+        \texttt{see\_rtp}                                    & booléen                                             & Affichage d'une fenêtre avec l'analyse en temps réelle     \\ \hline
+        \texttt{yolo\_cfg}                                   & chaine de caractère                                 & Chemin jusqu'au fichier \texttt{.cfg} de \gls{yolo}        \\ \hline
+        \texttt{yolo\_weight}                                & chaine de caractère                                 & Chemin jusqu'au fichier \texttt{.weight} de \gls{yolo}     \\ \hline
+    \end{tabularx}
+    \caption{Clés du fichier \glsentrytext{toml} de \glsentryname{sae}}
+\end{table}
+
+Les clés \texttt{yolo\_cfg} et \texttt{yolo\_weight} sont obligatoires pour le fonctionnement sauf si ces valeurs sont
+passées en ligne de commande, de la même manière on peut surcharger les valeurs contenues dans le fichier
+(voir section \nameref{sec:executionArg_clearWay}).\newline
+
+\subsubsection{Exemple}
+
+\begin{minted}{toml}
+    [clearway]
+        [clearway.gpio]
+            use_gpio = false
+            panel_gpios = [5, 6]
+            camera_angle = 75
+            servo_gpio = 12
+        [clearway.ai]
+            yolo_cfg = "resources/yolov2-tiny.cfg"
+            yolo_weights = "resources/yolov2-tiny.weights"
+            on_raspberry = false
+            size = 320
+            see_rtp = false
+        [clearway.log]
+            verbosity = "DEBUG"
+            format = "%(asctime)s [%(filename)s:%(lineno)d] %(levelname)s >> %(message)s"
+            path = "clearway.log"
+\end{minted}

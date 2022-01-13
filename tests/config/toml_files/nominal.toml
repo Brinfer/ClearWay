@@ -17,3 +17,5 @@ see_rtp = true
 
 [clearway.log]
 verbosity = "DEBUG"
+format = "%(levelname)s >> %(message)s"
+path = "output/Log.log"

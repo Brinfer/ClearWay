@@ -19,6 +19,8 @@ size = 416
 see_rtp = true
 [clearway.log]
 verbosity = "DEBUG"
+format = "%(levelname)s >> %(message)s"
+path = "output/Log.log"
 
 [section_B]
 keyB_1 = 5
